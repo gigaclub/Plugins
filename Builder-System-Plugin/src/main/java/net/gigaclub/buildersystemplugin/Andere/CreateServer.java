@@ -1,23 +1,18 @@
 package net.gigaclub.buildersystemplugin.Andere;
 
-import de.dytanic.cloudnet.driver.service.ServiceConfiguration;
-import de.dytanic.cloudnet.driver.service.ServiceEnvironmentType;
-import de.dytanic.cloudnet.driver.service.ServiceInfoSnapshot;
-import de.dytanic.cloudnet.driver.service.ServiceTemplate;
+
+import eu.cloudnetservice.driver.service.ServiceConfiguration;
+import eu.cloudnetservice.driver.service.ServiceEnvironmentType;
+import eu.cloudnetservice.driver.service.ServiceInfoSnapshot;
+import eu.cloudnetservice.driver.service.ServiceTemplate;
 import net.gigaclub.buildersystem.BuilderSystem;
 import net.gigaclub.buildersystemplugin.Main;
 import net.gigaclub.translation.Translation;
-import org.bukkit.Bukkit;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
-
-import org.json.JSONArray;
 import org.json.JSONObject;
 
-
-import java.util.ArrayList;
-
-import static net.gigaclub.buildersystemplugin.Config.Config.getConfig;
+import java.util.Arrays;
+import java.util.List;
 
 public class CreateServer {
     BuilderSystem builderSystem = Main.getBuilderSystem();
@@ -41,16 +36,16 @@ public class CreateServer {
         //  world_name, task_name, task_id, worlds_typ, word_id, team_name
         player.sendMessage(t.t("bsc.Command.CreateServer", player));
         ServiceInfoSnapshot serviceInfoSnapshot = ServiceConfiguration.builder()
-                .task(team_name + "_" + task_name + "_" + task_id + "_" + world_id)
+                .taskName(team_name + "_" + task_name + "_" + task_id + "_" + world_id)
                 .node("Node-1")
                 .autoDeleteOnStop(true)
                 .staticService(false)
-                .templates(new ServiceTemplate("Builder", worlds_typ, "local"),new ServiceTemplate("Builder","Plugins","local"))
-                .groups("Builder")
+                .templates(Arrays.asList(ServiceTemplate.builder().prefix("Builder").name(worlds_typ).storage("local").build(), ServiceTemplate.builder().prefix("Builder").name("Plugins").storage("local").build()))
+                .groups(List.of("Builder"))
                 .maxHeapMemory(1525)
                 .environment(ServiceEnvironmentType.MINECRAFT_SERVER)
                 .build()
-                .createNewService();
+                .createNewService().serviceInfo();
         }
     }
 

@@ -1,11 +1,13 @@
 package net.gigaclub.buildersystemplugin.listener;
 
-import de.dytanic.cloudnet.driver.CloudNetDriver;
-import de.dytanic.cloudnet.driver.event.EventListener;
-import de.dytanic.cloudnet.driver.event.events.service.CloudServiceConnectNetworkEvent;
-import de.dytanic.cloudnet.driver.service.*;
-import de.dytanic.cloudnet.ext.bridge.player.ICloudPlayer;
-import de.dytanic.cloudnet.ext.bridge.player.IPlayerManager;
+
+import eu.cloudnetservice.driver.event.EventListener;
+import eu.cloudnetservice.driver.event.events.service.CloudServiceEvent;
+import eu.cloudnetservice.driver.inject.InjectionLayer;
+import eu.cloudnetservice.driver.registry.ServiceRegistry;
+import eu.cloudnetservice.driver.service.*;
+import eu.cloudnetservice.modules.bridge.player.CloudPlayer;
+import eu.cloudnetservice.modules.bridge.player.PlayerManager;
 import net.gigaclub.buildersystem.BuilderSystem;
 import net.gigaclub.buildersystemplugin.Andere.InterfaceAPI.ItemBuilder;
 import net.gigaclub.buildersystemplugin.Main;
@@ -25,6 +27,7 @@ import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -35,26 +38,29 @@ public class joinlistener implements Listener {
     private Player player;
     private @NotNull BukkitTask taskID;
 
+    private final PlayerManager playerManager = InjectionLayer.boot().instance(ServiceRegistry.class)
+            .firstProvider(PlayerManager.class);
+
     @EventListener
-    public void handleServiceConnected(CloudServiceConnectNetworkEvent event) {
+    public void handleServiceConnected(CloudServiceEvent event) {
         String playerUUID = player.getUniqueId().toString();
         Translation t = Main.getTranslation();
 
-        ServiceInfoSnapshot serviceInfoSnapshot = event.getServiceInfo(); //The serviceInfoSnapshot with all important information from a service
+        ServiceInfoSnapshot serviceInfoSnapshot = event.serviceInfo(); //The serviceInfoSnapshot with all important information from a service
 
-        ServiceLifeCycle serviceLifeCycle = serviceInfoSnapshot.getLifeCycle();
-        ServiceId serviceId = serviceInfoSnapshot.getServiceId();
+        ServiceLifeCycle serviceLifeCycle = serviceInfoSnapshot.lifeCycle();
+        ServiceId serviceId = serviceInfoSnapshot.serviceId();
 
-        if (this.serviceId == serviceId.getTaskServiceId()) {
+        if (this.serviceId == serviceId.taskServiceId()) {
 
             if (serviceLifeCycle == ServiceLifeCycle.RUNNING) {
 
                 if (player != null) {
                     System.out.println(4);
-                    List<? extends ICloudPlayer> cloudPlayers = this.playerManager.getOnlinePlayers(this.player.getName());
+                    List<? extends CloudPlayer> cloudPlayers = this.playerManager.onlinePlayers(this.player.getName());
                     if (!cloudPlayers.isEmpty()) {
-                        ICloudPlayer entry = cloudPlayers.get(0);
-                        IPlayerManager playerManager = this.playerManager;
+                        CloudPlayer entry = cloudPlayers.get(0);
+                        PlayerManager playerManager = this.playerManager;
                         int serviceId1 = this.serviceId;
                         Player player2 = player;
                         @NotNull BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
@@ -66,7 +72,7 @@ public class joinlistener implements Listener {
                                 if (countdown > 0) {
                                     player2.sendMessage(String.valueOf(countdown));
                                 } else {
-                                    playerManager.getPlayerExecutor(entry).connect(event.getServiceInfo().getServiceId().getTaskName() + "-" + serviceId1);
+                                    playerManager.playerExecutor(entry.uniqueId()).connect(event.serviceInfo().serviceId().taskName() + "-" + serviceId1);
                                     scheduler.cancelTask(taskID.getTaskId());
                                     return;
                                 }
@@ -78,9 +84,6 @@ public class joinlistener implements Listener {
             }
         }
     }
-
-    private final IPlayerManager playerManager = CloudNetDriver.getInstance().getServicesRegistry()
-            .getFirstService(IPlayerManager.class);
 
     @EventHandler
     public void handlePlayerJoin(PlayerJoinEvent event) {
@@ -131,9 +134,8 @@ public class joinlistener implements Listener {
         }
     }
 
-
     private void startServer(JSONArray teamWorlds, int i, BuilderSystem builderSystem, String playerUUID, String team_name, Translation t, Player player) {
-        
+
         JSONObject world_data = teamWorlds.getJSONObject(i);
         int world_id = 0;
         try {
@@ -154,20 +156,21 @@ public class joinlistener implements Listener {
         player.sendMessage(t.t("bsc.Command.CreateServer", player));
         player.sendMessage(t.t("bsc.Command.Teleport", player));
         ServiceInfoSnapshot serviceInfoSnapshot = ServiceConfiguration.builder()
-                .task(team_name + "_" + task_name + "_" + task_id + "_" + world_id)
+                .taskName(team_name + "_" + task_name + "_" + task_id + "_" + world_id)
                 .node("Node-1")
                 .autoDeleteOnStop(true)
                 .staticService(false)
-                .templates(new ServiceTemplate("Builder", worlds_typ, "local"),new ServiceTemplate("Builder","Plugins","local"))
-                .groups("Builder")
+                .templates(Arrays.asList(ServiceTemplate.builder().prefix("Builder").name(worlds_typ).storage("local").build(), ServiceTemplate.builder().prefix("Builder").name("Plugins").storage("local").build()))
+                .groups(List.of("Builder"))
                 .maxHeapMemory(1525)
                 .environment(ServiceEnvironmentType.MINECRAFT_SERVER)
                 .build()
-                .createNewService();
+                .createNewService().serviceInfo();
+
 
         if (serviceInfoSnapshot != null) {
             serviceInfoSnapshot.provider().start();
-            serviceId = serviceInfoSnapshot.getServiceId().getTaskServiceId();
+            serviceId = serviceInfoSnapshot.serviceId().taskServiceId();
         }
     }
 

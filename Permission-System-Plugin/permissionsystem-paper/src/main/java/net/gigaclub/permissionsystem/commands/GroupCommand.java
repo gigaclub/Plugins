@@ -2,7 +2,6 @@ package net.gigaclub.permissionsystem.commands;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import de.dytanic.cloudnet.driver.CloudNetDriver;
 import net.gigaclub.permissionsystem.Main;
 import net.gigaclub.permissionsystemapi.PermissionSystem;
 import net.gigaclub.translation.Translation;
@@ -81,7 +80,7 @@ public class GroupCommand implements CommandExecutor, TabCompleter {
                     }
                 }
                 assert playerToAdd != null;
-                permissionSystem.setGroups(playerToAdd.getUniqueId().toString(), Arrays.asList(groupId));
+                permissionSystem.setGroups(playerToAdd.getUniqueId().toString(), List.of(groupId));
                 Main.setupGroups();
                 params = new JsonObject();
                 params.addProperty("playerName", playerName);
@@ -108,7 +107,7 @@ public class GroupCommand implements CommandExecutor, TabCompleter {
                     }
                 }
                 assert playerToRemove != null;
-                permissionSystem.removeGroups(playerToRemove.getUniqueId().toString(), Arrays.asList(groupId));
+                permissionSystem.removeGroups(playerToRemove.getUniqueId().toString(), List.of(groupId));
                 Main.setupGroups();
                 params = new JsonObject();
                 params.addProperty("playerName", playerNameToRemove);

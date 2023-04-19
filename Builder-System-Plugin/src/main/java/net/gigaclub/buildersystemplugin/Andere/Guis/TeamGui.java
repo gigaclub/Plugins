@@ -6,7 +6,6 @@ import net.gigaclub.buildersystemplugin.Andere.InterfaceAPI.GuiLayoutBuilder;
 import net.gigaclub.buildersystemplugin.Andere.InterfaceAPI.ItemBuilder;
 import net.gigaclub.buildersystemplugin.Main;
 import net.gigaclub.translation.Translation;
-import net.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -18,7 +17,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 
 public class TeamGui implements Listener {
@@ -113,53 +111,6 @@ public class TeamGui implements Listener {
         player.openInventory(inventory);
     }
 
-    public AnvilGUI anvilgui;
 
-    public void teamCreatename(Player player) {
-        anvilgui = new AnvilGUI.Builder()
-                    .onComplete(((player1, output) -> {
-                    System.out.println("on complete");
-                    if (Objects.equals(output, " ") || Objects.equals(output, "Dein Team Heist") || Objects.equals(output, "D") || Objects.equals(output, "")) {
-                        player.sendMessage("Geben sie eine Namen ein");
-                        teamGui(player);
-
-                    } else {
-
-
-                        player1.sendMessage("Team Name: " + output);
-                        teamCreateDesc(player, output);
-                    }
-                    return AnvilGUI.Response.close();
-                }))
-                .itemLeft(new ItemBuilder(Material.PAPER).setDisplayName("Team Name").build())
-                .title(ChatColor.GREEN + "Team Name(PflichtFeld)")
-                .plugin(Main.getPlugin())
-                .text("Dein Team Heist")
-                .open(player);
-    }
-
-    public void teamCreateDesc(Player player, String teamName) {
-        String playerUUID = player.getUniqueId().toString();
-        anvilgui = new AnvilGUI.Builder()
-                    .onComplete(((player1, output) -> {
-                    if (Objects.equals(output, " ") || Objects.equals(output, "Beschreibung") || Objects.equals(output, "B")) {
-                        builderSystem.createTeam(playerUUID, teamName);
-                        player.sendMessage("Team Erstellt ohne Desc");
-                        teamGui(player);
-
-
-                    } else {
-
-                        player.sendMessage("Team Beschreibung: " + output);
-                        builderSystem.createTeam(playerUUID, teamName, output);
-                        player.sendMessage("Team Erstellt Mit Desc");
-                        teamGui(player);
-                    }
-                    return AnvilGUI.Response.close();
-                }))
-                .itemLeft(new ItemBuilder(Material.PAPER).setDisplayName("Team Bescheigung").build())
-
-                .title(ChatColor.GREEN + "Team Bescheigung").plugin(Main.getPlugin()).text("Beschreibung").open(player);
-    }
 
 }

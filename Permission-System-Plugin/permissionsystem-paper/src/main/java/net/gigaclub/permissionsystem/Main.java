@@ -1,8 +1,7 @@
 package net.gigaclub.permissionsystem;
 
-import de.dytanic.cloudnet.driver.permission.IPermissionManagement;
-import de.dytanic.cloudnet.driver.permission.PermissionGroup;
-import de.dytanic.cloudnet.driver.permission.PermissionUserGroupInfo;
+import eu.cloudnetservice.driver.inject.InjectionLayer;
+import eu.cloudnetservice.driver.permission.PermissionManagement;
 import net.gigaclub.permissionsystem.commands.GroupCommand;
 import net.gigaclub.permissionsystem.commands.SyncCommand;
 import net.gigaclub.permissionsystemapi.PermissionSystem;
@@ -12,14 +11,11 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import de.dytanic.cloudnet.driver.CloudNetDriver;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Objects;
 
 public final class Main extends JavaPlugin {
@@ -90,7 +86,7 @@ public final class Main extends JavaPlugin {
     }
 
     public static void setupGroups() {
-        IPermissionManagement permissionManagement = CloudNetDriver.getInstance().getPermissionManagement();
+        PermissionManagement permissionManagement = InjectionLayer.boot().instance(PermissionManagement.class);
         PermissionSystem permissionSystem = Main.getPermissionSystem();
 
         JSONArray groups = permissionSystem.getAllGroups();
@@ -104,12 +100,9 @@ public final class Main extends JavaPlugin {
             String color = group.getString("color");
             String display = group.getString("display");
 
-            permissionManagement.addGroup(groupName, 0);
-            permissionManagement.modifyGroup(groupName, permissionGroup -> {
-                permissionGroup.setSuffix(suffix);
-                permissionGroup.setPrefix(prefix);
-                permissionGroup.setColor(color);
-                permissionGroup.setDisplay(display);
+            permissionManagement.group(groupName);
+            permissionManagement.modifyGroup(groupName, (permissionGroup, permissionGroupBuilder) -> {
+                permissionGroupBuilder.suffix(suffix).prefix(prefix).color(color).display(display);
                 for (int j = 0; j < permissions.length(); j++) {
                     permissionGroup.addPermission(permissions.getString(j));
                 }
@@ -120,11 +113,8 @@ public final class Main extends JavaPlugin {
         //end grepper
         for (Player player : players) {
             JSONArray groupsOfPlayer = permissionSystem.getGroups(player.getUniqueId().toString());
-            permissionManagement.modifyUser(player.getUniqueId(), user -> {
-                PermissionUserGroupInfo[] groupsOfUser = user.getGroups().toArray(new PermissionUserGroupInfo[0]);
-                for (PermissionUserGroupInfo group : groupsOfUser) {
-                    user.removeGroup(group.getGroup());
-                }
+            permissionManagement.modifyUser(player.getUniqueId(), (user, userBuilder) -> {
+                user.groups().forEach(groupOfUser -> user.removeGroup(groupOfUser.group()));
                 for (int i = 0; i < groupsOfPlayer.length(); i++) {
                     JSONObject group = groupsOfPlayer.getJSONObject(i);
                     String groupName = group.getString("name");

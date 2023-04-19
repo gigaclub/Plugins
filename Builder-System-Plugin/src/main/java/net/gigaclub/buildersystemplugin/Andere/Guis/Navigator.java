@@ -8,24 +8,11 @@ import net.gigaclub.buildersystemplugin.Main;
 import net.gigaclub.translation.Translation;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-
-import org.bukkit.NamespacedKey;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
 import org.json.JSONArray;
-
-import java.util.Objects;
 
 public class Navigator implements Listener {
 
@@ -64,133 +51,6 @@ public class Navigator implements Listener {
         player.openInventory(inventory);
     }
 
-    @EventHandler
-    public void clickEvent(InventoryClickEvent event) {
-        Player player = (Player) event.getWhoClicked();
-        ItemStack item = event.getCurrentItem();
 
-        if (item == null) {
-            return;
-        } else {
-            ItemMeta meta = item.getItemMeta();
-            if (meta == null) {
-                return;
-            }
-        }
-
-        ItemMeta meta = item.getItemMeta();
-        PersistentDataContainer data = meta.getPersistentDataContainer();
-        if (data.has(new NamespacedKey(Main.getPlugin(), "identifie"), PersistentDataType.STRING)) {
-            String gui = data.get(new NamespacedKey(Main.getPlugin(), "identifie"), PersistentDataType.STRING);
-            int taskID = 0;
-            int taskInv = 0;
-            int worldInv = 0;
-            if (data.has(new NamespacedKey(Main.getPlugin(), "index"), PersistentDataType.INTEGER))
-                worldInv = data.get(new NamespacedKey(Main.getPlugin(), "index"), PersistentDataType.INTEGER) - 1;
-
-
-            if (data.has(new NamespacedKey(Main.getPlugin(), "ID"), PersistentDataType.INTEGER))
-                taskID = data.get(new NamespacedKey(Main.getPlugin(), "id"), PersistentDataType.INTEGER) - 1;
-
-            switch (Objects.requireNonNull(gui)) {
-
-                case "Gui_Opener" -> mainGui(player);
-                //Main Gui
-                case "Team_Opener" -> this.teamGui.teamGui(player);
-                case "Task_Opener" -> this.taskGui.taskGui(player);
-                case "World_Opener" -> this.worldGui.worldGui(player);
-
-
-                //Team Gui
-                case "invite_list_Opener" -> this.teamGui.teamInvite(player);
-                case "Team_Create" -> this.teamGui.teamCreatename(player);
-
-                //Task Gui
-                case "task_list" -> this.taskGui.taskList(player, taskInv);
-                case "task" -> this.taskGui.taskSelect(player, taskID);
-                case "createProjecktasTeam" -> this.taskGui.createProjecktasTeam(player, taskID);
-                case "createProjecktasUser" -> this.taskGui.createProjecktasUser(player, taskID);
-
-                //World Gui
-                case "WorldlistAll" -> this.worldGui.worldListAll(player, worldInv);
-                case "WorldlistUser" -> this.worldGui.worldListAll(player, worldInv);
-
-            }
-
-
-        }
-
-
-    }
-
-
-    @EventHandler
-    public void clickInvCancel(InventoryClickEvent event) {
-        Player player = (Player) event.getWhoClicked();
-        ItemStack item = event.getCurrentItem();
-
-        if (item == null) {
-            return;
-        } else {
-            ItemMeta meta = item.getItemMeta();
-            if (meta == null) {
-                return;
-            }
-        }
-        ItemMeta meta = item.getItemMeta();
-        PersistentDataContainer data = meta.getPersistentDataContainer();
-        if (data.has(new NamespacedKey(Main.getPlugin(), "gui"), PersistentDataType.INTEGER)) {
-            int is_gui = data.get(new NamespacedKey(Main.getPlugin(), "gui"), PersistentDataType.INTEGER);
-            if (is_gui == 1) {
-                event.setCancelled(true);
-            }
-        }
-    }
-
-    @EventHandler
-    public void handleGuiOpener(PlayerInteractEvent event) {
-        if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-            ItemStack item = event.getItem();
-            if (item == null) {
-                return;
-            } else {
-                ItemMeta meta = item.getItemMeta();
-                if (meta == null) {
-                    return;
-                }
-            }
-            PersistentDataContainer data = event.getItem().getItemMeta().getPersistentDataContainer();
-            if (data.has(new NamespacedKey(Main.getPlugin(), "identifie"))) {
-                String identifie = data.get(new NamespacedKey(Main.getPlugin(), "identifie"), PersistentDataType.STRING);
-                if (Objects.equals(identifie, "Gui_Opener")) {
-                    mainGui(event.getPlayer());
-                }
-            }
-        }
-    }
-    @EventHandler
-    public void handleItemDrop(PlayerDropItemEvent event) {
-        Player player = event.getPlayer();
-        ItemStack item = event.getItemDrop().getItemStack();
-
-        if (item == null) {
-            return;
-        } else {
-            ItemMeta meta = item.getItemMeta();
-            if (meta == null) {
-                return;
-            }
-        }
-        PersistentDataContainer data = item.getItemMeta().getPersistentDataContainer();
-        if (data.has(new NamespacedKey(Main.getPlugin(), "identifie"))) {
-            String identifie = data.get(new NamespacedKey(Main.getPlugin(), "identifie"), PersistentDataType.STRING);
-            if (Objects.equals(identifie, "Gui_Opener")) {
-                event.setCancelled(true);
-
-            }
-        }
-
-
-    }
 
 }

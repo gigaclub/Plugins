@@ -1,6 +1,7 @@
 package net.gigaclub.buildersystemplugin;
 
-import de.dytanic.cloudnet.driver.CloudNetDriver;
+import eu.cloudnetservice.driver.event.EventManager;
+import eu.cloudnetservice.driver.inject.InjectionLayer;
 import me.arcaniax.hdb.api.DatabaseLoadEvent;
 import net.gigaclub.buildersystem.BuilderSystem;
 import net.gigaclub.buildersystemplugin.Andere.Guis.Navigator;
@@ -19,7 +20,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-
 
 import java.io.File;
 import java.util.Arrays;
@@ -187,7 +187,7 @@ public final class Main extends JavaPlugin implements Listener {
         File file = new File("plugins//" + "Odoo", "config.yml");
         FileConfiguration config = YamlConfiguration.loadConfiguration(file);
 
-        CloudNetDriver.getInstance().getEventManager().registerListener(projeckt);
+        InjectionLayer.boot().instance(EventManager.class).registerListener(projeckt);
         setTranslation(new Translation(
                 config.getString("Odoo.Host"),
                 config.getString("Odoo.Database"),
