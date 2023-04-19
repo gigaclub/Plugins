@@ -16,5 +16,6 @@ include ':Base-Plugin:base-common',
         'Team-Plugin:team-paper',
         'Team-Plugin:team-waterfall',
         'TeamAPI',
+        'Builder-System-Plugin',
         'BuilderSystemAPI'
 
