@@ -25,6 +25,13 @@ processResources {
     }
 }
 
+task copyJar(type: Copy) {
+    from 'build/libs/permissionsystem-paper-all.jar'
+    into '../../Plugins-all'
+}
+
 build {
     dependsOn(shadowJar)
+    dependsOn(copyJar)
+
 }
