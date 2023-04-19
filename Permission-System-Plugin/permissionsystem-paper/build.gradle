@@ -1,0 +1,30 @@
+plugins {
+    id 'com.github.johnrengelman.shadow'
+}
+
+repositories {
+    maven {
+        name = "cloudnet-releases"
+        url = uri("https://repo.cloudnetservice.eu/repository/releases/")
+    }
+}
+
+dependencies {
+    implementation(project(":Permission-System-Plugin:permissionsystem-common"))
+    compileOnly("io.papermc.paper:paper-api:1.19.4-R0.1-SNAPSHOT")
+    implementation("de.dytanic.cloudnet:cloudnet-cloudperms:3.4.3-RELEASE")
+    implementation("de.dytanic.cloudnet:cloudnet-driver:3.4.3-RELEASE")
+}
+
+processResources {
+    def props = [version: project.version]
+    inputs.properties props
+    filteringCharset 'UTF-8'
+    filesMatching('plugin.yml') {
+        expand props
+    }
+}
+
+build {
+    dependsOn(shadowJar)
+}

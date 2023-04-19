@@ -1,0 +1,15 @@
+name: PermissionSystem
+version: 1.19.0.1.0.0
+main: net.gigaclub.permissionsystem.Main
+api-version: 1.18
+prefix: PermissionSystem
+load: POSTWORLD
+authors: [ GigaClub ]
+depend: [ Translation ]
+website: https://github.com/GigaClub
+
+commands:
+  syncgroups:
+    description: /syncgroups
+  group:
+    description: /group <list|add|remove> <group> <playerName>

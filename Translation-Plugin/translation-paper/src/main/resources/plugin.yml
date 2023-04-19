@@ -1,0 +1,12 @@
+name: Translation
+version: 1.19.0.1.0.0
+main: net.gigaclub.translation.Main
+api-version: 1.18
+authors: [ KevTVKevin ]
+depend: [ Base ]
+description: A Translation Plugin for GigaClub.net
+website: https://GigaClub.net
+
+commands:
+  language:
+    description: /language <set|list> <language>

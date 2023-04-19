@@ -1,0 +1,20 @@
+rootProject.name = 'plugins'
+
+include ':Base-Plugin:base-common',
+        ':Base-Plugin:base-paper',
+        ':Base-Plugin:base-waterfall',
+        'BaseAPI',
+        ':Translation-Plugin:translation-common',
+        ':Translation-Plugin:translation-paper',
+        ':Translation-Plugin:translation-waterfall',
+        'TranslationAPI',
+        'Permission-System-Plugin:permissionsystem-common',
+        'Permission-System-Plugin:permissionsystem-paper',
+        'Permission-System-Plugin:permissionsystem-waterfall',
+        'PermissionSystemAPI',
+        'Team-Plugin:team-common',
+        'Team-Plugin:team-paper',
+        'Team-Plugin:team-waterfall',
+        'TeamAPI',
+        'BuilderSystemAPI'
+

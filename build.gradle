@@ -1,0 +1,30 @@
+plugins {
+    id "com.github.johnrengelman.shadow" version "7.1.2" apply false
+}
+
+group 'net.gigaclub'
+version '1.0-SNAPSHOT'
+
+subprojects {
+    apply plugin: 'java'
+
+    group = project.group
+    version = project.version
+
+    java {
+        toolchain.languageVersion.set(JavaLanguageVersion.of(17))
+    }
+
+    repositories {
+        mavenCentral()
+        maven {
+            url 'https://repo.papermc.io/repository/maven-public/'
+        }
+        maven {
+            url 'https://oss.sonatype.org/content/groups/public/'
+        }
+        maven {
+            url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
+        }
+    }
+}
