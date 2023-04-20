@@ -77,9 +77,30 @@ public class Translation {
         }
     }
 
-    public void registerTranslations(List<String> translationNames) {
-        for(String translationName : translationNames) {
-            this.registerTranslation(translationName);
+    public void registerTranslation(HashMap<String, String> translationValues) {
+        String translationName = translationValues.remove("translationName");
+        if (!this.checkIfTranslationExists(translationName)) {
+            String category = this.category;
+            this.odoo.create(
+                    "gc.translation",
+                    List.of(
+                            new HashMap() {{
+                                put("name", translationName);
+                                put("category", category);
+                                put("values", translationValues);
+                            }}
+                    )
+            );
+        }
+    }
+
+    public void registerTranslations(List<Object> translationValues) {
+        for (Object translationValue : translationValues) {
+            if (translationValue instanceof String name) {
+                registerTranslation(name);
+            } else if (translationValue instanceof HashMap) {
+                registerTranslation((HashMap) translationValue);
+            }
         }
     }
 

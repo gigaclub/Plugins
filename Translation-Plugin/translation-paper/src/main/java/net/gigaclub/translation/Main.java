@@ -8,6 +8,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Objects;
 
 public final class Main extends JavaPlugin {
@@ -15,7 +16,6 @@ public final class Main extends JavaPlugin {
     private static Main plugin;
     private static Translation translation;
     private static Data data;
-    final public static String PREFIX = "[GC]: ";
 
     public static Translation getTranslation() {
         return Main.translation;
@@ -81,11 +81,23 @@ public final class Main extends JavaPlugin {
 
     public static void registerTranslations() {
         Main.translation.registerTranslations(Arrays.asList(
-                "translation.command.language.set",
-                "translation.command.language.does.not.exist",
+                new HashMap<String, String>() {{
+                    put("translationName", "translation.command.language.set");
+                    put("language", "en_US");
+                }},
+                new HashMap<String, String>() {{
+                    put("translationName", "translation.command.language.does.not.exist");
+                    put("language", "wronglanguage");
+                }},
                 "translation.command.language.no.language.parameter",
-                "translation.command.language.list",
-                "translation.command.language.incorrect.parameter",
+                new HashMap<String, String>() {{
+                    put("translationName", "translation.command.language.list");
+                    put("languages", "en_US, de_DE");
+                }},
+                new HashMap<String, String>() {{
+                    put("translationName", "translation.command.language.incorrect.parameter");
+                    put("wrongParameter", "bla");
+                }},
                 "translation.command.language.no.parameters"
         ));
     }

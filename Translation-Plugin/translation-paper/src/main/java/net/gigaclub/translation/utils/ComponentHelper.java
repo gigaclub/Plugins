@@ -1,4 +1,4 @@
-package net.gigaclub.translation.util;
+package net.gigaclub.translation.utils;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;

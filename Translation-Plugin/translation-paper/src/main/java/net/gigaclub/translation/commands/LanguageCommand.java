@@ -2,7 +2,7 @@ package net.gigaclub.translation.commands;
 
 import net.gigaclub.translation.Main;
 import net.gigaclub.translation.Translation;
-import net.gigaclub.translation.util.ComponentHelper;
+import net.gigaclub.translation.utils.ComponentHelper;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
