@@ -5,6 +5,11 @@ import com.google.gson.JsonObject;
 import net.gigaclub.permissionsystem.Main;
 import net.gigaclub.permissionsystemapi.PermissionSystem;
 import net.gigaclub.translation.Translation;
+import net.gigaclub.translation.utils.ComponentHelper;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.tag.Tag;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -17,7 +22,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class GroupCommand implements CommandExecutor, TabCompleter {
@@ -55,10 +59,8 @@ public class GroupCommand implements CommandExecutor, TabCompleter {
                     for (int j = 0; j < permissions.length(); j++) {
                         perms.add(permissions.getString(j));
                     }
-                    JsonObject PerlmsList = new JsonObject();
-                    PerlmsList.add("perms", gson.toJsonTree(perms));
-                    values.add("list", PerlmsList);
-                    t.sendMessage("group.list", player, values);
+                    Component[] permComponents = perms.stream().map(s -> Component.text(s)).toArray(Component[]::new);
+                    t.sendMessage("group.list", player, TagResolver.resolver("languages", Tag.inserting(ComponentHelper.join(permComponents, Component.text(", ")))));
                 }
                 break;
             case "add":
@@ -82,13 +84,7 @@ public class GroupCommand implements CommandExecutor, TabCompleter {
                 assert playerToAdd != null;
                 permissionSystem.setGroups(playerToAdd.getUniqueId().toString(), List.of(groupId));
                 Main.setupGroups();
-                params = new JsonObject();
-                params.addProperty("playerName", playerName);
-                params.addProperty("groupName", groupName);
-                values = new JsonObject();
-                values.add("params", params);
-
-                t.sendMessage("group.add.success", player, values);
+                t.sendMessage("group.add.success", player, Placeholder.parsed("playerName", playerName), Placeholder.parsed("groupName", groupName));
                 break;
             case "remove":
                 if (args.length < 3) {
@@ -109,12 +105,7 @@ public class GroupCommand implements CommandExecutor, TabCompleter {
                 assert playerToRemove != null;
                 permissionSystem.removeGroups(playerToRemove.getUniqueId().toString(), List.of(groupId));
                 Main.setupGroups();
-                params = new JsonObject();
-                params.addProperty("playerName", playerNameToRemove);
-                params.addProperty("groupName", groupNameToRemove);
-                values = new JsonObject();
-                values.add("params", params);
-                t.sendMessage("group.remove.success", player, values);
+                t.sendMessage("group.remove.success", player, Placeholder.parsed("playerName", playerNameToRemove), Placeholder.parsed("groupName", groupNameToRemove));
                 break;
         }
         return true;
