@@ -1,7 +1,5 @@
 package net.gigaclub.translation.commands;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import net.gigaclub.translation.Main;
 import net.gigaclub.translation.Translation;
 import net.gigaclub.translation.util.ComponentHelper;
@@ -27,8 +25,6 @@ public class LanguageCommand implements CommandExecutor, TabCompleter {
         Player player = (Player) sender;
         String playerUUID = player.getUniqueId().toString();
         Translation t = Main.getTranslation();
-        Gson gson = new Gson();
-        JsonObject values;
 
         if (args.length > 0) {
             switch (args[0].toLowerCase()) {
@@ -63,8 +59,6 @@ public class LanguageCommand implements CommandExecutor, TabCompleter {
 
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        Player player = (Player) sender;
-
         if (args.length == 1) {
             List<String> arguments = new ArrayList<>();
             arguments.add("set");
