@@ -1,10 +1,10 @@
 package net.gigaclub.team.commands;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import net.gigaclub.team.Main;
 import net.gigaclub.teamapi.Team;
 import net.gigaclub.translation.Translation;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -127,17 +127,8 @@ public class TeamCommand implements CommandExecutor {
                         t.sendMessage("team.command.invite.success", player);
                         JSONObject getTeam = team.getTeam(teamId);
                         String teamname = getTeam.getString("name");
-                        JsonObject params = new JsonObject();
-                        params.addProperty("teamname", teamname);
-                        params.addProperty("receiver", receiver.getName());
-                        JsonObject values = new JsonObject();
-                        values.add("params", params);
-                        t.sendMessage("team.command.invite.sender", player, values);
-                        params = new JsonObject();
-                        params.addProperty("teamname", teamname);
-                        values = new JsonObject();
-                        values.add("params", params);
-                        t.sendMessage("team.command.invite.receiver", receiver, values);
+                        t.sendMessage("team.command.invite.sender", player, Placeholder.parsed("teamname", teamname), Placeholder.parsed("receiver", receiver.getName()));
+                        t.sendMessage("team.command.invite.receiver", receiver, Placeholder.parsed("teamname", teamname));
                     }
                     case 1 -> t.sendMessage("team.command.invite.request_already_sent", player);
                     case 2 -> t.sendMessage("team.command.invite.user_is_already_member_of_this_team", player);
@@ -170,11 +161,8 @@ public class TeamCommand implements CommandExecutor {
                 break;
             case "list":
                 JSONArray teamList = team.getTeamsByMember(playerUUID);
-                JsonObject teamsList = new JsonObject();
-                teamsList.add("teams", gson.toJsonTree(teamList));
-                JsonObject values = new JsonObject();
-                values.add("list", teamsList);
-                t.sendMessage("team.command.list", player, values);
+                // TODO add option to show the team list but first rework to google json
+                t.sendMessage("team.command.list", player);
                 break;
         }
         return true;
