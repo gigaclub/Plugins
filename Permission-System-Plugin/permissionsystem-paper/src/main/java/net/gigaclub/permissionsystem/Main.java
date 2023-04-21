@@ -94,15 +94,35 @@ public final class Main extends JavaPlugin {
             JSONObject group = groups.getJSONObject(i);
             String groupName = group.getString("name");
             JSONArray permissions = group.getJSONArray("permissions");
-
-            String suffix = group.getString("suffix");
-            String prefix = group.getString("prefix");
-            String color = group.getString("color");
-            String display = group.getString("display");
+            // TODO refactor this with google json
+            String suffix = "";
+            try {
+                suffix = group.getString("suffix");
+            } catch (Exception e) {
+            }
+            String prefix = "";
+            try {
+                prefix = group.getString("prefix");
+            } catch (Exception e) {
+            }
+            String color = "";
+            try {
+                color = group.getString("color");
+            } catch (Exception e) {
+            }
+            String display = "";
+            try {
+                display = group.getString("display");
+            } catch (Exception e) {
+            }
 
             permissionManagement.group(groupName);
+            String finalSuffix = suffix;
+            String finalPrefix = prefix;
+            String finalColor = color;
+            String finalDisplay = display;
             permissionManagement.modifyGroup(groupName, (permissionGroup, permissionGroupBuilder) -> {
-                permissionGroupBuilder.suffix(suffix).prefix(prefix).color(color).display(display);
+                permissionGroupBuilder.suffix(finalSuffix).prefix(finalPrefix).color(finalColor).display(finalDisplay);
                 for (int j = 0; j < permissions.length(); j++) {
                     permissionGroup.addPermission(permissions.getString(j));
                 }

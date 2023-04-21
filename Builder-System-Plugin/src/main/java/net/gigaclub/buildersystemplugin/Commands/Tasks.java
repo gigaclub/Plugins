@@ -40,37 +40,33 @@ public class Tasks implements CommandExecutor, TabCompleter {
         BuilderSystem builderSystem = Main.getBuilderSystem();
         FileConfiguration config = getConfig();
 
+        if (args.length > 0) {
+            player.sendMessage("1");
+            switch (args[0].toLowerCase()) {
 
-        if (player instanceof Player) {
+                case "create":
+                    player.sendMessage("2");
+                    if (args.length == 2) {
+                        player.sendMessage(t.t("builder_team.to_less_arguments", player));
+                        return false;
+                    }
+                    // if (player.hasPermission("builderteam.admin")) {
 
-            if (args.length >= 1) {
-                player.sendMessage("1");
-                switch (args[0].toLowerCase()) {
-
-                    case "create":
-                        player.sendMessage("2");
-                        if (args.length == 1) {
-                            player.sendMessage(t.t("builder_team.to_less_arguments", player));
-                            return false;
-                        }
-                       // if (player.hasPermission("builderteam.admin")) {
-                            if (args.length >= 2) {
-
-                            if (args.length == 2) {
-                                player.sendMessage("3.5");
-                                // nur name
-                                builderSystem.createTask(args[1], "", config.getInt("Teams.task.Create.x"), config.getInt("Teams.task.Create.x"));
-                                player.sendMessage(t.t("builder_team.task.create.task_name_succses", player));
-                            } else if (args.length >= 3) {
-                                // name + description
-                                player.sendMessage("4");
-                                builderSystem.createTask(args[1], getDescription(args, 4), Integer.parseInt(args[2]), Integer.parseInt(args[3]));
-                                player.sendMessage(t.t("builder_team.task.create.task_name_desc_succses", player));
-                            }
+                    if (args.length == 3) {
+                        player.sendMessage("3.5");
+                        // nur name
+                        builderSystem.createTask(args[1], "", config.getInt("Teams.task.Create.x"), config.getInt("Teams.task.Create.x"));
+                        player.sendMessage(t.t("builder_team.task.create.task_name_succses", player));
+                    } else if (args.length > 3) {
+                        // name + description
+                        player.sendMessage("4");
+                        builderSystem.createTask(args[1], getDescription(args, 4), Integer.parseInt(args[2]), Integer.parseInt(args[3]));
+                        player.sendMessage(t.t("builder_team.task.create.task_name_desc_succses", player));
+                    }
                             Main.getTaskCache().invalidateCache();
                             Main.getTaskCache().invalidateInventoryCache();
 
-                        }
+
                         break;
                     case "remove":
                         if (args.length == 1) {
@@ -92,20 +88,33 @@ public class Tasks implements CommandExecutor, TabCompleter {
 
                         }
                         break;
-                    case "list":
-                        JSONArray tasks = builderSystem.getAllTasks();
-                        for (int i = 0; i < tasks.length(); i++) {
-                            JSONObject task = tasks.getJSONObject(i);
+                case "list":
+                    player.sendMessage("builder");
+                    JSONArray tasks = builderSystem.getAllTasks();
+                    player.sendMessage(tasks.toString());
 
-                            player.sendMessage(ChatColor.GRAY + "ID: " + ChatColor.WHITE + task.getInt("id"));
-                            player.sendMessage(ChatColor.GRAY + "Name: " + ChatColor.WHITE + task.getString("name"));
-                            try {
-                                task.getBoolean("description");
-                            } catch (Exception e) {
-                           //     player.sendMessage(ChatColor.GRAY + (t.t("builder_team.task.list.Description", player)) + " " + ChatColor.WHITE + task.getString("description"));
-                            }
-                          //  player.sendMessage(ChatColor.GRAY + (t.t("builder_team.task.list.build_size", player)) + " " + ChatColor.WHITE + task.getInt("build_width") + " x " + task.getInt("build_length"));
-                            JSONArray worlds = task.getJSONArray("world_ids");
+
+                    for (int itask = 0; itask < tasks.length(); itask++) {
+                        try {
+                            JSONObject task = tasks.getJSONObject(itask);
+                        } catch (Exception e) {
+                            return false;
+                        }
+                        JSONObject task = tasks.getJSONObject(itask);
+                        Integer taskCont = tasks.length();
+                        if (itask == taskCont + 1) {
+                            return false;
+                        }
+
+                        player.sendMessage(ChatColor.GRAY + "ID: " + ChatColor.WHITE + task.getInt("id"));
+                        player.sendMessage(ChatColor.GRAY + "Name: " + ChatColor.WHITE + task.getString("name"));
+                        try {
+                            task.getBoolean("description");
+                        } catch (Exception e) {
+                            //     player.sendMessage(ChatColor.GRAY + (t.t("builder_team.task.list.Description", player)) + " " + ChatColor.WHITE + task.getString("description"));
+                        }
+                        //  player.sendMessage(ChatColor.GRAY + (t.t("builder_team.task.list.build_size", player)) + " " + ChatColor.WHITE + task.getInt("build_width") + " x " + task.getInt("build_length"));
+                        JSONArray worlds = task.getJSONArray("world_ids");
                             player.sendMessage((t.t("builder_team.task.list.projeckt_count", player)) + " " + worlds.length());
 
                             player.sendMessage(ChatColor.BOLD + ChatColor.DARK_GRAY.toString() + "----------------------------------");
@@ -116,7 +125,7 @@ public class Tasks implements CommandExecutor, TabCompleter {
                 }
 
             }
-        }
+
         return false;
     }
 
@@ -165,22 +174,22 @@ public class Tasks implements CommandExecutor, TabCompleter {
                 case "create":
                     if (args.length == 2) {
                         List<String> createname = new ArrayList<>();
-                        createname.add("<" + t.t("builder_team.task.create.tab_task_name", player) + ">");
+                        createname.add(t.t("builder_team.task.create.tab_task_name", player).toString());
                         return createname;
 
                     } else if (args.length == 3) {
                         List<String> createDescription = new ArrayList<>();
-                        createDescription.add("<" + t.t("builder_team.task.create.tab_task_x_size", player) + ">");
+                        createDescription.add(t.t("builder_team.task.create.tab_task_x_size", player).toString());
                         return createDescription;
 
                     } else if (args.length == 4) {
                         List<String> createDescription = new ArrayList<>();
-                        createDescription.add("<" + t.t("builder_team.task.create.tab_task_y_size", player) + ">");
+                        createDescription.add(t.t("builder_team.task.create.tab_task_y_size", player).toString());
                         return createDescription;
 
                     } else if (args.length == 5) {
                         List<String> createDescription = new ArrayList<>();
-                        createDescription.add("<" + t.t("builder_team.create.tab_description", player) + ">");
+                        createDescription.add(t.t("builder_team.create.tab_description", player).toString());
                         return createDescription;
 
                     }
@@ -189,7 +198,7 @@ public class Tasks implements CommandExecutor, TabCompleter {
                 case "remove":
                     if (args.length == 2) {
                         List<String> createname = new ArrayList<>();
-                        createname.add("<" + t.t("builder_team.tab_task_id", player) + ">");
+                        createname.add(t.t("builder_team.tab_task_id", player).toString());
                         return createname;
 
 

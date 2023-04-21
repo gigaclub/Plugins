@@ -54,7 +54,7 @@ public class Worlds implements CommandExecutor, TabCompleter {
                         JSONObject task = builderSystem.getTask(Integer.getInteger(args[2]));
                         String TaskName = task.getString("name");
 
-                        builderSystem.createWorldAsTeam(playerUUID, Integer.parseInt(args[1]), Integer.parseInt(args[2]), TaskName, "");
+                        builderSystem.createWorldAsTeam(playerUUID, Integer.parseInt(args[1]), Integer.parseInt(args[2]), TaskName, "default");
                         player.sendMessage(t.t("BuilderSystem.world.create_team_succses", player));
                         break;
 
@@ -195,8 +195,7 @@ public class Worlds implements CommandExecutor, TabCompleter {
                             JSONObject team = teams.getJSONObject(j);
                             String teamname = team.getString("name");
                             StringBuilder res = new StringBuilder();
-                            res.append("");
-                            res.append(teamname).append("" + ChatColor.WHITE + " , " + "");
+                            res.append(teamname).append(ChatColor.WHITE + " , ");
 
                             res.toString();
 
@@ -216,7 +215,6 @@ public class Worlds implements CommandExecutor, TabCompleter {
                             String player21 = player11.getName();
                             StringBuilder res1 = new StringBuilder();
 
-                            res1.append("");
                             res1.append(player21).append(ChatColor.WHITE + " , " + ChatColor.GRAY);
 
                             res1.toString();

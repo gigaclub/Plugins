@@ -84,7 +84,7 @@ public class GroupCommand implements CommandExecutor, TabCompleter {
                 assert playerToAdd != null;
                 permissionSystem.setGroups(playerToAdd.getUniqueId().toString(), List.of(groupId));
                 Main.setupGroups();
-                t.sendMessage("group.add.success", player, Placeholder.parsed("playerName", playerName), Placeholder.parsed("groupName", groupName));
+                t.sendMessage("group.add.success", player, Placeholder.parsed("playername", playerName), Placeholder.parsed("groupname", groupName));
                 break;
             case "remove":
                 if (args.length < 3) {
@@ -105,7 +105,7 @@ public class GroupCommand implements CommandExecutor, TabCompleter {
                 assert playerToRemove != null;
                 permissionSystem.removeGroups(playerToRemove.getUniqueId().toString(), List.of(groupId));
                 Main.setupGroups();
-                t.sendMessage("group.remove.success", player, Placeholder.parsed("playerName", playerNameToRemove), Placeholder.parsed("groupName", groupNameToRemove));
+                t.sendMessage("group.remove.success", player, Placeholder.parsed("playername", playerNameToRemove), Placeholder.parsed("groupname", groupNameToRemove));
                 break;
         }
         return true;

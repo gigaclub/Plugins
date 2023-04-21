@@ -1,184 +1,123 @@
 package net.gigaclub.buildersystemplugin.Andere.Guis;
 
-import me.arcaniax.hdb.api.HeadDatabaseAPI;
+import com.github.stefvanschie.inventoryframework.gui.GuiItem;
+import com.github.stefvanschie.inventoryframework.gui.type.ChestGui;
+import com.github.stefvanschie.inventoryframework.pane.PaginatedPane;
+import com.github.stefvanschie.inventoryframework.pane.Pane;
+import com.github.stefvanschie.inventoryframework.pane.StaticPane;
 import net.gigaclub.buildersystem.BuilderSystem;
-import net.gigaclub.buildersystemplugin.Andere.InterfaceAPI.GuiLayoutBuilder;
 import net.gigaclub.buildersystemplugin.Andere.InterfaceAPI.ItemBuilder;
 import net.gigaclub.buildersystemplugin.Main;
-import net.gigaclub.translation.Translation;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import static net.gigaclub.buildersystemplugin.Andere.Guis.Navigator.Navigate;
 
 public class WorldGui {
 
+    static ItemStack outlineintem = new ItemBuilder(Material.BLUE_STAINED_GLASS_PANE).setDisplayName(" ").build();
 
-    HeadDatabaseAPI api = new HeadDatabaseAPI();
-    Translation t = Main.getTranslation();
+    public static List<GuiItem> projectItemList(Player player) {
+        BuilderSystem builderSystem = Main.getBuilderSystem();
+        List<GuiItem> guiItems = new ArrayList<>();
+        JSONArray userWorlds = builderSystem.getUserWorlds(player.getUniqueId().toString());
 
-    BuilderSystem builderSystem = Main.getBuilderSystem();
+        for (int i = 0; i < userWorlds.length(); i++) {
+            JSONObject world = userWorlds.getJSONObject(i);
+            int taskID = world.getInt("task_id");
+            JSONObject task = builderSystem.getTask(taskID);
 
-    public ArrayList<String> worldloreList() {
-        ArrayList<String> loreList = new ArrayList<>();
-        loreList.add(ChatColor.GOLD + "-----------------");
-        loreList.add(ChatColor.GOLD + "Open Project Menu");
-        loreList.add(ChatColor.GOLD + "-----------------");
-        return loreList;
-    }
+            ArrayList<String> worldlore = new ArrayList<>();
+            worldlore.add(ChatColor.GRAY + "ID: " + ChatColor.WHITE + world.getInt("world_id"));
 
-    public void worldGui(Player player) {
-        ItemStack backtoMain = new ItemBuilder(this.api.getItemHead("9334")).setDisplayName((ChatColor.RED + "To Main Menu")).setLore((ChatColor.AQUA + "Open The BuilderGui")).setGui(true).addIdentifier("Gui_Opener").build();
+            worldlore.add(ChatColor.GRAY + "Project Name:" + " " + ChatColor.WHITE + world.getString("name"));
+            worldlore.add(ChatColor.GRAY + "World Type" + " " + ChatColor.WHITE + world.getString("world_type"));
+            worldlore.add(ChatColor.WHITE + " ");
+            worldlore.add(ChatColor.WHITE + "Teams");
+            JSONArray teams = world.getJSONArray("team_ids");
 
-        ItemStack WorldListAll = new ItemBuilder(Material.PAPER).setGui(true).setDisplayName((ChatColor.RED + "World List all")).setLore((ChatColor.AQUA + "Open The Complet World List")).addIdentifier("WorldlistAll").build();
-        ItemStack WorldListUser = new ItemBuilder(Material.PAPER).setGui(true).setDisplayName((ChatColor.RED + "World List des Userers")).setLore((ChatColor.AQUA + "Open The World List of the user")).addIdentifier("WorldlistUser").build();
+            for (int j = 0; j < teams.length(); j++) {
+                JSONObject team = teams.getJSONObject(j);
+                String teamname = team.getString("name");
+                StringBuilder res = new StringBuilder();
+                res.append(String.valueOf(ChatColor.GRAY));
+                res.append(teamname).append(ChatColor.WHITE + " , " + ChatColor.GRAY);
 
-        int size = 9 * 3;
-        Inventory inventory = Bukkit.createInventory(null, size, (ChatColor.GOLD + "Projeckt Gui"));
-        GuiLayoutBuilder guiLayout = new GuiLayoutBuilder();
-        inventory = guiLayout.guiFullBuilder(inventory,size);
-
-        inventory.setItem(10, WorldListAll);
-        inventory.setItem(16, WorldListUser);
-
-
-        inventory.setItem(size - 1, backtoMain);
-        player.openInventory(inventory);
-    }
-
-    public void worldListAll(Player player, int index) {
-        ItemStack backtoTask = new ItemBuilder(api.getItemHead("9334")).setDisplayName((ChatColor.RED + "To World Menu")).setLore((ChatColor.AQUA + "Back to World Gui")).setGui(true).addIdentifier("World_Opener").build();
-
-        Inventory inventory = Main.getWorldCache().getInventory(index);
-
-        int size = 9 * 6;
-        inventory.setItem(size - 1, backtoTask);
-        player.openInventory(inventory);
-    }
-
-    public  void worldListUser(Player player,int index) {
-        JSONArray worlds = builderSystem.getAllWorlds();
-        HeadDatabaseAPI api = new HeadDatabaseAPI();
-
-        ItemStack backtoTask = new ItemBuilder(api.getItemHead("9334")).setDisplayName((ChatColor.RED + "To Task Menu")).setLore((ChatColor.AQUA + "Back to Task Gui")).setGui(true).addIdentifier("Task_Opener").build();
+                res.toString();
+                worldlore.add(ChatColor.WHITE + res.toString());
 
 
-
-        Integer taskCont = worlds.length();
-        int fullCount = 0;
-        int index1 = 1;
-        int taskinv = 0;
-        int size = 9 * 6;
-
-        while (fullCount < taskCont) {
-
-            Inventory inventory = Bukkit.createInventory(null, size, (ChatColor.GOLD + "World User List"));
-
-            GuiLayoutBuilder guiLayout = new GuiLayoutBuilder();
-
-            if (index1 > 1){
-                inventory.setItem(47, new ItemBuilder(Material.ARROW).setDisplayName("seite "+ (index1 - 1)).setGui(true).addIdentifier("task_l").addIndex(index1-1).setAmount(index1 - 1).build());
             }
+            worldlore.add(ChatColor.WHITE + " ");
 
-            int iworld = 0;
-            if (index1 > 1) {
-                iworld = taskinv * 28;
-            }
-            int cont = 0;
 
-            while (true) {
-                if (iworld > taskCont) {
-                    if (taskinv ==1){
-                        player.openInventory(inventory);
-                    }
-                    taskinv = 0;
-                    break;
-                } else if (cont == 44) {
-                    inventory.setItem(51, new ItemBuilder(Material.ARROW).setDisplayName("seite "+ (index1 + 1)).setGui(true).addIdentifier("task_l").addIndex(index1+1).setAmount(index1 +1).build());
-                    if (taskinv ==1){
-                        player.openInventory(inventory);
-                    }
-                    taskinv++;
-                    break;
-                } else if (cont >= 10 && cont <= 16 || cont >= 19 && cont <= 25 || cont >= 28 && cont <= 34 || cont >= 37 && cont <= 43) {
-                    worldInfoUser(iworld, inventory, cont, worlds);
-                    iworld++;
-                    fullCount++;
-                    if (cont == 43 && taskinv ==1){
-                        player.openInventory(inventory);
-                    }
+            ItemStack project = new ItemBuilder(Material.PAPER).setDisplayName(ChatColor.GRAY + "Name: " + ChatColor.GREEN + world.getString("name")).setLore(worldlore).build();
 
-                }
-                cont++;
-            }
-            index1++;
+            GuiItem guiItem = new GuiItem(project);
+            guiItems.add(guiItem);
 
         }
-
+        return guiItems;
     }
 
-    public void worldInfoUser(int iworld, Inventory inventory, int i, JSONArray worlds) {
+    public static void projecktList(Player player) {
+        ChestGui taskList = new ChestGui(6, "Project List Page 1");
+        StaticPane outline = new StaticPane(0, 0, 9, 1);
+        StaticPane outline2 = new StaticPane(0, 1, 1, 4);
+        StaticPane outline3 = new StaticPane(8, 1, 1, 4);
 
-        try {
-            JSONObject world = worlds.getJSONObject(iworld);
-        } catch (Exception e) {
-            return;
-        }
-        JSONObject world = worlds.getJSONObject(iworld);
-        Integer worldCont = worlds.length();
-        if (iworld == worldCont + 1) {
-            return;
-        }
-        ArrayList<String> worldlore = new ArrayList<>();
-        worldlore.add(ChatColor.GRAY + "ID: " + ChatColor.WHITE + world.getInt("world_id"));
+        outline.setOnClick(event -> event.setCancelled(true));
+        outline2.setOnClick(event -> event.setCancelled(true));
+        outline3.setOnClick(event -> event.setCancelled(true));
+        outline.fillWith(outlineintem);
+        outline2.fillWith(outlineintem);
+        outline3.fillWith(outlineintem);
+        taskList.addPane(outline);
+        taskList.addPane(outline2);
+        taskList.addPane(outline3);
 
-        worldlore.add(ChatColor.GRAY + "builder_team.world.list.name" + " " + ChatColor.WHITE + world.getString("name"));
-        worldlore.add(ChatColor.GRAY + "builder_team.world.list.world_type" + " " + ChatColor.WHITE + world.getString("world_type"));
-        worldlore.add(ChatColor.WHITE + " " );
-        worldlore.add(ChatColor.WHITE + "builder_team.world.list.world_manager_teams" );
-        JSONArray teams = world.getJSONArray("team_ids");
+        taskList.setOnBottomClick(event -> event.setCancelled(true));
 
-        for (int j = 0; j < teams.length(); j++) {
-            JSONObject team = teams.getJSONObject(j);
-            String teamname = team.getString("name");
-            StringBuilder res = new StringBuilder();
-            res.append(ChatColor.GRAY + "");
-            res.append(teamname).append("" + ChatColor.WHITE + " , " + ChatColor.GRAY + "");
+        PaginatedPane taskPages = new PaginatedPane(1, 1, 7, 4);
+        taskPages.populateWithGuiItems(projectItemList(player));
 
-            res.toString();
-            worldlore.add(ChatColor.WHITE + res.toString());
+        StaticPane navigation = new StaticPane(0, 5, 9, 1);
+        navigation.setOnClick(event -> event.setCancelled(true));
+        navigation.setPriority(Pane.Priority.HIGHEST);
 
+        navigation.addItem(new GuiItem(new ItemBuilder(Material.PLAYER_HEAD).setHeadDatabase(8784).setDisplayName(ChatColor.GRAY + "Back").build(), event -> {
+            if (taskPages.getPage() > 0) {
+                taskPages.setPage(taskPages.getPage() - 1);
+                taskList.setTitle("Task List Page " + (taskPages.getPage() + 1));
+                taskList.update();
+            } else event.setCancelled(true);
+        }), 1, 0);
 
-        }
-        worldlore.add(ChatColor.WHITE + " " );
-        worldlore.add(ChatColor.WHITE + "builder_team.world.list.world_manager_user" );
-
-        JSONArray users = world.getJSONArray("user_ids");
-        for (int j = 0; j < users.length(); j++) {
-
-            JSONObject user = users.getJSONObject(j);
-
-            Player player11 = Bukkit.getPlayer(user.getString("name"));
-            String player21 = player11.toString();
-            StringBuilder res1 = new StringBuilder();
-            res1.append(ChatColor.GRAY + "");
-            res1.append(player21).append(ChatColor.WHITE + " , " + ChatColor.GRAY);
+        navigation.addItem(new GuiItem(new ItemBuilder(Material.PLAYER_HEAD).setHeadDatabase(8782).setDisplayName(ChatColor.GRAY + "Next").build(), event -> {
+            if (taskPages.getPage() < taskPages.getPages() - 1) {
+                taskPages.setPage(taskPages.getPage() + 1);
+                taskList.setTitle("Task List Page " + (taskPages.getPage() + 1));
+                taskList.update();
+            } else event.setCancelled(true);
+        }), 7, 0);
 
 
-            res1.toString();
+        navigation.addItem(new GuiItem(new ItemBuilder(Material.PLAYER_HEAD)
+                .setHeadDatabase(10298)
+                .setDisplayName(ChatColor.DARK_GRAY + "Back to Main Menu")
+                .build(), event -> Navigate(player)), 4, 0);
 
-            worldlore.add(ChatColor.WHITE + res1.toString());
-
-        }
-        inventory.setItem(i, new ItemBuilder(Material.GREEN_CONCRETE).setDisplayName(ChatColor.GRAY + "Name: " + ChatColor.GREEN + world.getString("name")).addID(world.getInt("id")).addIdentifier("world").setGui(true).setLore(worldlore).build());
-
+        navigation.fillWith(outlineintem);
+        taskList.addPane(navigation);
+        taskList.addPane(taskPages);
+        taskList.show(player);
     }
-
 
 }

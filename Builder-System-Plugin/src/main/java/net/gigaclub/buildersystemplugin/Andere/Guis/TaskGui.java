@@ -1,177 +1,212 @@
 package net.gigaclub.buildersystemplugin.Andere.Guis;
 
+
+import com.github.stefvanschie.inventoryframework.gui.GuiItem;
+import com.github.stefvanschie.inventoryframework.gui.type.ChestGui;
+import com.github.stefvanschie.inventoryframework.gui.type.DispenserGui;
+import com.github.stefvanschie.inventoryframework.pane.PaginatedPane;
+import com.github.stefvanschie.inventoryframework.pane.Pane;
+import com.github.stefvanschie.inventoryframework.pane.StaticPane;
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import net.gigaclub.buildersystem.BuilderSystem;
-import net.gigaclub.buildersystemplugin.Andere.InterfaceAPI.GuiLayoutBuilder;
 import net.gigaclub.buildersystemplugin.Andere.InterfaceAPI.ItemBuilder;
 import net.gigaclub.buildersystemplugin.Main;
-import net.gigaclub.translation.Translation;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Objects;
+import java.util.List;
+import java.util.Random;
 
-public class TaskGui implements Listener {
-    GuiLayoutBuilder guiLayout = new GuiLayoutBuilder();
+import static net.gigaclub.buildersystemplugin.Andere.Guis.Navigator.Navigate;
 
-    public int invWatName = 0;
-    public Integer taskinv = 0;
-    public int taskID;
-    HeadDatabaseAPI api = new HeadDatabaseAPI();
-    Translation t = Main.getTranslation();
-    BuilderSystem builderSystem = Main.getBuilderSystem();
-    Boolean worldTypSelectoractiv = false;
-    String worldTypeselectet;
-    final ItemStack ON = new ItemBuilder(Material.GREEN_CONCRETE_POWDER).setGui(true).setDisplayName(ChatColor.GREEN + "ON").build();
-    final ItemStack OFF = new ItemBuilder(Material.RED_CONCRETE_POWDER).setGui(true).setDisplayName(ChatColor.RED + "OFF").build();
-    ItemStack on;
-    ItemStack off;
-
-    public TaskGui() {
-        this.on = new ItemBuilder(api.getItemHead("9386")).setDisplayName((ChatColor.GREEN + "Activate")).setLore("").setGui(true).addIdentifier("on").build();
-        this.off = new ItemBuilder(api.getItemHead("9386")).setDisplayName((ChatColor.RED + "Deactivate")).setLore("").setGui(true).addIdentifier("off").build();
-    }
-    public ArrayList<String> taskloreList() {
-        ArrayList<String> loreList = new ArrayList<>();
-        loreList.add(ChatColor.GOLD + "--------------");
-        loreList.add(ChatColor.GOLD + "Open Task List");
-        loreList.add(ChatColor.GOLD + "get your  Task");
-        loreList.add(ChatColor.GOLD + "--------------");
-        return loreList;
-    }
-
-    public void taskGui(Player player) {
-        HeadDatabaseAPI api = new HeadDatabaseAPI();
-        ItemStack backtoMain = new ItemBuilder(api.getItemHead("9334")).setDisplayName((ChatColor.RED + "To Main Menu")).setLore((ChatColor.AQUA + "Open The BuilderGui")).setGui(true).addIdentifier("Gui_Opener").build();
-        int size = 9 * 5;
-        Inventory inventory = Bukkit.createInventory(null, size, (ChatColor.GOLD + "Task Gui"));
-
-        inventory = guiLayout.guiFullBuilder(inventory,size);
-
-        inventory.setItem(10, new ItemBuilder(Material.PAPER).setGui(true).addIdentifier("task_list").setDisplayName("Task List").build());
-        inventory.setItem(size - 1, backtoMain);
-        player.openInventory(inventory);
-    }
-
-    public void taskList(Player player, int index) {
-        ItemStack backtoTask = new ItemBuilder(api.getItemHead("9334")).setDisplayName((ChatColor.RED + "To Task Menu")).setLore((ChatColor.AQUA + "Back to Task Gui")).setGui(true).addIdentifier("Task_Opener").build();
-        Inventory inventory = Main.getTaskCache().getInventory(index);
-        int size = 9 * 6;
-        inventory.setItem(size - 1, backtoTask);
-        player.openInventory(inventory);
-    }
-
-    public ArrayList<String> createAsTeamlore() {
-        ArrayList<String> loreList = new ArrayList<>();
-        loreList.add(ChatColor.GOLD + "Create Projeckt as Team");
-        return loreList;
-    }
-
-    public ArrayList<String> createAsUserlore() {
-        ArrayList<String> loreList = new ArrayList<>();
-        loreList.add(ChatColor.GOLD + "Create Projeckt as User");
-        return loreList;
-    }
-
-    public void taskSelect(Player player, int taskid) {
-        int size = 9 * 1;
-        Inventory inventory = Bukkit.createInventory(null, size, ("Create a Projeckt"));
-        inventory = guiLayout.guiFullBuilder(inventory,size);
-
-        inventory.setItem(2, new ItemBuilder(api.getItemHead("9386")).setDisplayName((ChatColor.RED + "Create as Team")).setLore(createAsTeamlore()).setGui(true).addIdentifier("createProjecktasTeam").addID(taskid).build());
-        inventory.setItem(6, new ItemBuilder(Material.PLAYER_HEAD).setHead(player.getDisplayName()).setDisplayName("Create as User").setLore(createAsUserlore()).setGui(true).addIdentifier("createProjecktasUser").addID(taskid).build());
-
-    }
-    public void worldtypSelect(Player player) {
-        worldTypSelectoractiv = true;
-        int size = 9 * 4;
-        String worldTyp = "flat";
-        Inventory inventory = Bukkit.createInventory(null, size, ("Witch world type"));
-        inventory = guiLayout.guiFullBuilder(inventory,size);
-        JSONArray worldTypes = builderSystem.getAllWorldTypes();
-
-        for (int i = 0; i < worldTypes.length(); i++) {
-            JSONObject worldType = worldTypes.getJSONObject(i);
-            worldType.getString("name");
-            int slot = i+10;
-            if(slot < 15||slot>18||slot<24)
-                inventory.setItem(slot, new ItemBuilder(Material.PAPER).setDisplayName((ChatColor.RED + worldType.getString("name"))).setLore("Select " + worldType.getString("name")).setGui(true).addIdentifier(worldType.getString("name")).build());
+public class TaskGui {
 
 
-            }
-    }
+    static ItemStack outlineintem = new ItemBuilder(Material.LIGHT_BLUE_STAINED_GLASS_PANE).setDisplayName(" ").build();
 
-
-
-
-    @EventHandler
-    public void clickEvent(InventoryClickEvent event) {
+    public static List<GuiItem> taskItemList(Player player) {
         BuilderSystem builderSystem = Main.getBuilderSystem();
-        if (worldTypSelectoractiv = true) {
+        List<GuiItem> guiItems = new ArrayList<>();
 
-            Player player = (Player) event.getWhoClicked();
-            ItemStack item = event.getCurrentItem();
 
-            if (item == null) {
-                return;
+        JSONArray tasks = builderSystem.getAllTasks();
+        for (int i = 0; i < tasks.length(); i++) {
+            JSONObject task = tasks.getJSONObject(i);
+            JSONArray worlds = task.getJSONArray("world_ids");
+
+            ArrayList<String> loreList = new ArrayList<>();
+            loreList.add(ChatColor.GOLD + "--------------");
+            loreList.add(ChatColor.GRAY + "Size: " + ChatColor.WHITE + task.getInt("build_width") + " x " + task.getInt("build_length"));
+
+            if (task.getString("description").isEmpty()) {
+
             } else {
-                ItemMeta meta = item.getItemMeta();
-                if (meta == null) {
-                    return;
-                }
+                loreList.add(ChatColor.GRAY + "description: " + task.getString("description"));
             }
-            ItemMeta meta = item.getItemMeta();
-            PersistentDataContainer data = meta.getPersistentDataContainer();
-            if (data.has(new NamespacedKey(Main.getPlugin(), "identifie"), PersistentDataType.STRING)) {
-                String input = data.get(new NamespacedKey(Main.getPlugin(), "identifie"), PersistentDataType.STRING);
 
-                JSONArray worldTypes = builderSystem.getAllWorldTypes();
-                for (int i = 0; i < worldTypes.length(); i++) {
-                    JSONObject worldType = worldTypes.getJSONObject(i);
-                    String worldTyp = worldType.getString("name");
-                    if (input.equalsIgnoreCase(worldTyp.toLowerCase())) {
-                        worldTypeselectet = worldTyp;
-                    }
-                }
-              int clickSlot = event.getSlot();
-               Inventory inventory = event.getClickedInventory();
-
-                switch (Objects.requireNonNull(input)) {
-
-
-                    case "on" -> inventory.setItem(clickSlot,off);
-                    case "off"-> inventory.setItem(clickSlot,on);
-                }
+            if (worlds.length() > 0) {
+                loreList.add(ChatColor.GRAY + "existing Projects " + ChatColor.WHITE + worlds.length());
             }
+            loreList.add(ChatColor.GOLD + "--------------");
+            if (worlds.length() == 0) {
+                ItemStack TaskItem = new ItemBuilder(Material.PAPER).setDisplayName(ChatColor.GRAY + "ID: " + ChatColor.WHITE + task.getInt("id") + ChatColor.GRAY + " Name: " + ChatColor.WHITE + task.getString("name")).setLore(loreList).addID(task.getInt("id")).build();
+                GuiItem guiItem = new GuiItem(TaskItem, event -> {
+                    taskSelect(player, task.getInt("id"));
+                    event.setCancelled(true);
+                });
+                guiItems.add(guiItem);
+            } else {
+                ItemStack TaskItem = new ItemBuilder(Material.MAP).setDisplayName(ChatColor.GRAY + "ID: " + ChatColor.WHITE + task.getInt("id") + ChatColor.GRAY + " Name: " + ChatColor.WHITE + task.getString("name")).setLore(loreList).addID(task.getInt("id")).build();
+                GuiItem guiItem = new GuiItem(TaskItem, event -> {
+                    taskSelect(player, task.getInt("id"));
+                    event.setCancelled(true);
+                });
+                guiItems.add(guiItem);
+            }
+
 
         }
+
+        return guiItems;
+    }
+
+    public static void TaskList(Player player) {
+        ChestGui taskList = new ChestGui(6, "Task List Page 1");
+        StaticPane outline = new StaticPane(0, 0, 9, 1);
+        StaticPane outline2 = new StaticPane(0, 1, 1, 4);
+        StaticPane outline3 = new StaticPane(8, 1, 1, 4);
+
+        outline.setOnClick(event -> event.setCancelled(true));
+        outline2.setOnClick(event -> event.setCancelled(true));
+        outline3.setOnClick(event -> event.setCancelled(true));
+        outline.fillWith(outlineintem);
+        outline2.fillWith(outlineintem);
+        outline3.fillWith(outlineintem);
+        taskList.addPane(outline);
+        taskList.addPane(outline2);
+        taskList.addPane(outline3);
+
+        taskList.setOnBottomClick(event -> event.setCancelled(true));
+
+        PaginatedPane taskPages = new PaginatedPane(1, 1, 7, 4);
+        taskPages.populateWithGuiItems(taskItemList(player));
+
+        StaticPane navigation = new StaticPane(0, 5, 9, 1);
+        navigation.setOnClick(event -> event.setCancelled(true));
+        navigation.setPriority(Pane.Priority.HIGHEST);
+
+        navigation.addItem(new GuiItem(new ItemBuilder(Material.PLAYER_HEAD).setHeadDatabase(8784).setDisplayName(ChatColor.GRAY + "Back").build(), event -> {
+            if (taskPages.getPage() > 0) {
+                taskPages.setPage(taskPages.getPage() - 1);
+                taskList.setTitle("Task List Page " + (taskPages.getPage() + 1));
+                taskList.update();
+            } else event.setCancelled(true);
+        }), 1, 0);
+
+        navigation.addItem(new GuiItem(new ItemBuilder(Material.PLAYER_HEAD).setHeadDatabase(8782).setDisplayName(ChatColor.GRAY + "Next").build(), event -> {
+            if (taskPages.getPage() < taskPages.getPages() - 1) {
+                taskPages.setPage(taskPages.getPage() + 1);
+                taskList.setTitle("Task List Page " + (taskPages.getPage() + 1));
+                taskList.update();
+            } else event.setCancelled(true);
+        }), 7, 0);
+
+
+        navigation.addItem(new GuiItem(new ItemBuilder(Material.PLAYER_HEAD)
+                .setHeadDatabase(10298)
+                .setDisplayName(ChatColor.DARK_GRAY + "Back to Main Menu")
+                .build(), event -> Navigate(player)), 4, 0);
+
+        navigation.fillWith(outlineintem);
+        taskList.addPane(navigation);
+        taskList.addPane(taskPages);
+        taskList.show(player);
     }
 
 
+    public static void taskSelect(Player player, int ID) {
+        BuilderSystem builderSystem = Main.getBuilderSystem();
 
 
+        DispenserGui taskSelect = new DispenserGui("select");
+        taskSelect.setOnBottomClick(event -> event.setCancelled(true));
+        StaticPane panel = new StaticPane(0, 0, 3, 3);
+        panel.fillWith(outlineintem);
+        panel.setOnClick(event -> event.setCancelled(true));
+        panel.addItem(new GuiItem(new ItemBuilder(Material.PLAYER_HEAD).setHeadDatabase(9386).setDisplayName((ChatColor.RED + "Create Projeckt as Team")).build(), event -> teamSelect(player, ID)), 0, 1);
+        panel.addItem(new GuiItem(new ItemBuilder(Material.PLAYER_HEAD).setHeadDatabase(8958).setDisplayName((ChatColor.BLUE + "Create Projeckt as Player")).build(), event -> worldType(player, ID, 0)), 2, 1);
+        panel.addItem(new GuiItem(new ItemBuilder(Material.PLAYER_HEAD)
+                .setHeadDatabase(10299)
+                .setDisplayName(ChatColor.DARK_GRAY + "Back to task List")
+                .build(), event -> TaskList(player)), 1, 2);
+        taskSelect.getContentsComponent().addPane(panel);
 
-    public void createProjecktasTeam(Player player, int taskid) {
+        taskSelect.show(player);
+    }
+
+    public static void teamSelect(Player player, int ID) {
+        BuilderSystem builderSystem = Main.getBuilderSystem();
+        HeadDatabaseAPI hdb = new HeadDatabaseAPI();
+        Random rand = new Random();
+        List<GuiItem> guiItems = new ArrayList<>();
+        ChestGui teamSelect = new ChestGui(2, "Team Select");
+        PaginatedPane pane = new PaginatedPane(0, 0, 9, 2);
+
+        JSONArray teamsUser = builderSystem.getTeamsByMember(player.getUniqueId().toString());
+        for (int i = 0; i < teamsUser.length(); i++) {
+            JSONObject team = teamsUser.getJSONObject(i);
+            guiItems.add(new GuiItem(new ItemBuilder(Material.PLAYER_HEAD).setItemMeta(hdb.getRandomHead().getItemMeta()).setDisplayName(team.getString("name")).build(), event -> worldType(player, ID, team.getInt("id"))));
+
+        }
+        pane.populateWithGuiItems(guiItems);
+        teamSelect.addPane(pane);
+        teamSelect.show(player);
 
     }
 
-    public void createProjecktasUser(Player player, int taskid) {
+
+    public static void worldType(Player player, int ID, int teamID) {
+        final String[] worldTyp = {"normal_flat"};
+        final ChestGui[] worldTypes = {new ChestGui(1, "World Typs Select")};
+        StaticPane selector = new StaticPane(9, 1);
+        selector.addItem(new GuiItem(new ItemBuilder(Material.GRASS_BLOCK).setDisplayName("Normal").build(), event -> createWorld(teamID, ID, event, "normal")), 0, 0);
+        selector.addItem(new GuiItem(new ItemBuilder(Material.GRASS_BLOCK).setDisplayName("Normal Flat").build(), event -> createWorld(teamID, ID, event, "normal_flat")), 1, 0);
+        selector.addItem(new GuiItem(new ItemBuilder(Material.GRASS_BLOCK).setDisplayName("Normal Void").build(), event -> createWorld(teamID, ID, event, "normal_void")), 2, 0);
+
+        selector.addItem(new GuiItem(new ItemBuilder(Material.NETHERRACK).setDisplayName("Nether").build(), event -> createWorld(teamID, ID, event, "nether")), 3, 0);
+        selector.addItem(new GuiItem(new ItemBuilder(Material.NETHERRACK).setDisplayName("Nether Flat").build(), event -> createWorld(teamID, ID, event, "nether_flat")), 4, 0);
+        selector.addItem(new GuiItem(new ItemBuilder(Material.NETHERRACK).setDisplayName("Nether Void").build(), event -> createWorld(teamID, ID, event, "nether_void")), 5, 0);
+
+        selector.addItem(new GuiItem(new ItemBuilder(Material.END_STONE).setDisplayName("End").build(), event -> createWorld(teamID, ID, event, "end")), 6, 0);
+        selector.addItem(new GuiItem(new ItemBuilder(Material.END_STONE).setDisplayName("End Flat").build(), event -> createWorld(teamID, ID, event, "end_flat")), 7, 0);
+        selector.addItem(new GuiItem(new ItemBuilder(Material.END_STONE).setDisplayName("End Void").build(), event -> createWorld(teamID, ID, event, "end_void")), 8, 0);
+
+        worldTypes[0].addPane(selector);
+        worldTypes[0].show(player);
 
     }
 
+    public static void createWorld(int teamID, int ID, InventoryClickEvent event, String worldType) {
+        BuilderSystem builderSystem = Main.getBuilderSystem();
+        JSONObject task = builderSystem.getTask(ID);
+        JSONObject team = builderSystem.getTeam(teamID);
 
+
+        if (teamID != 0) {
+            int res = builderSystem.createWorldAsTeam(event.getWhoClicked().getUniqueId().toString(), teamID, ID, task.getString("name") + "_" + team.getString("name"), worldType);
+            event.getWhoClicked().sendMessage(String.valueOf(res));
+        } else
+            builderSystem.createWorldAsUser(event.getWhoClicked().getUniqueId().toString(), ID, task.getString("name") + "_" + event.getWhoClicked().getName(), worldType);
+
+        event.getWhoClicked().closeInventory();
+    }
 }
+
+
+

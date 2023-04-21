@@ -1,5 +1,5 @@
 name: Builder_System_Plugin
-version: @version@
+version: 1.19.4.1.0.0
 main: net.gigaclub.buildersystemplugin.Main
 
 api-version: 1.19

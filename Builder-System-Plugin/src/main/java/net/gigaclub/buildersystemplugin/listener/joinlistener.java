@@ -182,15 +182,7 @@ public class joinlistener implements Listener {
         player.getInventory().clear();
         player.getInventory().setItem(0, GuiOpener);
 
-        }
-
-
-
-
-
-
-
-
+    }
 
 
 }
