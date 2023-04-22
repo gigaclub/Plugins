@@ -5,9 +5,8 @@ import java.util.Map;
 import java.util.UUID;
 
 public class CooldownManager {
-    private final Map<UUID, Integer> cooldowns = new HashMap<>();
-
     public static final int DEFAULT_COOLDOWN = 15;
+    private final Map<UUID, Integer> cooldowns = new HashMap<>();
 
     public void setCooldown(UUID player, int time) {
         if (time < 1) {

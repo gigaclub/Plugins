@@ -34,12 +34,12 @@ import java.util.Objects;
 import static net.gigaclub.buildersystemplugin.Config.Config.getConfig;
 
 public class joinlistener implements Listener {
+    private final PlayerManager playerManager = InjectionLayer.boot().instance(ServiceRegistry.class)
+            .firstProvider(PlayerManager.class);
+    ItemStack GuiOpener = new ItemBuilder(Material.NETHER_STAR).setDisplayName((ChatColor.BLUE + "BuilderGui")).setLore((ChatColor.AQUA + "Open The BuilderGui")).setGui(true).addIdentifier("Gui_Opener").build();
     private int serviceId;
     private Player player;
     private @NotNull BukkitTask taskID;
-
-    private final PlayerManager playerManager = InjectionLayer.boot().instance(ServiceRegistry.class)
-            .firstProvider(PlayerManager.class);
 
     @EventListener
     public void handleServiceConnected(CloudServiceEvent event) {
@@ -156,7 +156,7 @@ public class joinlistener implements Listener {
         player.sendMessage(t.t("bsc.Command.CreateServer", player));
         player.sendMessage(t.t("bsc.Command.Teleport", player));
         ServiceInfoSnapshot serviceInfoSnapshot = ServiceConfiguration.builder()
-                .taskName(team_name + "_" + task_name + "_" + task_id + "_" + world_id)
+                .taskName(world.getString("name"))
                 .node("Node-1")
                 .autoDeleteOnStop(true)
                 .staticService(false)
@@ -174,13 +174,18 @@ public class joinlistener implements Listener {
         }
     }
 
-    ItemStack GuiOpener = new ItemBuilder(Material.NETHER_STAR).setDisplayName((ChatColor.BLUE + "BuilderGui")).setLore((ChatColor.AQUA + "Open The BuilderGui")).setGui(true).addIdentifier("Gui_Opener").build();
-
     @EventHandler
     public void joinListener(PlayerJoinEvent event) {
+        FileConfiguration config = getConfig();
+
         Player player = event.getPlayer();
-        player.getInventory().clear();
-        player.getInventory().setItem(0, GuiOpener);
+        if (config.getBoolean("Gui.Remove_items_on_Join")) {
+            player.getInventory().clear();
+            player.getInventory().clear();
+        }
+        if (player.hasPermission("gigaclub_builder_system.Gui")) {
+            player.getInventory().setItem(0, GuiOpener);
+        }
 
     }
 

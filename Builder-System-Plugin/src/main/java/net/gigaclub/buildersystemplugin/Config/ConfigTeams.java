@@ -13,6 +13,7 @@ public class ConfigTeams {
         config.addDefault("Teams.task.Create.x", 2500);
         config.addDefault("Teams.task.Create.y", 2500);
         config.addDefault("server.server_autostart", true);
+        config.addDefault("Gui.Remove_items_on_Join", true);
 
 
         Config.save();
