@@ -9,8 +9,6 @@ import net.gigaclub.buildersystemplugin.Commands.Tasks;
 import net.gigaclub.buildersystemplugin.Commands.Worlds;
 import net.gigaclub.buildersystemplugin.Config.Config;
 import net.gigaclub.buildersystemplugin.Config.ConfigTeams;
-import net.gigaclub.buildersystemplugin.cache.TaskCache;
-import net.gigaclub.buildersystemplugin.cache.WorldCache;
 import net.gigaclub.buildersystemplugin.listener.joinlistener;
 import net.gigaclub.translation.Translation;
 import org.bukkit.Bukkit;
@@ -27,20 +25,10 @@ import java.util.Arrays;
 
 public final class Main extends JavaPlugin implements Listener {
 
+    final public static String PREFIX = "[GC-BSP]: ";
     private static Main plugin;
     private static Translation translation;
-    final public static String PREFIX = "[GC-BSP]: ";
     private static BuilderSystem builderSystem;
-    private static TaskCache taskCache;
-    private static WorldCache worldCache;
-
-
-
-
-    @Override
-    public void onDisable() {
-        // Plugin shutdown logic
-    }
 
     public static Translation getTranslation() {
         return translation;
@@ -48,23 +36,6 @@ public final class Main extends JavaPlugin implements Listener {
 
     public static void setTranslation(Translation translation) {
         Main.translation = translation;
-    }
-
-    public static void setTaskCache(TaskCache taskCache) {
-        Main.taskCache = taskCache;
-    }
-
-    public static void setWorldCache(WorldCache worldCache) {
-        Main.worldCache = worldCache;
-    }
-
-    private void setConfig() {
-        Config.createConfig();
-
-        ConfigTeams.setConfigTeams();
-        Config.save();
-
-        getLogger().info(PREFIX + "Config files set.");
     }
 
     public static Main getPlugin() {
@@ -79,12 +50,8 @@ public final class Main extends JavaPlugin implements Listener {
         return Main.builderSystem;
     }
 
-    public static TaskCache getTaskCache() {
-        return Main.taskCache;
-    }
-
-    public static WorldCache getWorldCache() {
-        return Main.worldCache;
+    public static void setBuilderSystem(BuilderSystem builderSystem) {
+        Main.builderSystem = builderSystem;
     }
 
     public static void registerTranslations() {
@@ -163,8 +130,18 @@ public final class Main extends JavaPlugin implements Listener {
         ));
     }
 
-    public static void setBuilderSystem(BuilderSystem builderSystem) {
-        Main.builderSystem = builderSystem;
+    @Override
+    public void onDisable() {
+        // Plugin shutdown logic
+    }
+
+    private void setConfig() {
+        Config.createConfig();
+
+        ConfigTeams.setConfigTeams();
+        Config.save();
+
+        getLogger().info(PREFIX + "Config files set.");
     }
 
     @Override
@@ -202,26 +179,8 @@ public final class Main extends JavaPlugin implements Listener {
                 config.getString("Odoo.Username"),
                 config.getString("Odoo.Password")
         ));
-        setTaskCache(new TaskCache());
-        setWorldCache(new WorldCache());
 
         registerTranslations();
-
-        getTaskCache().invalidateCache();
-        getTaskCache().invalidateInventoryCache();
-
-        getWorldCache().invalidateCache();
-        getWorldCache().invalidateInventoryCache();
-
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
-            public void run() {
-                getTaskCache().invalidateCache();
-                getTaskCache().invalidateInventoryCache();
-                getWorldCache().invalidateCache();
-                getWorldCache().invalidateInventoryCache();
-                System.out.print("load");
-            }
-        }, 0, 1200);
 
 
     }

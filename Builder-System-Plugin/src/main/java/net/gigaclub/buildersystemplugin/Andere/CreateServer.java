@@ -18,12 +18,10 @@ public class CreateServer {
     BuilderSystem builderSystem = Main.getBuilderSystem();
 
 
-
     private void startServer1(int world_id, String team_name, Player player) {
         Translation t = Main.getTranslation();
         String playerUUID = player.getUniqueId().toString();
         JSONObject world = builderSystem.getWorld(world_id);
-
 
 
         String world_name = world.getString("name");
@@ -46,8 +44,8 @@ public class CreateServer {
                 .environment(ServiceEnvironmentType.MINECRAFT_SERVER)
                 .build()
                 .createNewService().serviceInfo();
-        }
     }
+}
 
 
 

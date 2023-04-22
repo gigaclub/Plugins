@@ -8,8 +8,10 @@ import com.github.stefvanschie.inventoryframework.pane.StaticPane;
 import net.gigaclub.buildersystem.BuilderSystem;
 import net.gigaclub.buildersystemplugin.Andere.InterfaceAPI.ItemBuilder;
 import net.gigaclub.buildersystemplugin.Main;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.json.JSONArray;
@@ -17,6 +19,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import static net.gigaclub.buildersystemplugin.Andere.Guis.Navigator.Navigate;
 
@@ -33,34 +36,45 @@ public class WorldGui {
             JSONObject world = userWorlds.getJSONObject(i);
             int taskID = world.getInt("task_id");
             JSONObject task = builderSystem.getTask(taskID);
+            String ownerID = world.getString("owner_id");
+            UUID uuid = UUID.fromString(world.getString("owner_id"));
+            OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
+            String ownerName = offlinePlayer.getName();
 
             ArrayList<String> worldlore = new ArrayList<>();
             worldlore.add(ChatColor.GRAY + "ID: " + ChatColor.WHITE + world.getInt("world_id"));
-
-            worldlore.add(ChatColor.GRAY + "Project Name:" + " " + ChatColor.WHITE + world.getString("name"));
             worldlore.add(ChatColor.GRAY + "World Type" + " " + ChatColor.WHITE + world.getString("world_type"));
-            worldlore.add(ChatColor.WHITE + " ");
-            worldlore.add(ChatColor.WHITE + "Teams");
-            JSONArray teams = world.getJSONArray("team_ids");
-
-            for (int j = 0; j < teams.length(); j++) {
-                JSONObject team = teams.getJSONObject(j);
-                String teamname = team.getString("name");
-                StringBuilder res = new StringBuilder();
-                res.append(String.valueOf(ChatColor.GRAY));
-                res.append(teamname).append(ChatColor.WHITE + " , " + ChatColor.GRAY);
-
-                res.toString();
-                worldlore.add(ChatColor.WHITE + res.toString());
-
-
+            worldlore.add(ChatColor.GRAY + "Projeckt Owner: " + ChatColor.WHITE + ownerName);
+            if (!(task.getString("description").isEmpty())) {
+                worldlore.add(ChatColor.GRAY + "Description: " + ChatColor.WHITE + task.getString("description"));
             }
-            worldlore.add(ChatColor.WHITE + " ");
+            JSONArray teams = world.getJSONArray("team_ids");
+            if (!(teams.isEmpty())) {
+                List<String> stringList = new ArrayList<String>();
+                for (int j = 0; j < teams.length(); j++) {
+                    JSONObject team = teams.getJSONObject(j);
+                    String teamname = team.getString("name");
+                    stringList.add(teamname);
+                }
+                String joinedString = String.join(", ", stringList);
+                worldlore.add(ChatColor.GRAY + "Builder Teams: " + ChatColor.WHITE + joinedString);
+            }
 
+            JSONArray user = world.getJSONArray("user_ids");
+            if (!(user.isEmpty())) {
+                List<String> stringList2 = new ArrayList<String>();
+                for (int i1 = 0; i1 < user.length(); i1++) {
+                    JSONObject uuid2 = user.getJSONObject(i1);
+                    String pid = uuid2.getString("mc_uuid");
+                    String user_name = Bukkit.getOfflinePlayer(UUID.fromString(pid)).getName();
+                    stringList2.add(user_name);
+                }
+                String joinedString1 = String.join(", ", stringList2);
+                worldlore.add(ChatColor.GRAY + "Builder: " + ChatColor.WHITE + joinedString1);
+            }
+            ItemStack project = new ItemBuilder(Material.PAPER).setDisplayName(ChatColor.GRAY + "Name: " + ChatColor.WHITE + world.getString("name")).setLore(worldlore).build();
 
-            ItemStack project = new ItemBuilder(Material.PAPER).setDisplayName(ChatColor.GRAY + "Name: " + ChatColor.GREEN + world.getString("name")).setLore(worldlore).build();
-
-            GuiItem guiItem = new GuiItem(project);
+            GuiItem guiItem = new GuiItem(project, event -> event.setCancelled(true));
             guiItems.add(guiItem);
 
         }

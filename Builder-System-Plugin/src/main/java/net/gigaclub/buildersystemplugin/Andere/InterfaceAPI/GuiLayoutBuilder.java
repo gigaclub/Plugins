@@ -7,7 +7,9 @@ import org.bukkit.inventory.Inventory;
 public class GuiLayoutBuilder {
 
 
-    public GuiLayoutBuilder() {}
+    public GuiLayoutBuilder() {
+    }
+
     public Inventory guiLayoutBuilder(Inventory inventory, int size) {
         int row = size / 9;
         size--;
@@ -19,16 +21,16 @@ public class GuiLayoutBuilder {
                 inventory.setItem(i, new ItemBuilder(Material.BLACK_STAINED_GLASS_PANE).setDisplayName(" ").setGui(true).build());
             }
             row--;
-                for (int i2 = 2; i2 <= row; i2++) {
-                    inventory.setItem(i2*9-1, new ItemBuilder(Material.BLACK_STAINED_GLASS_PANE).setDisplayName(" ").setGui(true).build());
-                    inventory.setItem(i2*9-9, new ItemBuilder(Material.BLACK_STAINED_GLASS_PANE).setDisplayName(" ").setGui(true).build());
-                }
+            for (int i2 = 2; i2 <= row; i2++) {
+                inventory.setItem(i2 * 9 - 1, new ItemBuilder(Material.BLACK_STAINED_GLASS_PANE).setDisplayName(" ").setGui(true).build());
+                inventory.setItem(i2 * 9 - 9, new ItemBuilder(Material.BLACK_STAINED_GLASS_PANE).setDisplayName(" ").setGui(true).build());
+            }
 
         }
         return inventory;
     }
 
-    public Inventory guiFullBuilder(Inventory inventory, int size){
+    public Inventory guiFullBuilder(Inventory inventory, int size) {
         size--;
         for (int i = 0; i <= size; i++) {
             inventory.setItem(i, new ItemBuilder(Material.BLACK_STAINED_GLASS_PANE).setDisplayName(" ").setGui(true).build());
