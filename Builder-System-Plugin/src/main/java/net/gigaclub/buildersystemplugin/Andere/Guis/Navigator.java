@@ -51,7 +51,7 @@ public class Navigator implements Listener {
         navigator.addPane(outline);
 
 
-        ItemStack teamGui = new ItemBuilder(Material.PLAYER_HEAD).setHeadDatabase(9386).setDisplayName(ChatColor.RED + "Team").setLore(teamloreList()).build();
+        ItemStack teamGui = new ItemBuilder(Material.PLAYER_HEAD).setHeadDatabase(9386).setDisplayName((ChatColor.RED + "Team")).setLore(teamloreList()).build();
         GuiItem teamItem = new GuiItem(teamGui, event -> teams(player));
         outline.addItem(teamItem, 1, 1);
 
@@ -97,12 +97,15 @@ public class Navigator implements Listener {
     @EventHandler
     public static void moveGui(InventoryClickEvent event) {
         int slot = event.getSlot();
-        try {
-            ItemStack item = event.getClickedInventory().getItem(slot);
-        } catch (Exception e) {
-            return;
-        }
         ItemStack item = event.getClickedInventory().getItem(slot);
+        if (item == null) {
+            return;
+        } else {
+            ItemMeta meta = item.getItemMeta();
+            if (meta == null) {
+                return;
+            }
+        }
         if (!(event.getWhoClicked().getGameMode().equals(GameMode.CREATIVE))) {
             PersistentDataContainer data = item.getItemMeta().getPersistentDataContainer();
             if (data.has(new NamespacedKey(Main.getPlugin(), "identifie"))) {
