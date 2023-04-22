@@ -29,15 +29,14 @@ public class ItemBuilder {
      */
 
 
-
-
     private ItemStack stack;
 
     public ItemBuilder(Material mat) {
         stack = new ItemStack(mat);
     }
+
     public ItemBuilder(ItemStack item) {
-        stack =new ItemStack(item);
+        stack = new ItemStack(item);
     }
 
     public ItemBuilder(Material mat, short sh) {
@@ -48,6 +47,10 @@ public class ItemBuilder {
         return stack.getItemMeta();
     }
 
+    public ItemBuilder setItemMeta(ItemMeta meta) {
+        stack.setItemMeta(meta);
+        return this;
+    }
 
     public ItemBuilder setColor(Color color) {
         LeatherArmorMeta meta = (LeatherArmorMeta) stack.getItemMeta();
@@ -78,11 +81,6 @@ public class ItemBuilder {
 
     public ItemBuilder setAmount(int amount) {
         stack.setAmount(amount);
-        return this;
-    }
-
-    public ItemBuilder setItemMeta(ItemMeta meta) {
-        stack.setItemMeta(meta);
         return this;
     }
 
@@ -152,6 +150,7 @@ public class ItemBuilder {
         setItemMeta(meta);
         return this;
     }
+
     public ItemBuilder addID(int metadata) {
         ItemMeta meta = getItemMeta();
         PersistentDataContainer data = meta.getPersistentDataContainer();
@@ -170,7 +169,7 @@ public class ItemBuilder {
 
     public ItemBuilder setGui(Boolean is_Gui) {
         ItemMeta meta = getItemMeta();
-        if (is_Gui == true) {
+        if (is_Gui) {
             PersistentDataContainer data = meta.getPersistentDataContainer();
             data.set(new NamespacedKey(Main.getPlugin(), "gui"), PersistentDataType.INTEGER, 1);
             setItemMeta(meta);
