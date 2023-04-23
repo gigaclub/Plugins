@@ -17,9 +17,9 @@ repositories {
 dependencies {
     implementation(project(":Permission-System-Plugin:permissionsystem-common"))
     compileOnly("io.papermc.paper:paper-api:1.19.4-R0.1-SNAPSHOT")
-    implementation platform('eu.cloudnetservice.cloudnet:bom:4.0.0-RC8-SNAPSHOT')
-    implementation 'eu.cloudnetservice.cloudnet:driver'
-    implementation 'eu.cloudnetservice.cloudnet:cloudperms'
+    compileOnly platform('eu.cloudnetservice.cloudnet:bom:4.0.0-RC8-SNAPSHOT')
+    compileOnly 'eu.cloudnetservice.cloudnet:driver'
+    compileOnly 'eu.cloudnetservice.cloudnet:cloudperms'
 
 }
 

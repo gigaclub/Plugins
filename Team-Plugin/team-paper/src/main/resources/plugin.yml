@@ -1,7 +1,7 @@
 name: Team
-version: 1.19.0.1.0.0
+version: 1.19.4.1.0.0
 main: net.gigaclub.team.Main
-api-version: 1.18
+api-version: 1.19
 prefix: Team
 load: POSTWORLD
 authors: [ GigaClub ]
