@@ -1,7 +1,9 @@
 package net.gigaclub.permissionsystem;
 
 import eu.cloudnetservice.driver.inject.InjectionLayer;
+import eu.cloudnetservice.driver.permission.PermissionGroup;
 import eu.cloudnetservice.driver.permission.PermissionManagement;
+import eu.cloudnetservice.driver.permission.PermissionUser;
 import net.gigaclub.permissionsystem.commands.GroupCommand;
 import net.gigaclub.permissionsystem.commands.SyncCommand;
 import net.gigaclub.permissionsystemapi.PermissionSystem;
@@ -115,34 +117,31 @@ public final class Main extends JavaPlugin {
                 display = group.getString("display");
             } catch (Exception e) {
             }
-
-            permissionManagement.group(groupName);
             String finalSuffix = suffix;
             String finalPrefix = prefix;
             String finalColor = color;
             String finalDisplay = display;
-            permissionManagement.modifyGroup(groupName, (permissionGroup, permissionGroupBuilder) -> {
-                permissionGroupBuilder.suffix(finalSuffix).prefix(finalPrefix).color(finalColor).display(finalDisplay);
-                for (int j = 0; j < permissions.length(); j++) {
-                    permissionGroup.addPermission(permissions.getString(j));
-                }
-            });
+            var permissionGroup = PermissionGroup.builder().potency(100).name(groupName).suffix(finalSuffix).prefix(finalPrefix).color(finalColor).display(finalDisplay).build();
+            for (int j = 0; j < permissions.length(); j++) {
+                permissionGroup.addPermission(permissions.getString(j));
+            }
+            permissionManagement.updateGroup(permissionGroup);
         }
         //grepper minecraft paper get a list of all online players
         Player[] players = Bukkit.getOnlinePlayers().toArray(new Player[0]);
         //end grepper
         for (Player player : players) {
             JSONArray groupsOfPlayer = permissionSystem.getGroups(player.getUniqueId().toString());
-            permissionManagement.modifyUser(player.getUniqueId(), (user, userBuilder) -> {
-                user.groups().forEach(groupOfUser -> user.removeGroup(groupOfUser.group()));
-                for (int i = 0; i < groupsOfPlayer.length(); i++) {
-                    JSONObject group = groupsOfPlayer.getJSONObject(i);
-                    String groupName = group.getString("name");
-                    user.addGroup(groupName);
-                }
-            });
+            PermissionUser permissionUser = permissionManagement.user(player.getUniqueId());
+            permissionUser.groups().forEach(groupOfUser -> permissionUser.removeGroup(groupOfUser.group()));
+            for (int i = 0; i < groupsOfPlayer.length(); i++) {
+                JSONObject group = groupsOfPlayer.getJSONObject(i);
+                String groupName = group.getString("name");
+                permissionUser.addGroup(groupName);
+                permissionManagement.updateUser(permissionUser);
+            }
         }
-
+        permissionManagement.close();
     }
 
     public void registerCommands() {
