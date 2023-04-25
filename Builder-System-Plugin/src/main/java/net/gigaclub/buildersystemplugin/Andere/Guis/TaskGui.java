@@ -120,15 +120,24 @@ public class TaskGui {
                 taskList.update();
             } else event.setCancelled(true);
         }), 7, 0);
-
+        navigation.fillWith(outlineintem);
 
         navigation.addItem(new GuiItem(new ItemBuilder(Material.PLAYER_HEAD)
                 .setHeadDatabase(10298)
                 .setDisplayName(ChatColor.DARK_GRAY + "Back to Main Menu")
                 .build(), event -> Navigate(player)), 4, 0);
 
-        navigation.fillWith(outlineintem);
-        taskList.addPane(navigation);
+        if (taskPages.getPages() == 1) {
+            taskList.setTitle("Task List");
+            StaticPane outline4 = new StaticPane(0, 5, 9, 1);
+            outline4.fillWith(outlineintem);
+            outline4.addItem(new GuiItem(new ItemBuilder(Material.PLAYER_HEAD).setHeadDatabase(10298).setDisplayName(ChatColor.DARK_GRAY + "Back to Main Menu").build(), event -> Navigate(player)), 4, 0);
+            taskList.addPane(outline4);
+        } else {
+            taskList.addPane(navigation);
+        }
+
+
         taskList.addPane(taskPages);
         taskList.show(player);
     }
@@ -221,6 +230,8 @@ public class TaskGui {
 
         event.getWhoClicked().closeInventory();
     }
+
+
 }
 
 

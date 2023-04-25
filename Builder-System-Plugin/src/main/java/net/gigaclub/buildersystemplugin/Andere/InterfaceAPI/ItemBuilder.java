@@ -2,6 +2,7 @@ package net.gigaclub.buildersystemplugin.Andere.InterfaceAPI;
 
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import net.gigaclub.buildersystemplugin.Main;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -99,6 +100,13 @@ public class ItemBuilder {
         return this;
     }
 
+    public ItemBuilder setDisplayName(Component displayname) {
+        ItemMeta meta = getItemMeta();
+        meta.displayName(displayname);
+        setItemMeta(meta);
+        return this;
+    }
+
     public ItemBuilder setItemStack(ItemStack stack) {
         this.stack = stack;
         return this;
@@ -111,6 +119,13 @@ public class ItemBuilder {
         return this;
     }
 
+    public ItemBuilder setLoreComponents(ArrayList<Component> lore) {
+        ItemMeta meta = getItemMeta();
+        meta.lore(lore);
+        setItemMeta(meta);
+        return this;
+    }
+
     public ItemBuilder setLore(String lore) {
         ArrayList<String> loreList = new ArrayList<>();
         loreList.add(lore);
@@ -119,6 +134,16 @@ public class ItemBuilder {
         setItemMeta(meta);
         return this;
     }
+
+    public ItemBuilder setLore(Component lore) {
+        ArrayList<Component> loreList = new ArrayList<>();
+        loreList.add(lore);
+        ItemMeta meta = getItemMeta();
+        meta.lore(loreList);
+        setItemMeta(meta);
+        return this;
+    }
+
 
     public ItemBuilder addEnchant(Enchantment enchantment, int level) {
         ItemMeta meta = getItemMeta();
