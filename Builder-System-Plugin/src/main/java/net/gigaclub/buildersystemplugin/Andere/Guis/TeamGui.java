@@ -563,47 +563,25 @@ public class TeamGui implements Listener {
         BuilderSystem builderSystem = Main.getBuilderSystem();
         List<GuiItem> guiItems = new ArrayList<>();
 
-        JSONArray invits = builderSystem.getInvites(String.valueOf(player.getUniqueId()));
-        player.sendMessage(String.valueOf(builderSystem.getInvites(String.valueOf(player.getUniqueId()))));
+        JSONArray invits = builderSystem.getUserMemberToTeamInvitations(String.valueOf(player.getUniqueId()));
         for (int i = 0; i < invits.length(); i++) {
             JSONObject invite = invits.getJSONObject(i);
-            int sender = invite.getInt("sender_id");
-            String state = invite.getString("state");
+
+            int sender = invite.getInt("sender_team_id");
 
 
             ArrayList<String> loreList = new ArrayList<>();
-            loreList.add(ChatColor.GRAY + builderSystem.getTeam(sender).getString("name"));
             loreList.add(ChatColor.GRAY + "------------------");
-            if (state.equals("waiting")) {
-                loreList.add(ChatColor.GRAY + "State: " + ChatColor.WHITE + "Waiting");
-                ItemStack invit = new ItemBuilder(Material.WHITE_WOOL).setDisplayName(ChatColor.GRAY + "Invite From").setLore(loreList).build();
-                GuiItem guiItem = new GuiItem(invit, event -> {
-                    player.sendMessage("request menu ");
-                });
-                guiItems.add(guiItem);
+            loreList.add(ChatColor.GRAY + "State: " + ChatColor.WHITE + "Waiting");
+            ItemStack invit = new ItemBuilder(Material.WHITE_WOOL).setDisplayName(ChatColor.GRAY + "Invite From " + ChatColor.WHITE + builderSystem.getTeam(sender).getString("name")).setLore(loreList).build();
+            GuiItem guiItem = new GuiItem(invit, event -> {
+                player.sendMessage("request menu ");
+                event.setCancelled(true);
+            });
+            guiItems.add(guiItem);
 
-            } else if (state.equals("accepted")) {
-                loreList.add(ChatColor.GRAY + "State: " + ChatColor.GREEN + "Accepted");
-                ItemStack invit = new ItemBuilder(Material.GREEN_WOOL).setDisplayName(ChatColor.GRAY + "Invite From").setLore(loreList).build();
-                GuiItem guiItem = new GuiItem(invit, event -> {
-                    player.sendMessage("request menu ");
-                });
-                guiItems.add(guiItem);
-            } else if (state.equals("denied")) {
-                loreList.add(ChatColor.GRAY + "State: " + ChatColor.RED + "Denied");
-                ItemStack invit = new ItemBuilder(Material.RED_WOOL).setDisplayName(ChatColor.GRAY + "Invite From").setLore(loreList).build();
-                GuiItem guiItem = new GuiItem(invit, event -> {
-                    player.sendMessage("request menu ");
-                });
-                guiItems.add(guiItem);
-            }
 
         }
-        ItemStack invit = new ItemBuilder(Material.RED_WOOL).setDisplayName(ChatColor.GRAY + "Invite From").build();
-        GuiItem guiItem = new GuiItem(invit, event -> {
-            player.sendMessage("request menu ");
-        });
-        guiItems.add(guiItem);
 
         return guiItems;
     }

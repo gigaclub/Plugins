@@ -31,16 +31,15 @@ public class WorldGui {
         BuilderSystem builderSystem = Main.getBuilderSystem();
         List<GuiItem> guiItems = new ArrayList<>();
         JSONArray userWorlds = builderSystem.getUserWorlds(player.getUniqueId().toString());
-          player.sendMessage(String.valueOf(builderSystem.getUserWorlds(player.getUniqueId().toString())));
         for (int i = 0; i < userWorlds.length(); i++) {
             JSONObject world = userWorlds.getJSONObject(i);
+
             int taskID = world.getInt("task_id");
             JSONObject task = builderSystem.getTask(taskID);
             String ownerID = world.getString("owner_id");
             UUID uuid = UUID.fromString(world.getString("owner_id"));
             OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
             String ownerName = offlinePlayer.getName();
-
             ArrayList<String> worldlore = new ArrayList<>();
             worldlore.add(ChatColor.GRAY + "ID: " + ChatColor.WHITE + world.getInt("world_id"));
             worldlore.add(ChatColor.GRAY + "World Type" + " " + ChatColor.WHITE + world.getString("world_type"));
