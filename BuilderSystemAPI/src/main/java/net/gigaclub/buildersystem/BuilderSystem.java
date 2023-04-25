@@ -330,4 +330,76 @@ public class BuilderSystem extends Team {
         return null;
     }
 
+    public int inviteUserToWorld(String playerUUID, String playerUUIDToAdd, int worldId) {
+        try {
+            return (int) this.odoo.getModels().execute("execute_kw", Arrays.asList(
+                    this.odoo.getDatabase(), this.odoo.getUid(), this.odoo.getPassword(),
+                    "gc.builder.world", "invite_user_to_world", List.of(playerUUID, playerUUIDToAdd, worldId)
+            ));
+        } catch (XmlRpcException e) {
+            e.printStackTrace();
+        }
+        return 5;
+    }
+
+    public int userAcceptRequest(String playerUUID, int worldId) {
+        try {
+            return (int) this.odoo.getModels().execute("execute_kw", Arrays.asList(
+                    this.odoo.getDatabase(), this.odoo.getUid(), this.odoo.getPassword(),
+                    "gc.builder.world", "user_accept_request", List.of(playerUUID, worldId)
+            ));
+        } catch (XmlRpcException e) {
+            e.printStackTrace();
+        }
+        return 4;
+    }
+
+    public int userDenyRequest(String playerUUID, int worldId) {
+        try {
+            return (int) this.odoo.getModels().execute("execute_kw", Arrays.asList(
+                    this.odoo.getDatabase(), this.odoo.getUid(), this.odoo.getPassword(),
+                    "gc.builder.world", "user_deny_request", List.of(playerUUID, worldId)
+            ));
+        } catch (XmlRpcException e) {
+            e.printStackTrace();
+        }
+        return 4;
+    }
+
+    public int inviteTeamToWorld(String playerUUID, int teamId, int worldId) {
+        try {
+            return (int) this.odoo.getModels().execute("execute_kw", Arrays.asList(
+                    this.odoo.getDatabase(), this.odoo.getUid(), this.odoo.getPassword(),
+                    "gc.builder.world", "invite_team_to_world", List.of(playerUUID, teamId, worldId)
+            ));
+        } catch (XmlRpcException e) {
+            e.printStackTrace();
+        }
+        return 5;
+    }
+
+    public int teamAcceptRequest(String playerUUID, int teamId, int worldId) {
+        try {
+            return (int) this.odoo.getModels().execute("execute_kw", Arrays.asList(
+                    this.odoo.getDatabase(), this.odoo.getUid(), this.odoo.getPassword(),
+                    "gc.builder.world", "team_accept_request", List.of(playerUUID, teamId, worldId)
+            ));
+        } catch (XmlRpcException e) {
+            e.printStackTrace();
+        }
+        return 5;
+    }
+
+    public int teamDenyRequest(String playerUUID, int teamId, int worldId) {
+        try {
+            return (int) this.odoo.getModels().execute("execute_kw", Arrays.asList(
+                    this.odoo.getDatabase(), this.odoo.getUid(), this.odoo.getPassword(),
+                    "gc.builder.world", "team_deny_request", List.of(playerUUID, teamId, worldId)
+            ));
+        } catch (XmlRpcException e) {
+            e.printStackTrace();
+        }
+        return 5;
+    }
+
 }
