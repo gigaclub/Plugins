@@ -1,11 +1,11 @@
 name: PermissionSystem
-version: 1.19.0.1.0.0
+version: 1.19.4.1.0.0
 main: net.gigaclub.permissionsystem.Main
-api-version: 1.18
+api-version: 1.19
 prefix: PermissionSystem
 load: POSTWORLD
 authors: [ GigaClub ]
-depend: [ Translation ]
+depend: [ Translation, CloudNet-CloudPerms ]
 website: https://github.com/GigaClub
 
 commands:
