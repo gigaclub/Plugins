@@ -31,7 +31,7 @@ public class WorldGui {
         BuilderSystem builderSystem = Main.getBuilderSystem();
         List<GuiItem> guiItems = new ArrayList<>();
         JSONArray userWorlds = builderSystem.getUserWorlds(player.getUniqueId().toString());
-
+          player.sendMessage(String.valueOf(builderSystem.getUserWorlds(player.getUniqueId().toString())));
         for (int i = 0; i < userWorlds.length(); i++) {
             JSONObject world = userWorlds.getJSONObject(i);
             int taskID = world.getInt("task_id");
@@ -72,6 +72,7 @@ public class WorldGui {
                 String joinedString1 = String.join(", ", stringList2);
                 worldlore.add(ChatColor.GRAY + "Builder: " + ChatColor.WHITE + joinedString1);
             }
+
             ItemStack project = new ItemBuilder(Material.PAPER).setDisplayName(ChatColor.GRAY + "Name: " + ChatColor.WHITE + world.getString("name")).setLore(worldlore).build();
 
             GuiItem guiItem = new GuiItem(project, event -> event.setCancelled(true));
@@ -129,7 +130,17 @@ public class WorldGui {
                 .build(), event -> Navigate(player)), 4, 0);
 
         navigation.fillWith(outlineintem);
-        taskList.addPane(navigation);
+
+        if (taskPages.getPages() == 1) {
+            taskList.setTitle("Project List");
+            StaticPane outline4 = new StaticPane(0, 5, 9, 1);
+            outline4.fillWith(outlineintem);
+            outline4.addItem(new GuiItem(new ItemBuilder(Material.PLAYER_HEAD).setHeadDatabase(10298).setDisplayName(ChatColor.DARK_GRAY + "Back to Main Menu").build(), event -> Navigate(player)), 4, 0);
+            taskList.addPane(outline4);
+        } else {
+            taskList.addPane(navigation);
+        }
+
         taskList.addPane(taskPages);
         taskList.show(player);
     }
