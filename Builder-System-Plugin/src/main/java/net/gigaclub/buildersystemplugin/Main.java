@@ -4,6 +4,7 @@ import eu.cloudnetservice.driver.event.EventManager;
 import eu.cloudnetservice.driver.inject.InjectionLayer;
 import me.arcaniax.hdb.api.DatabaseLoadEvent;
 import net.gigaclub.buildersystem.BuilderSystem;
+import net.gigaclub.buildersystemplugin.Andere.Data;
 import net.gigaclub.buildersystemplugin.Andere.Guis.Navigator;
 import net.gigaclub.buildersystemplugin.Commands.Tasks;
 import net.gigaclub.buildersystemplugin.Commands.Worlds;
@@ -52,6 +53,16 @@ public final class Main extends JavaPlugin implements Listener {
 
     public static void setBuilderSystem(BuilderSystem builderSystem) {
         Main.builderSystem = builderSystem;
+    }
+
+    private static Data data;
+
+    public static Data getData() {
+        return data;
+    }
+
+    public static void setData(Data data) {
+        Main.data = data;
     }
 
     public static void registerTranslations() {
@@ -180,10 +191,20 @@ public final class Main extends JavaPlugin implements Listener {
                 config.getString("Odoo.Password")
         ));
 
+
+        setData(new Data(
+                config.getString("Odoo.Host"),
+                config.getString("Odoo.Database"),
+                config.getString("Odoo.Username"),
+                config.getString("Odoo.Password")
+        ));
+
+
         registerTranslations();
 
 
     }
+
 
     @EventHandler
     public void onDatabaseLoad(DatabaseLoadEvent e) {
