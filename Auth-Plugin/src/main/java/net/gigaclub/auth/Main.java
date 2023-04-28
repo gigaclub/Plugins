@@ -6,15 +6,20 @@ import net.gigaclub.translation.Translation;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.java.annotation.dependency.Dependency;
 import org.bukkit.plugin.java.annotation.plugin.ApiVersion;
 import org.bukkit.plugin.java.annotation.plugin.Plugin;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
 
 
 @Plugin(name = "Auth", version = "1.19.4.1.0.0")
 @ApiVersion(ApiVersion.Target.v1_19)
+@Dependency("Translation")
 public final class Main extends JavaPlugin {
 
     private static Main plugin;
@@ -45,6 +50,20 @@ public final class Main extends JavaPlugin {
         Main.data = data;
     }
 
+    public static void registerTranslations() {
+        Main.translation.registerTranslations(List.of(
+                new HashMap<String, String>() {{
+                    put("translationName", "auth.command.authtoken");
+                    put("authtoken", "d4jJ9d");
+                }}
+        ));
+    }
+
+    @Override
+    public void onDisable() {
+        // Plugin shutdown logic
+    }
+
     @Override
     public void onEnable() {
         // Plugin startup logic
@@ -69,15 +88,11 @@ public final class Main extends JavaPlugin {
                 config.getString("Odoo.Password")
         ));
         registerCommands();
-    }
-
-    @Override
-    public void onDisable() {
-        // Plugin shutdown logic
+        registerTranslations();
     }
 
     public void registerCommands() {
-        Objects.requireNonNull(getCommand("language")).setExecutor(new AuthCommand());
+        Objects.requireNonNull(getCommand("auth")).setExecutor(new AuthCommand());
     }
 
 }

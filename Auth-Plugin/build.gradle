@@ -20,7 +20,7 @@ processResources {
 
 task copyJar(type: Copy) {
     from 'build/libs/Auth-Plugin-all.jar'
-    into '../../Plugins-all'
+    into '../Plugins-all'
 }
 
 build {
