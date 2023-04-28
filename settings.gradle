@@ -17,5 +17,6 @@ include ':Base-Plugin:base-common',
         'Team-Plugin:team-waterfall',
         'TeamAPI',
         'Builder-System-Plugin',
-        'BuilderSystemAPI'
+        'BuilderSystemAPI',
+        'Auth-Plugin'
 

@@ -96,7 +96,7 @@ public final class Main extends JavaPlugin {
                 }},
                 new HashMap<String, String>() {{
                     put("translationName", "translation.command.language.incorrect.parameter");
-                    put("wrongParameter", "bla");
+                    put("wrongparameter", "bla");
                 }},
                 "translation.command.language.no.parameters"
         ));

@@ -3,7 +3,7 @@ plugins {
 }
 
 dependencies {
-    implementation project(':Base-Plugin:base-common')
+    implementation project(":Translation-Plugin:translation-common")
     compileOnly 'org.spigotmc:plugin-annotations:1.2.3-SNAPSHOT'
     annotationProcessor 'org.spigotmc:plugin-annotations:1.2.3-SNAPSHOT'
     compileOnly 'io.papermc.paper:paper-api:1.19.4-R0.1-SNAPSHOT'
@@ -19,7 +19,7 @@ processResources {
 }
 
 task copyJar(type: Copy) {
-    from 'build/libs/base-paper-all.jar'
+    from 'build/libs/Auth-Plugin-all.jar'
     into '../../Plugins-all'
 }
 
@@ -27,4 +27,3 @@ build {
     dependsOn(shadowJar)
     dependsOn(copyJar)
 }
-
