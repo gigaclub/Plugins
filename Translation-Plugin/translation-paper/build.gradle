@@ -24,5 +24,4 @@ task copyJar(type: Copy) {
 build {
     dependsOn(shadowJar)
     dependsOn(copyJar)
-
 }

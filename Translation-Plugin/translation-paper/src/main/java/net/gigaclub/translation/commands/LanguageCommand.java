@@ -47,7 +47,7 @@ public class LanguageCommand implements CommandExecutor, TabCompleter {
                     t.sendMessage("translation.command.language.list", player, TagResolver.resolver("languages", Tag.inserting(ComponentHelper.join(langComponents, Component.text(", ")))));
                     break;
                 default:
-                    t.sendMessage("translation.command.language.incorrect.parameter", player, Placeholder.parsed("wrongParameter", args[0]));
+                    t.sendMessage("translation.command.language.incorrect.parameter", player, Placeholder.parsed("wrongparameter", args[0]));
                     break;
             }
         } else {
