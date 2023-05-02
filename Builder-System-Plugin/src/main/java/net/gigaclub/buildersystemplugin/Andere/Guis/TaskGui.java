@@ -7,10 +7,10 @@ import com.github.stefvanschie.inventoryframework.gui.type.DispenserGui;
 import com.github.stefvanschie.inventoryframework.pane.PaginatedPane;
 import com.github.stefvanschie.inventoryframework.pane.Pane;
 import com.github.stefvanschie.inventoryframework.pane.StaticPane;
-import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import net.gigaclub.buildersystem.BuilderSystem;
 import net.gigaclub.buildersystemplugin.Andere.InterfaceAPI.ItemBuilder;
 import net.gigaclub.buildersystemplugin.Main;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -21,7 +21,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
+import java.util.UUID;
 
 import static net.gigaclub.buildersystemplugin.Andere.Guis.Navigator.Navigate;
 
@@ -174,17 +174,21 @@ public class TaskGui {
 
     public static void teamSelect(Player player, int ID) {
         BuilderSystem builderSystem = Main.getBuilderSystem();
-        HeadDatabaseAPI hdb = new HeadDatabaseAPI();
-        Random rand = new Random();
+
         List<GuiItem> guiItems = new ArrayList<>();
         ChestGui teamSelect = new ChestGui(2, "Team Select");
         PaginatedPane pane = new PaginatedPane(0, 0, 9, 2);
         pane.setOnClick(event -> event.setCancelled(true));
         teamSelect.setOnBottomClick(event -> event.setCancelled(true));
         JSONArray teamsUser = builderSystem.getTeamsByMember(player.getUniqueId().toString());
+
         for (int i = 0; i < teamsUser.length(); i++) {
+
+
             JSONObject team = teamsUser.getJSONObject(i);
-            guiItems.add(new GuiItem(new ItemBuilder(Material.PLAYER_HEAD).setItemMeta(hdb.getRandomHead().getItemMeta()).setDisplayName(team.getString("name")).build(), event -> worldType(player, ID, team.getInt("id"))));
+            String owner = builderSystem.getTeam(team.getInt("id")).getString("owner_id");
+            String ownerName = Bukkit.getOfflinePlayer(UUID.fromString(owner)).getName();
+            guiItems.add(new GuiItem(new ItemBuilder(Material.PLAYER_HEAD).setHead(ownerName).setDisplayName(team.getString("name")).build(), event -> worldType(player, ID, team.getInt("id"))));
 
         }
         pane.populateWithGuiItems(guiItems);
