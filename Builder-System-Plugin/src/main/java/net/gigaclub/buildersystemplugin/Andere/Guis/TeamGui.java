@@ -284,7 +284,7 @@ public class TeamGui implements Listener {
         HopperGui teamEdit = new HopperGui("         Team Edit");
         StaticPane pane = new StaticPane(0, 0, 5, 1);
         pane.fillWith(outlineintem);
-        pane.addItem(new GuiItem(new ItemBuilder(Material.BOOK).setDisplayName("Name").build(), event -> {
+        pane.addItem(new GuiItem(new ItemBuilder(Material.KNOWLEDGE_BOOK).setDisplayName("Name").build(), event -> {
             editTeam(TeamID, player, true);
             event.setCancelled(true);
         }), 1, 0);
