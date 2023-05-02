@@ -18,7 +18,7 @@ public class CreateServer {
     BuilderSystem builderSystem = Main.getBuilderSystem();
 
 
-    private void startServer1(int world_id, String team_name, Player player) {
+    private void startServer1(int world_id, Player player) {
         Translation t = Main.getTranslation();
         String playerUUID = player.getUniqueId().toString();
         JSONObject world = builderSystem.getWorld(world_id);
@@ -34,7 +34,7 @@ public class CreateServer {
         //  world_name, task_name, task_id, worlds_typ, word_id, team_name
         player.sendMessage(t.t("bsc.Command.CreateServer", player));
         ServiceInfoSnapshot serviceInfoSnapshot = ServiceConfiguration.builder()
-                .taskName(team_name + "_" + task_name + "_" + task_id + "_" + world_id)
+                .taskName(String.valueOf(world_id))
                 .node("Node-1")
                 .autoDeleteOnStop(true)
                 .staticService(false)
