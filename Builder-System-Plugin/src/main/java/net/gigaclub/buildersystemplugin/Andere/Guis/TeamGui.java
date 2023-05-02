@@ -338,7 +338,6 @@ public class TeamGui implements Listener {
             @NotNull OfflinePlayer managetPlayer = Bukkit.getOfflinePlayer(stringList.get(i));
             GuiItem guiItem = new GuiItem(TaskItem, event -> {
                 //  if (player.hasPermission("gigaclub_team.edit_user")) {
-                player.sendMessage("test");
                 playerManager(teamID, player, managetPlayer);
                 //  } else { player.sendMessage("No Permission");}
                 event.setCancelled(true);
@@ -388,6 +387,7 @@ public class TeamGui implements Listener {
             confirm.show(player);
 
         });
+        pane.setOnClick(event -> event.setCancelled(true));
         pane.addItem(kickUser, 6, 1);
         playermanager.addPane(pane);
         playermanager.show(player);
@@ -409,6 +409,7 @@ public class TeamGui implements Listener {
         taskList.addPane(outline2);
         taskList.addPane(outline3);
 
+
         taskList.setOnBottomClick(event -> event.setCancelled(true));
 
         PaginatedPane taskPages = new PaginatedPane(1, 1, 7, 4);
@@ -421,7 +422,7 @@ public class TeamGui implements Listener {
         navigation.addItem(new GuiItem(new ItemBuilder(Material.PLAYER_HEAD).setHeadDatabase(8784).setDisplayName(ChatColor.GRAY + "Back").build(), event -> {
             if (taskPages.getPage() > 0) {
                 taskPages.setPage(taskPages.getPage() - 1);
-                taskList.setTitle("Task List Page " + (taskPages.getPage() + 1));
+                taskList.setTitle("Team List Page " + (taskPages.getPage() + 1));
                 taskList.update();
             } else event.setCancelled(true);
         }), 2, 0);
@@ -429,7 +430,7 @@ public class TeamGui implements Listener {
         navigation.addItem(new GuiItem(new ItemBuilder(Material.PLAYER_HEAD).setHeadDatabase(8782).setDisplayName(ChatColor.GRAY + "Next").build(), event -> {
             if (taskPages.getPage() < taskPages.getPages() - 1) {
                 taskPages.setPage(taskPages.getPage() + 1);
-                taskList.setTitle("Task List Page " + (taskPages.getPage() + 1));
+                taskList.setTitle("Team List Page " + (taskPages.getPage() + 1));
                 taskList.update();
             } else event.setCancelled(true);
         }), 6, 0);
@@ -437,7 +438,7 @@ public class TeamGui implements Listener {
             // To DO
             BuilderSystem builderSystem = Main.getBuilderSystem();
             Data data = Main.getData();
-            AnvilGui invitePlayer = new AnvilGui("Edit Team Name");
+            AnvilGui invitePlayer = new AnvilGui("Invite Player");
             GuiItem slot1 = new GuiItem(new ItemBuilder(Material.PAPER).setDisplayName("Player Name").build(), event1 -> {
                 event1.setCancelled(true);
             });
@@ -456,16 +457,18 @@ public class TeamGui implements Listener {
                         String[] User = data.getMCPlayerInfo(invitePlayer.getRenameText());
                         if (data.checkIfPlayerExists(User[1])) {
                             builderSystem.inviteMember(String.valueOf(player.getUniqueId()), teamID, String.valueOf(Bukkit.getOfflinePlayer(invitePlayer.getRenameText()).getUniqueId()));
-                            event1.setCancelled(true);
+
                             player.sendMessage(User[1] + "was sent a request");
                             TeamPlayer(player, teamID);
+                            event1.setCancelled(true);
                         } else {
 
                             data.createPlayer(User[1], String.valueOf(UUID.fromString(User[0])));
                             builderSystem.inviteMember(String.valueOf(player.getUniqueId()), teamID, String.valueOf(UUID.fromString(User[0])));
-                            event1.setCancelled(true);
+
                             player.sendMessage("Your request will be sent to the player (" + User[1] + ") when he joins the server");
                             TeamPlayer(player, teamID);
+                            event1.setCancelled(true);
                         }
                     }
                 } catch (IOException e) {
