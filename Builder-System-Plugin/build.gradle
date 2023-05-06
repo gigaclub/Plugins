@@ -50,10 +50,11 @@ processResources {
     }
 }
 
-task copyJar(type: Copy) {
+task copyJar(type: Copy, dependsOn: shadowJar) {
     from 'build/libs/Builder-System-Plugin-all.jar'
     into '../Plugins-all'
 }
+
 
 build {
     dependsOn(shadowJar)
