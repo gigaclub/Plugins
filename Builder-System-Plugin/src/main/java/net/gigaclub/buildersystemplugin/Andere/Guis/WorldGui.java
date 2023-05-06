@@ -251,7 +251,6 @@ public class WorldGui {
             @NotNull OfflinePlayer managetPlayer = Bukkit.getOfflinePlayer(stringList.get(i));
             GuiItem guiItem = new GuiItem(TaskItem, event -> {
                 //  if (player.hasPermission("gigaclub_team.edit_user")) {
-                player.sendMessage("test");
                 playerManager(projecktID, player, managetPlayer);
                 //  } else { player.sendMessage("No Permission");}
                 event.setCancelled(true);
@@ -266,23 +265,18 @@ public class WorldGui {
         ChestGui playermanager = new ChestGui(3, managetPlayer.getName() + " Manager");
         StaticPane pane = new StaticPane(9, 3);
         pane.fillWith(outlineintem);
-        pane.addItem(new GuiItem(new ItemBuilder(Material.PLAYER_HEAD).setHead(managetPlayer.getName()).setDisplayName(" ").build()), 0, 0);
-        GuiItem addPermsGroup = new GuiItem(new ItemBuilder(Material.PLAYER_HEAD).setHeadDatabase(10250).setDisplayName("set team Group").build(), event -> {
-            player.sendMessage("set user Group");
-            event.setCancelled(true);
-        });
-        pane.addItem(addPermsGroup, 2, 1);
+        pane.addItem(new GuiItem(new ItemBuilder(Material.PLAYER_HEAD).setHead(managetPlayer.getName()).setDisplayName(managetPlayer.getName()).build()), 0, 0);
         GuiItem adduserperms = new GuiItem(new ItemBuilder(Material.PLAYER_HEAD).setHeadDatabase(997).setDisplayName("User Perm").build(), event -> {
             player.sendMessage("ser player perms");
             event.setCancelled(true);
         });
-        pane.addItem(adduserperms, 4, 1);
+        pane.addItem(adduserperms, 2, 1);
 
-        GuiItem kickUser = new GuiItem(new ItemBuilder(Material.PLAYER_HEAD).setHeadDatabase(9348).setDisplayName("Kick " + managetPlayer.getName() + " from Team").build(), event -> {
-            DispenserGui confirm = new DispenserGui("Confirm Kick" + managetPlayer.getName());
+        GuiItem kickUser = new GuiItem(new ItemBuilder(Material.PLAYER_HEAD).setHeadDatabase(9348).setDisplayName("Kick " + managetPlayer.getName() + " from Projeckt").build(), event -> {
+            DispenserGui confirm = new DispenserGui("Confirm Kick " + managetPlayer.getName());
             StaticPane cpane = new StaticPane(3, 3);
             cpane.fillWith(outlineintem);
-            GuiItem check = new GuiItem(new ItemBuilder(Material.PLAYER_HEAD).setHeadDatabase(21774).setDisplayName("Kick" + managetPlayer.getName()).build(), event1 -> {
+            GuiItem check = new GuiItem(new ItemBuilder(Material.PLAYER_HEAD).setHeadDatabase(21774).setDisplayName("Kick " + managetPlayer.getName()).build(), event1 -> {
                 builderSystem.kickMember(String.valueOf(player.getUniqueId()), projecktID, String.valueOf(managetPlayer.getUniqueId()));
                 confirm.getInventory().close();
                 player.sendMessage(managetPlayer.getName() + " got kicked");
@@ -455,6 +449,12 @@ public class WorldGui {
         gui.getContentsComponent().addPane(pane);
         gui.show(player);
     }
+
+    public static void manageteams(Player player, int projecktID, String projecktName) {
+
+
+    }
+
 
 }
 

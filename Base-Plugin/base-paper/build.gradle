@@ -18,7 +18,7 @@ processResources {
     }
 }
 
-task copyJar(type: Copy) {
+task copyJar(type: Copy, dependsOn: shadowJar) {
     from 'build/libs/base-paper-all.jar'
     into '../../Plugins-all'
 }

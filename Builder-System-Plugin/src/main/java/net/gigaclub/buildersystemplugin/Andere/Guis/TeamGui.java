@@ -355,7 +355,7 @@ public class TeamGui implements Listener {
         ChestGui playermanager = new ChestGui(3, managetPlayer.getName() + " Manager");
         StaticPane pane = new StaticPane(9, 3);
         pane.fillWith(outlineintem);
-        pane.addItem(new GuiItem(new ItemBuilder(Material.PLAYER_HEAD).setHead(managetPlayer.getName()).setDisplayName(" ").build()), 0, 0);
+        pane.addItem(new GuiItem(new ItemBuilder(Material.PLAYER_HEAD).setHead(managetPlayer.getName()).setDisplayName(managetPlayer.getName()).build()), 0, 0);
         GuiItem addPermsGroup = new GuiItem(new ItemBuilder(Material.PLAYER_HEAD).setHeadDatabase(10250).setDisplayName("set team Group").build(), event -> {
             player.sendMessage("set user Group");
             event.setCancelled(true);
@@ -368,10 +368,10 @@ public class TeamGui implements Listener {
         pane.addItem(adduserperms, 4, 1);
 
         GuiItem kickUser = new GuiItem(new ItemBuilder(Material.PLAYER_HEAD).setHeadDatabase(9348).setDisplayName("Kick " + managetPlayer.getName() + " from Team").build(), event -> {
-            DispenserGui confirm = new DispenserGui("Confirm Kick" + managetPlayer.getName());
+            DispenserGui confirm = new DispenserGui("Confirm Kick " + managetPlayer.getName());
             StaticPane cpane = new StaticPane(3, 3);
             cpane.fillWith(outlineintem);
-            GuiItem check = new GuiItem(new ItemBuilder(Material.PLAYER_HEAD).setHeadDatabase(21774).setDisplayName("Kick" + managetPlayer.getName()).build(), event1 -> {
+            GuiItem check = new GuiItem(new ItemBuilder(Material.PLAYER_HEAD).setHeadDatabase(21774).setDisplayName("Kick " + managetPlayer.getName()).build(), event1 -> {
                 builderSystem.kickMember(String.valueOf(player.getUniqueId()), TeamID, String.valueOf(managetPlayer.getUniqueId()));
                 confirm.getInventory().close();
                 player.sendMessage(managetPlayer.getName() + " got kicked");
