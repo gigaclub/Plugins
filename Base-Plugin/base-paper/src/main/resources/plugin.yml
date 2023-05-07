@@ -3,7 +3,7 @@ version: 1.19.0.1.0.0
 main: net.gigaclub.base.Base
 api-version: 1.19
 prefix: Base
-load: POSTWORLD
+load: STARTUP
 authors: [ GigaClub ]
 description: A Base Plugin for Minecraft
 website: https://github.com/GigaClub
