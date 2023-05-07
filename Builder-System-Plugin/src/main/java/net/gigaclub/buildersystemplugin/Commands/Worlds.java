@@ -1,6 +1,9 @@
 package net.gigaclub.buildersystemplugin.Commands;
 
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import net.gigaclub.buildersystem.BuilderSystem;
 import net.gigaclub.buildersystemplugin.Main;
 import net.gigaclub.translation.Translation;
@@ -30,7 +33,7 @@ public class Worlds implements CommandExecutor, TabCompleter {
         String playerUUID = player.getUniqueId().toString();
         Translation t = Main.getTranslation();
         BuilderSystem builderSystem = Main.getBuilderSystem();
-        JSONArray ownteamname;
+        JsonArray ownteamname;
         try {
              ownteamname = builderSystem.getTeamsByMember(playerUUID);
 
@@ -134,13 +137,14 @@ public class Worlds implements CommandExecutor, TabCompleter {
 
                     }
                     if (ownteamname != null) {
-                        for (int i = 0; i < ownteamname.length(); i++) {
-                            if (i == Integer.parseInt(args[1])) {
-                                if (isInt(args[2])) {
-                                    builderSystem.removeTeamFromWorld(playerUUID, Integer.parseInt(args[1]), Integer.parseInt(args[2]));
-                                    player.sendMessage(t.t("BuilderSystem.world.remove_succses", player));
-                                }
-                            }
+                        for (JsonElement jsonElement : ownteamname) {
+                            JsonObject ownTeam = jsonElement.getAsJsonObject();
+//                            if (i == Integer.parseInt(args[1])) {  // TODO I think this doesn't make sence
+//                                if (isInt(args[2])) {
+//                                    builderSystem.removeTeamFromWorld(playerUUID, Integer.parseInt(args[1]), Integer.parseInt(args[2]));
+//                                    player.sendMessage(t.t("BuilderSystem.world.remove_succses", player));
+//                                }
+//                            }
                         }
                     }
                     break;
@@ -157,15 +161,16 @@ public class Worlds implements CommandExecutor, TabCompleter {
                     break;
 
                 case "addteam":
-                    for (int i = 0; i < ownteamname.length(); i++) {
-                        if (i != Integer.parseInt(args[1])) {
-                            int Teamname = i;
-                            if (isInt(args[2])) {
-
-                                builderSystem.addTeamToWorld(playerUUID, Teamname, Integer.parseInt(args[2]));
-                                player.sendMessage(t.t("BuilderSystem.world.addteam_succses", player));
-                            }
-                        }
+                    for (JsonElement jsonElement : ownteamname) {
+                        JsonObject ownTeam = jsonElement.getAsJsonObject();
+//                        if (i != Integer.parseInt(args[1])) {  // TODO I think this doesn't make sence
+//                            int Teamname = i;
+//                            if (isInt(args[2])) {
+//
+//                                builderSystem.addTeamToWorld(playerUUID, Teamname, Integer.parseInt(args[2]));
+//                                player.sendMessage(t.t("BuilderSystem.world.addteam_succses", player));
+//                            }
+//                        }
                     }
 
                     break;
