@@ -1,5 +1,7 @@
 package net.gigaclub.buildersystemplugin.Andere.Guis;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import net.gigaclub.buildersystem.BuilderSystem;
 import net.gigaclub.buildersystemplugin.Andere.InterfaceAPI.GuiLayoutBuilder;
@@ -13,8 +15,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -45,9 +45,9 @@ public class TeamGui implements Listener {
         Inventory inventory = Bukkit.createInventory(null, size, (ChatColor.RED + "Team Gui"));
         inventory = guiLayout.guiFullBuilder(inventory,size);
         try {
-            JSONArray teams = builderSystem.getTeamsByMember(playerUUID);
-            JSONObject team = teams.getJSONObject(1);
-            String teamname = team.getString("name");
+            JsonArray teams = builderSystem.getTeamsByMember(playerUUID);
+            JsonObject team = teams.get(0).getAsJsonObject();
+            String teamname = team.get("name").getAsString();
 
         } catch (Exception e) {
             inventory.setItem(11, new ItemBuilder(Material.PAPER).setGui(true).addIdentifier("Team_Create").setDisplayName(ChatColor.GRAY + "Team Create").setGlow(true).build());
@@ -57,11 +57,11 @@ public class TeamGui implements Listener {
             return;
         }
 
-        JSONArray teams = builderSystem.getTeamsByMember(playerUUID);
-        JSONObject team = teams.getJSONObject(1);
+        JsonArray teams = builderSystem.getTeamsByMember(playerUUID);
+        JsonObject team = teams.get(0).getAsJsonObject();
 
         //User mit Team
-        if (team.length() >= 0) {
+        if (team != null) {
             inventory.setItem(16, new ItemBuilder(Material.PAPER).setGui(true).addIdentifier("invite_list_Opener").setDisplayName(ChatColor.GRAY + "Invites List").build());
             inventory.setItem(13, new ItemBuilder(Material.PAPER).setGui(true).addIdentifier("list_projecks").setDisplayName(ChatColor.GRAY + "Projeckt List").build());
             inventory.setItem(10, new ItemBuilder(Material.PAPER).setGui(true).addIdentifier("team_manager").setDisplayName(ChatColor.GRAY + "Team Manager").build());

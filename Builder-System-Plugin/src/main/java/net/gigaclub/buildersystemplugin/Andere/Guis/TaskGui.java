@@ -7,6 +7,9 @@ import com.github.stefvanschie.inventoryframework.gui.type.DispenserGui;
 import com.github.stefvanschie.inventoryframework.pane.PaginatedPane;
 import com.github.stefvanschie.inventoryframework.pane.Pane;
 import com.github.stefvanschie.inventoryframework.pane.StaticPane;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import net.gigaclub.buildersystem.BuilderSystem;
 import net.gigaclub.buildersystemplugin.Andere.InterfaceAPI.ItemBuilder;
@@ -158,10 +161,10 @@ public class TaskGui {
         ChestGui teamSelect = new ChestGui(2, "Team Select");
         PaginatedPane pane = new PaginatedPane(0, 0, 9, 2);
 
-        JSONArray teamsUser = builderSystem.getTeamsByMember(player.getUniqueId().toString());
-        for (int i = 0; i < teamsUser.length(); i++) {
-            JSONObject team = teamsUser.getJSONObject(i);
-            guiItems.add(new GuiItem(new ItemBuilder(Material.PLAYER_HEAD).setItemMeta(hdb.getRandomHead().getItemMeta()).setDisplayName(team.getString("name")).build(), event -> worldType(player, ID, team.getInt("id"))));
+        JsonArray teamsUser = builderSystem.getTeamsByMember(player.getUniqueId().toString());
+        for (JsonElement jsonElement : teamsUser) {
+            JsonObject team = jsonElement.getAsJsonObject();
+            guiItems.add(new GuiItem(new ItemBuilder(Material.PLAYER_HEAD).setItemMeta(hdb.getRandomHead().getItemMeta()).setDisplayName(team.get("name").getAsString()).build(), event -> worldType(player, ID, team.get("id").getAsInt())));
 
         }
         pane.populateWithGuiItems(guiItems);
@@ -195,11 +198,11 @@ public class TaskGui {
     public static void createWorld(int teamID, int ID, InventoryClickEvent event, String worldType) {
         BuilderSystem builderSystem = Main.getBuilderSystem();
         JSONObject task = builderSystem.getTask(ID);
-        JSONObject team = builderSystem.getTeam(teamID);
+        JsonObject team = builderSystem.getTeam(teamID);
 
 
         if (teamID != 0) {
-            int res = builderSystem.createWorldAsTeam(event.getWhoClicked().getUniqueId().toString(), teamID, ID, task.getString("name") + "_" + team.getString("name"), worldType);
+            int res = builderSystem.createWorldAsTeam(event.getWhoClicked().getUniqueId().toString(), teamID, ID, task.getString("name") + "_" + team.get("name").getAsString(), worldType);
             event.getWhoClicked().sendMessage(String.valueOf(res));
         } else
             builderSystem.createWorldAsUser(event.getWhoClicked().getUniqueId().toString(), ID, task.getString("name") + "_" + event.getWhoClicked().getName(), worldType);

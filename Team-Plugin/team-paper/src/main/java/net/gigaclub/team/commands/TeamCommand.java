@@ -1,6 +1,8 @@
 package net.gigaclub.team.commands;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import net.gigaclub.team.Main;
 import net.gigaclub.teamapi.Team;
 import net.gigaclub.translation.Translation;
@@ -11,8 +13,6 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.util.Objects;
 
@@ -125,8 +125,8 @@ public class TeamCommand implements CommandExecutor {
                 switch (status) {
                     case 0 -> {
                         t.sendMessage("team.command.invite.success", player);
-                        JSONObject getTeam = team.getTeam(teamId);
-                        String teamname = getTeam.getString("name");
+                        JsonObject getTeam = team.getTeam(teamId);
+                        String teamname = getTeam.get("name").getAsString();
                         t.sendMessage("team.command.invite.sender", player, Placeholder.parsed("teamname", teamname), Placeholder.parsed("receiver", receiver.getName()));
                         t.sendMessage("team.command.invite.receiver", receiver, Placeholder.parsed("teamname", teamname));
                     }
@@ -160,7 +160,7 @@ public class TeamCommand implements CommandExecutor {
                 }
                 break;
             case "list":
-                JSONArray teamList = team.getTeamsByMember(playerUUID);
+                JsonArray teamList = team.getTeamsByMember(playerUUID);
                 // TODO add option to show the team list but first rework to google json
                 t.sendMessage("team.command.list", player);
                 break;

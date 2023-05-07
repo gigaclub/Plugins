@@ -1,6 +1,7 @@
 package net.gigaclub.buildersystemplugin.listener;
 
 
+import com.google.gson.JsonArray;
 import eu.cloudnetservice.driver.event.EventListener;
 import eu.cloudnetservice.driver.event.events.service.CloudServiceEvent;
 import eu.cloudnetservice.driver.inject.InjectionLayer;
@@ -113,12 +114,12 @@ public class joinlistener implements Listener {
 
 
             try {
-                JSONArray team = builderSystem.getTeamsByMember(playerUUID);
+                JsonArray team = builderSystem.getTeamsByMember(playerUUID);
 
             } catch (Exception e) {
                 return;
             }
-            JSONArray teams = builderSystem.getTeamsByMember(playerUUID);
+            JsonArray teams = builderSystem.getTeamsByMember(playerUUID);
 
 /*            for (int j = 0; j < teams.length(); j++) {
                 JSONArray teamworlds = teams.getJSONArray(j);
