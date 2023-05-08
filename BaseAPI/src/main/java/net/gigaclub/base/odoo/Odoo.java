@@ -138,10 +138,10 @@ public class Odoo {
    * @param condition The condition to search for.
    * @return The list of ids of the record.
    */
-  public List<Integer> search(String model, List<Object> domain, Map<Object, Object> condition) {
+  public List<Object> search(String model, List<Object> domain, Map<Object, Object> condition) {
     try {
       return Arrays.asList(
-              (Integer[])
+              (Object[])
                       this.models.execute(
                               "execute_kw",
                               Arrays.asList(
@@ -159,10 +159,10 @@ public class Odoo {
    * @param domain The domain to search for.
    * @return The list of ids of the record.
    */
-  public List<Integer> search(String model, List<Object> domain) {
+  public List<Object> search(String model, List<Object> domain) {
     try {
       return Arrays.asList(
-              (Integer[])
+              (Object[])
                       this.models.execute(
                               "execute_kw",
                               Arrays.asList(this.database, this.uid, this.password, model, "search", domain)));
