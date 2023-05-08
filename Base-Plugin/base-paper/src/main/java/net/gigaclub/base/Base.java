@@ -5,6 +5,7 @@ import net.gigaclub.base.config.OdooConfig;
 import net.gigaclub.base.data.Data;
 import net.gigaclub.base.listener.OnJoin;
 import net.gigaclub.base.listener.OnLeave;
+import net.gigaclub.base.listener.OnServerException;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -38,6 +39,7 @@ public final class Base extends JavaPlugin {
     public void onEnable() {
         // Plugin startup logic
         setPlugin(this);
+        registerEvents();
         setConfig();
 
         File file = new File("plugins//" + "Odoo", "config.yml");
@@ -48,7 +50,6 @@ public final class Base extends JavaPlugin {
                 config.getString("Odoo.Username"),
                 config.getString("Odoo.Password")
         ));
-        registerEvents();
     }
 
     @Override
@@ -66,6 +67,7 @@ public final class Base extends JavaPlugin {
     }
 
     private void registerEvents() {
+        Bukkit.getPluginManager().registerEvents(new OnServerException(), getPlugin());
         Bukkit.getPluginManager().registerEvents(new OnJoin(), getPlugin());
         Bukkit.getPluginManager().registerEvents(new OnLeave(), getPlugin());
     }
