@@ -1,14 +1,13 @@
 package net.gigaclub.teamapi;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import net.gigaclub.base.odoo.Odoo;
 import org.apache.xmlrpc.XmlRpcException;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 public class Team {
 
@@ -177,60 +176,60 @@ public class Team {
         return 4;
     }
 
-    public JSONArray getTeamsByMember(String playerUUID) {
+    public JsonArray getTeamsByMember(String playerUUID) {
         try {
-            return new JSONArray(this.odoo.getModels().execute("execute_kw", Arrays.asList(
+            return this.odoo.gson.toJsonTree(this.odoo.getModels().execute("execute_kw", Arrays.asList(
                     this.odoo.getDatabase(), this.odoo.getUid(), this.odoo.getPassword(),
                     "gc.team", "get_teams_by_member", Collections.singletonList(playerUUID)
-            )));
+            ))).getAsJsonArray();
         } catch (XmlRpcException e) {
             e.printStackTrace();
         }
         return null;
     }
 
-    public JSONArray getAllTeams() {
+    public JsonArray getAllTeams() {
         try {
-            return new JSONArray(this.odoo.getModels().execute("execute_kw", Arrays.asList(
+            return this.odoo.gson.toJsonTree(this.odoo.getModels().execute("execute_kw", Arrays.asList(
                     this.odoo.getDatabase(), this.odoo.getUid(), this.odoo.getPassword(),
                     "gc.team", "get_all_teams", List.of()
-            )));
+            ))).getAsJsonArray();
         } catch (XmlRpcException e) {
             e.printStackTrace();
         }
         return null;
     }
 
-    public JSONObject getTeam(int teamId) {
+    public JsonObject getTeam(int teamId) {
         try {
-            return new JSONObject((Map<String, String>) this.odoo.getModels().execute("execute_kw", Arrays.asList(
+            return this.odoo.gson.toJsonTree(this.odoo.getModels().execute("execute_kw", Arrays.asList(
                     this.odoo.getDatabase(), this.odoo.getUid(), this.odoo.getPassword(),
                     "gc.team", "get_team", List.of(teamId)
-            )));
+            ))).getAsJsonObject();
         } catch (XmlRpcException e) {
             e.printStackTrace();
         }
         return null;
     }
 
-    public JSONArray getUserMemberToTeamInvitations(String playerUUID) {
+    public JsonArray getUserMemberToTeamInvitations(String playerUUID) {
         try {
-            return new JSONArray(this.odoo.getModels().execute("execute_kw", Arrays.asList(
+            return this.odoo.gson.toJsonTree(this.odoo.getModels().execute("execute_kw", Arrays.asList(
                     this.odoo.getDatabase(), this.odoo.getUid(), this.odoo.getPassword(),
                     "gc.request", "get_user_member_to_team_invitations", Collections.singletonList(playerUUID)
-            )));
+            ))).getAsJsonArray();
         } catch (XmlRpcException e) {
             e.printStackTrace();
         }
         return null;
     }
 
-    public JSONArray getTeamMemberToTeamInvitations(int teamId) {
+    public JsonArray getTeamMemberToTeamInvitations(int teamId) {
         try {
-            return new JSONArray(this.odoo.getModels().execute("execute_kw", Arrays.asList(
+            return this.odoo.gson.toJsonTree(this.odoo.getModels().execute("execute_kw", Arrays.asList(
                     this.odoo.getDatabase(), this.odoo.getUid(), this.odoo.getPassword(),
                     "gc.request", "get_team_member_to_team_invitations", List.of(teamId)
-            )));
+            ))).getAsJsonArray();
         } catch (XmlRpcException e) {
             e.printStackTrace();
         }

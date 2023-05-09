@@ -1,5 +1,8 @@
 package net.gigaclub.permissionsystem;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import eu.cloudnetservice.driver.inject.InjectionLayer;
 import eu.cloudnetservice.driver.permission.PermissionGroup;
 import eu.cloudnetservice.driver.permission.PermissionManagement;
@@ -13,8 +16,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.io.File;
 import java.util.Arrays;
@@ -91,30 +92,30 @@ public final class Main extends JavaPlugin {
         PermissionManagement permissionManagement = InjectionLayer.boot().instance(PermissionManagement.class);
         PermissionSystem permissionSystem = Main.getPermissionSystem();
 
-        JSONArray groups = permissionSystem.getAllGroups();
-        for (int i = 0; i < groups.length(); i++) {
-            JSONObject group = groups.getJSONObject(i);
-            String groupName = group.getString("name");
-            JSONArray permissions = group.getJSONArray("permissions");
+        JsonArray groups = permissionSystem.getAllGroups();
+        for (JsonElement jsonElement : groups) {
+            JsonObject group = jsonElement.getAsJsonObject();
+            String groupName = group.get("name").getAsString();
+            JsonArray permissions = group.get("permissions").getAsJsonArray();
             // TODO refactor this with google json
             String suffix = "";
             try {
-                suffix = group.getString("suffix");
+                suffix = group.get("suffix").getAsString();
             } catch (Exception e) {
             }
             String prefix = "";
             try {
-                prefix = group.getString("prefix");
+                prefix = group.get("prefix").getAsString();
             } catch (Exception e) {
             }
             String color = "";
             try {
-                color = group.getString("color");
+                color = group.get("color").getAsString();
             } catch (Exception e) {
             }
             String display = "";
             try {
-                display = group.getString("display");
+                display = group.get("display").getAsString();
             } catch (Exception e) {
             }
             String finalSuffix = suffix;
@@ -122,8 +123,8 @@ public final class Main extends JavaPlugin {
             String finalColor = color;
             String finalDisplay = display;
             var permissionGroup = PermissionGroup.builder().potency(100).name(groupName).suffix(finalSuffix).prefix(finalPrefix).color(finalColor).display(finalDisplay).build();
-            for (int j = 0; j < permissions.length(); j++) {
-                permissionGroup.addPermission(permissions.getString(j));
+            for (JsonElement permission : permissions) {
+                permissionGroup.addPermission(permission.getAsString());
             }
             permissionManagement.updateGroup(permissionGroup);
         }
@@ -131,12 +132,12 @@ public final class Main extends JavaPlugin {
         Player[] players = Bukkit.getOnlinePlayers().toArray(new Player[0]);
         //end grepper
         for (Player player : players) {
-            JSONArray groupsOfPlayer = permissionSystem.getGroups(player.getUniqueId().toString());
+            JsonArray groupsOfPlayer = permissionSystem.getGroups(player.getUniqueId().toString());
             PermissionUser permissionUser = permissionManagement.user(player.getUniqueId());
             permissionUser.groups().forEach(groupOfUser -> permissionUser.removeGroup(groupOfUser.group()));
-            for (int i = 0; i < groupsOfPlayer.length(); i++) {
-                JSONObject group = groupsOfPlayer.getJSONObject(i);
-                String groupName = group.getString("name");
+            for (JsonElement jsonElement : groupsOfPlayer) {
+                JsonObject group = jsonElement.getAsJsonObject();
+                String groupName = group.get("name").getAsString();
                 permissionUser.addGroup(groupName);
                 permissionManagement.updateUser(permissionUser);
             }

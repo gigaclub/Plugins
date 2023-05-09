@@ -1,6 +1,8 @@
 package net.gigaclub.permissionsystem.commands;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.gigaclub.permissionsystem.Main;
 import net.gigaclub.permissionsystemapi.PermissionSystem;
@@ -18,8 +20,6 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,22 +42,22 @@ public class GroupCommand implements CommandExecutor, TabCompleter {
             return true;
         }
         PermissionSystem permissionSystem = Main.getPermissionSystem();
-        JSONArray groups = permissionSystem.getAllGroups();
+        JsonArray groups = permissionSystem.getAllGroups();
         switch (args[0]) {
             case "list":
                 // change after translation rework to support lists
                 t.sendMessage("group.list.group", player);
-                for (int i = 0; i < groups.length(); i++) {
-                    JSONObject group = groups.getJSONObject(i);
-                    String groupName = group.getString("name");
-                    JSONArray permissions = group.getJSONArray("permissions");
+                for (JsonElement jsonElement : groups) {
+                    JsonObject group = jsonElement.getAsJsonObject();
+                    String groupName = group.get("name").getAsString();
+                    JsonArray permissions = group.get("permissions").getAsJsonArray();
                     params = new JsonObject();
                     params.addProperty("group", groupName);
                     values = new JsonObject();
                     values.add("params", params);
                     List<String> perms = new ArrayList<>();
-                    for (int j = 0; j < permissions.length(); j++) {
-                        perms.add(permissions.getString(j));
+                    for (JsonElement permission : permissions) {
+                        perms.add(permission.getAsString());
                     }
                     Component[] permComponents = perms.stream().map(s -> Component.text(s)).toArray(Component[]::new);
                     t.sendMessage("group.list", player, TagResolver.resolver("languages", Tag.inserting(ComponentHelper.join(permComponents, Component.text(", ")))));
@@ -74,10 +74,10 @@ public class GroupCommand implements CommandExecutor, TabCompleter {
                 Player playerToAdd = Bukkit.getPlayer(playerName);
                 //end grepper
                 int groupId = 0;
-                for (int i = 0; i < groups.length(); i++) {
-                    JSONObject group = groups.getJSONObject(i);
-                    if (group.getString("name").toLowerCase().equals(groupName)) {
-                        groupId = group.getInt("id");
+                for (JsonElement jsonElement : groups) {
+                    JsonObject group = jsonElement.getAsJsonObject();
+                    if (group.get("name").getAsString().toLowerCase().equals(groupName)) {
+                        groupId = group.get("id").getAsInt();
                         break;
                     }
                 }
@@ -95,10 +95,10 @@ public class GroupCommand implements CommandExecutor, TabCompleter {
                 String playerNameToRemove = args[2];
                 Player playerToRemove = Bukkit.getPlayer(playerNameToRemove);
                 groupId = 0;
-                for (int i = 0; i < groups.length(); i++) {
-                    JSONObject group = groups.getJSONObject(i);
-                    if (group.getString("name").toLowerCase().equals(groupNameToRemove)) {
-                        groupId = group.getInt("id");
+                for (JsonElement jsonElement : groups) {
+                    JsonObject group = jsonElement.getAsJsonObject();
+                    if (group.get("name").getAsString().toLowerCase().equals(groupNameToRemove)) {
+                        groupId = group.get("id").getAsInt();
                         break;
                     }
                 }
@@ -114,7 +114,7 @@ public class GroupCommand implements CommandExecutor, TabCompleter {
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         PermissionSystem permissionSystem = Main.getPermissionSystem();
-        JSONArray groups = permissionSystem.getAllGroups();
+        JsonArray groups = permissionSystem.getAllGroups();
 
         if (args.length == 1) {
             List<String> arguments = new ArrayList<>();
@@ -125,9 +125,9 @@ public class GroupCommand implements CommandExecutor, TabCompleter {
         } else if (args.length == 2) {
             if (args[0].equals("add") || args[0].equals("remove")) {
                 List<String> arguments = new ArrayList<>();
-                for (int i = 0; i < groups.length(); i++) {
-                    JSONObject group = groups.getJSONObject(i);
-                    String groupName = group.getString("name");
+                for (JsonElement jsonElement : groups) {
+                    JsonObject group = jsonElement.getAsJsonObject();
+                    String groupName = group.get("name").getAsString();
                     arguments.add(groupName);
                 }
                 return arguments;

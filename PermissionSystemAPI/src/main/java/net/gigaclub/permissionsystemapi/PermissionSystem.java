@@ -1,35 +1,34 @@
 package net.gigaclub.permissionsystemapi;
 
+import com.google.gson.JsonArray;
 import net.gigaclub.base.odoo.Odoo;
 import org.apache.xmlrpc.XmlRpcException;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public class PermissionSystem {
 
-    private Odoo odoo;
+    private final Odoo odoo;
 
     public PermissionSystem(String hostname, String database, String username, String password) {
         this.odoo = new Odoo(hostname, database, username, password);
     }
 
-    public JSONArray getAllGroups() {
+    public JsonArray getAllGroups() {
         try {
-            return new JSONArray(
-                this.odoo.getModels().execute(
+            return this.odoo.gson.toJsonTree(this.odoo.getModels().execute(
                     "execute_kw",
                     Arrays.asList(
-                        this.odoo.getDatabase(),
-                        this.odoo.getUid(),
-                        this.odoo.getPassword(),
-                        "gc.permission.group",
-                        "get_all_groups",
-                        Arrays.asList()
+                            this.odoo.getDatabase(),
+                            this.odoo.getUid(),
+                            this.odoo.getPassword(),
+                            "gc.permission.group",
+                            "get_all_groups",
+                            List.of()
                     )
-                )
-            );
+            )).getAsJsonArray();
         } catch (XmlRpcException e) {
             e.printStackTrace();
         }
@@ -60,21 +59,19 @@ public class PermissionSystem {
         return 4;
     }
 
-    public JSONArray getGroups(String playerUUID) {
+    public JsonArray getGroups(String playerUUID) {
         try {
-            return new JSONArray(
-                this.odoo.getModels().execute(
+            return this.odoo.gson.toJsonTree(this.odoo.getModels().execute(
                     "execute_kw",
                     Arrays.asList(
-                        this.odoo.getDatabase(),
-                        this.odoo.getUid(),
-                        this.odoo.getPassword(),
-                        "gc.permission.group",
-                        "get_groups",
-                        Arrays.asList(playerUUID)
+                            this.odoo.getDatabase(),
+                            this.odoo.getUid(),
+                            this.odoo.getPassword(),
+                            "gc.permission.group",
+                            "get_groups",
+                            Collections.singletonList(playerUUID)
                     )
-                )
-            );
+            )).getAsJsonArray();
         } catch (XmlRpcException e) {
             e.printStackTrace();
         }

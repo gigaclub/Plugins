@@ -1,13 +1,14 @@
 package net.gigaclub.base.data;
 
 import net.gigaclub.base.odoo.Odoo;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
 public class Data {
 
-    private Odoo odoo;
+    private final Odoo odoo;
 
     public Data(String hostname, String database, String username, String password) {
         this.odoo = new Odoo(hostname, database, username, password);
@@ -16,8 +17,8 @@ public class Data {
     public int getPlayer(String playerUUID) {
         List players = this.odoo.search(
                 "gc.user",
-                Arrays.asList(
-                        Arrays.asList(
+                List.of(
+                        List.of(
                                 Arrays.asList("mc_uuid", "=", playerUUID)
                         )
                 ),
@@ -32,31 +33,46 @@ public class Data {
     public boolean checkIfPlayerExists(String playerUUID) {
         return this.odoo.search_count(
             "gc.user",
-            Arrays.asList(
-                    Arrays.asList(
-                        Arrays.asList("mc_uuid", "=", playerUUID)
-                    )
-            )
+                List.of(
+                        List.of(
+                                Arrays.asList("mc_uuid", "=", playerUUID)
+                        )
+                )
         ) > 0;
     }
 
     public boolean createPlayer(String name, String playerUUID) {
         return this.odoo.create(
-            "gc.user",
-            Arrays.asList(
-                    new HashMap() {{ put("name", name); put("mc_uuid", playerUUID); }}
-            )
+                "gc.user",
+                List.of(
+                        new HashMap() {{
+                            put("name", name);
+                            put("mc_uuid", playerUUID);
+                        }}
+                )
+        ) > 0;
+    }
+
+    public boolean createException(String name, String traceback) {
+        return this.odoo.create(
+                "gc.exception",
+                List.of(
+                        new HashMap() {{
+                            put("name", name);
+                            put("traceback", traceback);
+                        }}
+                )
         ) > 0;
     }
 
     public boolean checkName(String name, String playerUUID) {
         return this.odoo.search_count(
-            "gc.user",
-            Arrays.asList(
-                Arrays.asList(
-                    Arrays.asList("name", "=", name), Arrays.asList("mc_uuid", "=", playerUUID)
+                "gc.user",
+                List.of(
+                        Arrays.asList(
+                                Arrays.asList("name", "=", name), Arrays.asList("mc_uuid", "=", playerUUID)
+                        )
                 )
-            )
         ) > 0;
     }
 
@@ -64,7 +80,7 @@ public class Data {
         this.odoo.write(
             "gc.user",
             Arrays.asList(
-                    Arrays.asList(this.getPlayer(playerUUID)),
+                    List.of(this.getPlayer(playerUUID)),
                     new HashMap() {{ put("name", name); }}
             )
         );
@@ -74,7 +90,7 @@ public class Data {
         this.odoo.write(
             "gc.user",
             Arrays.asList(
-                    Arrays.asList(this.getPlayer(playerUUID)),
+                    List.of(this.getPlayer(playerUUID)),
                     new HashMap() {{ put("state", status); }}
             )
         );

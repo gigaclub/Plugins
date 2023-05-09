@@ -1,16 +1,15 @@
 package net.gigaclub.base.odoo;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.client.XmlRpcClient;
 import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
-import org.json.JSONArray;
-import org.json.JSONObject;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.*;
 
 /** Odoo is a Java client library for the Odoo ERP. */
 public class Odoo {
@@ -47,6 +46,7 @@ public class Odoo {
    * UID of the user.
    */
   private int uid;
+  public Gson gson;
 
   /**
    * Creates a new Odoo instance.
@@ -66,6 +66,8 @@ public class Odoo {
     this.commonConfig = new XmlRpcClientConfigImpl();
 
     this.setUp();
+
+    this.gson = new Gson();
   }
 
   private void setUp() {
@@ -131,19 +133,19 @@ public class Odoo {
   /**
    * Search for a record in the odoo database.
    *
-   * @param model The model to search in.
-   * @param domain The domain to search for.
+   * @param model     The model to search in.
+   * @param domain    The domain to search for.
    * @param condition The condition to search for.
    * @return The list of ids of the record.
    */
   public List<Object> search(String model, List<Object> domain, Map<Object, Object> condition) {
     try {
       return Arrays.asList(
-          (Object[])
-              this.models.execute(
-                  "execute_kw",
-                  Arrays.asList(
-                      this.database, this.uid, this.password, model, "search", domain, condition)));
+              (Object[])
+                      this.models.execute(
+                              "execute_kw",
+                              Arrays.asList(
+                                      this.database, this.uid, this.password, model, "search", domain, condition)));
     } catch (XmlRpcException e) {
       e.printStackTrace();
     }
@@ -153,17 +155,17 @@ public class Odoo {
   /**
    * Search for a record in the odoo database.
    *
-   * @param model The model to search in.
+   * @param model  The model to search in.
    * @param domain The domain to search for.
    * @return The list of ids of the record.
    */
   public List<Object> search(String model, List<Object> domain) {
     try {
       return Arrays.asList(
-          (Object[])
-              this.models.execute(
-                  "execute_kw",
-                  Arrays.asList(this.database, this.uid, this.password, model, "search", domain)));
+              (Object[])
+                      this.models.execute(
+                              "execute_kw",
+                              Arrays.asList(this.database, this.uid, this.password, model, "search", domain)));
     } catch (XmlRpcException e) {
       e.printStackTrace();
     }
@@ -192,108 +194,97 @@ public class Odoo {
   /**
    * Read a record from the odoo database.
    *
-   * @param model The model to read from.
-   * @param ids The ids of the record to read.
+   * @param model  The model to read from.
+   * @param ids    The ids of the record to read.
    * @param fields The fields to read.
    * @return The list of fields of the record.
    */
-  public JSONArray read(String model, List<Integer> ids, Map<Object, Object> fields) {
+  public JsonArray read(String model, List<Integer> ids, Map<Object, Object> fields) {
     try {
-      return new JSONArray(
-          Arrays.asList(
-              (Object[])
-                  this.models.execute(
-                      "execute_kw",
-                      Arrays.asList(
-                          this.database, this.uid, this.password, model, "read", ids, fields))));
+      return this.gson.toJsonTree(this.models.execute(
+              "execute_kw",
+              Arrays.asList(
+                      this.database, this.uid, this.password, model, "read", ids, fields))).getAsJsonArray();
     } catch (XmlRpcException e) {
       e.printStackTrace();
     }
-    return new JSONArray();
+    return new JsonArray();
   }
 
   /**
    * Read a record from the odoo database.
    *
    * @param model The model to read from.
-   * @param ids The ids of the record to read.
+   * @param ids   The ids of the record to read.
    * @return The list of fields of the record.
    */
-  public JSONArray read(String model, List<Integer> ids) {
+  public JsonArray read(String model, List<Integer> ids) {
     try {
-      return new JSONArray(
-          Arrays.asList(
-              (Object[])
-                  this.models.execute(
-                      "execute_kw",
-                      Arrays.asList(
-                          this.database,
-                          this.uid,
-                          this.password,
-                          model,
-                          "read",
-                          Arrays.asList(ids)))));
+      return gson.toJsonTree(this.models.execute(
+              "execute_kw",
+              Arrays.asList(
+                      this.database,
+                      this.uid,
+                      this.password,
+                      model,
+                      "read",
+                      Collections.singletonList(ids)))).getAsJsonArray();
     } catch (XmlRpcException e) {
       e.printStackTrace();
     }
-    return new JSONArray();
+    return new JsonArray();
   }
 
   /**
    * Get the list of fields of a record from the odoo database.
    *
-   * @param model The model to read from.
-   * @param domain The domain to search for.
+   * @param model     The model to read from.
+   * @param domain    The domain to search for.
    * @param condition The condition to search for.
    * @return The list of fields of the record.
    */
-  public JSONObject fields_get(String model, List<Object> domain, Map<Object, Object> condition) {
+  public JsonObject fields_get(String model, List<Object> domain, Map<Object, Object> condition) {
     try {
-      return new JSONObject(
-          (Map<String, Map<String, Object>>)
-              this.models.execute(
-                  "execute_kw",
-                  Arrays.asList(
+      return gson.toJsonTree(this.models.execute(
+              "execute_kw",
+              Arrays.asList(
                       this.database,
                       this.uid,
                       this.password,
                       model,
                       "fields_get",
                       domain,
-                      condition)));
+                      condition))).getAsJsonObject();
     } catch (XmlRpcException e) {
       e.printStackTrace();
     }
-    return new JSONObject();
+    return new JsonObject();
   }
 
   /**
    * Get the list of data of a record from the odoo database.
    *
-   * @param model The model to read from.
-   * @param domain The domain to search for.
+   * @param model     The model to read from.
+   * @param domain    The domain to search for.
    * @param condition The condition to search for.
    * @return The list of data of the record.
    */
-  public JSONArray search_read(String model, List<Object> domain, Map<Object, Object> condition) {
+  public JsonArray search_read(String model, List<Object> domain, Map<Object, Object> condition) {
     try {
-      return new JSONArray(
-          Arrays.asList(
-              (Object[])
-                  this.models.execute(
-                      "execute_kw",
-                      Arrays.asList(
-                          this.database,
-                          this.uid,
-                          this.password,
-                          model,
-                          "search_read",
+      return gson.toJsonTree(this.models.execute(
+              "execute_kw",
+              Arrays.asList(
+                      this.database,
+                      this.uid,
+                      this.password,
+                      model,
+                      "search_read",
                           domain,
-                          condition))));
+                      condition))).getAsJsonArray();
     } catch (XmlRpcException e) {
       e.printStackTrace();
     }
-    return new JSONArray();
+    return new JsonArray();
   }
 
   /**
@@ -335,27 +326,24 @@ public class Odoo {
    * Get the name of a record from the odoo database.
    *
    * @param model The model to read from.
-   * @param ids The ids of the record to read.
+   * @param ids   The ids of the record to read.
    * @return The name of the record.
    */
-  public JSONArray name_get(String model, List<Integer> ids) {
+  public JsonArray name_get(String model, List<Integer> ids) {
     try {
-      return new JSONArray(
-          Arrays.asList(
-              (Object[])
-                  this.models.execute(
-                      "execute_kw",
-                      Arrays.asList(
-                          this.database,
-                          this.uid,
-                          this.password,
-                          model,
+      return gson.toJsonTree(this.models.execute(
+              "execute_kw",
+              Arrays.asList(
+                      this.database,
+                      this.uid,
+                      this.password,
+                      model,
                           "name_get",
-                          Arrays.asList(ids)))));
+                      Collections.singletonList(ids)))).getAsJsonArray();
     } catch (XmlRpcException e) {
       e.printStackTrace();
     }
-    return new JSONArray();
+    return new JsonArray();
   }
 
   /**
