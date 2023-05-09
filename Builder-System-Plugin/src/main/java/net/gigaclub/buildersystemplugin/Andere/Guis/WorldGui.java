@@ -9,9 +9,6 @@ import com.github.stefvanschie.inventoryframework.pane.PaginatedPane;
 import com.github.stefvanschie.inventoryframework.pane.Pane;
 import com.github.stefvanschie.inventoryframework.pane.StaticPane;
 import com.github.stefvanschie.inventoryframework.pane.util.Slot;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import net.gigaclub.buildersystem.BuilderSystem;
 import net.gigaclub.buildersystemplugin.Andere.Data;
 import net.gigaclub.buildersystemplugin.Andere.InterfaceAPI.ItemBuilder;
@@ -218,13 +215,13 @@ public class WorldGui {
         List<GuiItem> guiItems = new ArrayList<>();
 
 
-        JsonObject team = builderSystem.getTeam(projecktID);
+        JSONObject team = builderSystem.getWorld(projecktID);
 
-        JsonArray players = team.getAsJsonArray("user_ids");
+        JSONArray players = team.getJSONArray("user_ids");
         List<String> stringList = new ArrayList<String>();
 
 
-        String owner = team.get("owner_id").getAsString();
+        String owner = team.getString("owner_id");
 
 
         ArrayList<String> loreList1 = new ArrayList<>();
@@ -238,9 +235,9 @@ public class WorldGui {
         });
         guiItems.add(guiItem1);
 
-        for (JsonElement jsonElement : players) {
-            JsonObject uuid = jsonElement.getAsJsonObject();
-            String pid = uuid.get("mc_uuid").getAsString();
+        for (int i1 = 0; i1 < players.length(); i1++) {
+            JSONObject uuid = players.getJSONObject(i1);
+            String pid = uuid.getString("mc_uuid");
             String user_name = Bukkit.getOfflinePlayer(UUID.fromString(pid)).getName();
 
             stringList.add(user_name);
@@ -260,7 +257,6 @@ public class WorldGui {
             });
             guiItems.add(guiItem);
         }
-
         return guiItems;
     }
 
