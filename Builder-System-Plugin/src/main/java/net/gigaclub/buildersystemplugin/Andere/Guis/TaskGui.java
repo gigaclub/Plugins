@@ -7,6 +7,9 @@ import com.github.stefvanschie.inventoryframework.gui.type.DispenserGui;
 import com.github.stefvanschie.inventoryframework.pane.PaginatedPane;
 import com.github.stefvanschie.inventoryframework.pane.Pane;
 import com.github.stefvanschie.inventoryframework.pane.StaticPane;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import net.gigaclub.buildersystem.BuilderSystem;
 import net.gigaclub.buildersystemplugin.Andere.InterfaceAPI.ItemBuilder;
 import net.gigaclub.buildersystemplugin.Main;
@@ -180,15 +183,14 @@ public class TaskGui {
         PaginatedPane pane = new PaginatedPane(0, 0, 9, 2);
         pane.setOnClick(event -> event.setCancelled(true));
         teamSelect.setOnBottomClick(event -> event.setCancelled(true));
-        JSONArray teamsUser = builderSystem.getTeamsByMember(player.getUniqueId().toString());
+        JsonArray teamsUser = builderSystem.getTeamsByMember(player.getUniqueId().toString());
 
-        for (int i = 0; i < teamsUser.length(); i++) {
+        for (JsonElement jsonElement : teamsUser) {
 
-
-            JSONObject team = teamsUser.getJSONObject(i);
-            String owner = builderSystem.getTeam(team.getInt("id")).getString("owner_id");
+            JsonObject team = jsonElement.getAsJsonObject();
+            String owner = builderSystem.getTeam(team.get("id").getAsInt()).get("owner_id").getAsString();
             String ownerName = Bukkit.getOfflinePlayer(UUID.fromString(owner)).getName();
-            guiItems.add(new GuiItem(new ItemBuilder(Material.PLAYER_HEAD).setHead(ownerName).setDisplayName(team.getString("name")).build(), event -> worldType(player, ID, team.getInt("id"))));
+            guiItems.add(new GuiItem(new ItemBuilder(Material.PLAYER_HEAD).setHead(ownerName).setDisplayName(team.get("name").getAsString()).build(), event -> worldType(player, ID, team.get("id").getAsInt())));
 
         }
         pane.populateWithGuiItems(guiItems);
@@ -225,8 +227,8 @@ public class TaskGui {
 
 
         if (teamID != 0) {
-            JSONObject team = builderSystem.getTeam(teamID);
-            int res = builderSystem.createWorldAsTeam(event.getWhoClicked().getUniqueId().toString(), teamID, ID, task.getString("name") + "_" + team.getString("name"), worldType);
+            JsonObject team = builderSystem.getTeam(teamID);
+            int res = builderSystem.createWorldAsTeam(event.getWhoClicked().getUniqueId().toString(), teamID, ID, task.getString("name") + "_" + team.get("name").getAsString(), worldType);
             event.getWhoClicked().sendMessage(String.valueOf(res));
         } else
             builderSystem.createWorldAsUser(event.getWhoClicked().getUniqueId().toString(), ID, task.getString("name") + "_" + event.getWhoClicked().getName(), worldType);

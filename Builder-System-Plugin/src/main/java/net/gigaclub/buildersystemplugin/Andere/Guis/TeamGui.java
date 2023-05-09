@@ -9,6 +9,9 @@ import com.github.stefvanschie.inventoryframework.pane.PaginatedPane;
 import com.github.stefvanschie.inventoryframework.pane.Pane;
 import com.github.stefvanschie.inventoryframework.pane.StaticPane;
 import com.github.stefvanschie.inventoryframework.pane.util.Slot;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import net.gigaclub.buildersystem.BuilderSystem;
 import net.gigaclub.buildersystemplugin.Andere.Data;
 import net.gigaclub.buildersystemplugin.Andere.InterfaceAPI.ItemBuilder;
@@ -21,8 +24,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -169,36 +170,29 @@ public class TeamGui implements Listener {
     }
 
 
-    public static List<String> jsonArrayToList(JSONArray jsonArray) {
-        List<String> list = new ArrayList<String>();
-        for (int i = 0; i < jsonArray.length(); i++) {
-            String value = jsonArray.getString(i);
-            list.add(value);
-        }
-        return list;
-    }
 
     public static List<GuiItem> teamItemList(Player player) {
         BuilderSystem builderSystem = Main.getBuilderSystem();
         List<GuiItem> guiItems = new ArrayList<>();
-        JSONArray teams = builderSystem.getTeamsByMember(player.getUniqueId().toString());
+        JsonArray teams = builderSystem.getTeamsByMember(player.getUniqueId().toString());
 
         Data data = Main.getData();
 
-        for (int i = 0; i < teams.length(); i++) {
-            JSONObject team = teams.getJSONObject(i);
+        for (JsonElement jsonElement : teams) {
+            JsonObject team = jsonElement.getAsJsonObject();
 
-            int ID = team.getInt("id");
-            String name = team.getString("name");
-            String description = team.getString("description");
-            String owner = String.valueOf(Bukkit.getOfflinePlayer(UUID.fromString(team.getString("owner_id"))).getName());
+            int ID = team.get("id").getAsInt();
+            String name = team.get("name").getAsString();
+            String description = team.get("description").getAsString();
+            String owner = String.valueOf(Bukkit.getOfflinePlayer(UUID.fromString(team.get("owner_id").getAsString())).getName());
 
-            JSONArray players = team.getJSONArray("user_ids");
+            JsonArray players = team.getAsJsonArray("user_ids");
 
             List<String> stringList = new ArrayList<String>();
-            for (int i1 = 0; i1 < players.length(); i1++) {
-                JSONObject uuid = players.getJSONObject(i1);
-                String pid = uuid.getString("mc_uuid");
+            for (JsonElement jsonElement2 : players) {
+
+                JsonObject uuid = jsonElement2.getAsJsonObject();
+                String pid = uuid.get("mc_uuid").getAsString();
                 String user_name = Bukkit.getOfflinePlayer(UUID.fromString(pid)).getName();
 
                 stringList.add(user_name);
@@ -302,13 +296,13 @@ public class TeamGui implements Listener {
         List<GuiItem> guiItems = new ArrayList<>();
 
 
-        JSONObject team = builderSystem.getTeam(teamID);
+        JsonObject team = builderSystem.getTeam(teamID);
 
-        JSONArray players = team.getJSONArray("user_ids");
+        JsonArray players = team.getAsJsonArray("user_ids");
         List<String> stringList = new ArrayList<String>();
 
 
-        String owner = team.getString("owner_id");
+        String owner = team.get("owner_id").getAsString();
 
 
         ArrayList<String> loreList1 = new ArrayList<>();
@@ -322,9 +316,9 @@ public class TeamGui implements Listener {
         });
         guiItems.add(guiItem1);
 
-        for (int i1 = 0; i1 < players.length(); i1++) {
-            JSONObject uuid = players.getJSONObject(i1);
-            String pid = uuid.getString("mc_uuid");
+        for (JsonElement jsonElement : players) {
+            JsonObject uuid = jsonElement.getAsJsonObject();
+            String pid = uuid.get("mc_uuid").getAsString();
             String user_name = Bukkit.getOfflinePlayer(UUID.fromString(pid)).getName();
 
             stringList.add(user_name);
@@ -512,7 +506,7 @@ public class TeamGui implements Listener {
         AnvilGui editname = new AnvilGui("Edit Team Name");
 
         if (editName) {
-            GuiItem slot1 = new GuiItem(new ItemBuilder(Material.PAPER).setDisplayName(builderSystem.getTeam(teamID).getString("name")).build(), event -> {
+            GuiItem slot1 = new GuiItem(new ItemBuilder(Material.PAPER).setDisplayName(builderSystem.getTeam(teamID).get("name").getAsString()).build(), event -> {
                 event.setCancelled(true);
             });
             StaticPane pane1 = new StaticPane(1, 1);
@@ -521,7 +515,7 @@ public class TeamGui implements Listener {
 
         } else {
             editname.setTitle("Edit Team Description");
-            if (builderSystem.getTeam(teamID).getString("description").isEmpty()) {
+            if (builderSystem.getTeam(teamID).get("description").getAsString().isEmpty()) {
                 String deskr = "Description";
                 GuiItem slot1 = new GuiItem(new ItemBuilder(Material.PAPER).setDisplayName(deskr).build(), event -> {
                     event.setCancelled(true);
@@ -530,7 +524,7 @@ public class TeamGui implements Listener {
                 pane1.addItem(slot1, 0, 0);
                 editname.getFirstItemComponent().addPane(pane1);
             } else {
-                String deskr = builderSystem.getTeam(teamID).getString("description");
+                String deskr = builderSystem.getTeam(teamID).get("description").getAsString();
                 GuiItem slot1 = new GuiItem(new ItemBuilder(Material.PAPER).setDisplayName(deskr).build(), event -> {
                     event.setCancelled(true);
                 });
@@ -552,7 +546,7 @@ public class TeamGui implements Listener {
             editname.getResultComponent().addPane(pane2);
         } else {
             GuiItem slot3 = new GuiItem(new ItemBuilder(Material.PAPER).setDisplayName("Click to Save Description").build(), event -> {
-                builderSystem.editTeam(String.valueOf(player.getUniqueId()), teamID, builderSystem.getTeam(teamID).getString("name"), editname.getRenameText());
+                builderSystem.editTeam(String.valueOf(player.getUniqueId()), teamID, builderSystem.getTeam(teamID).get("name").getAsString(), editname.getRenameText());
                 event.setCancelled(true);
                 TeamMenu(teamID, player);
             });
@@ -566,17 +560,17 @@ public class TeamGui implements Listener {
         BuilderSystem builderSystem = Main.getBuilderSystem();
         List<GuiItem> guiItems = new ArrayList<>();
 
-        JSONArray invits = builderSystem.getUserMemberToTeamInvitations(String.valueOf(player.getUniqueId()));
-        for (int i = 0; i < invits.length(); i++) {
-            JSONObject invite = invits.getJSONObject(i);
+        JsonArray invits = builderSystem.getUserMemberToTeamInvitations(String.valueOf(player.getUniqueId()));
+        for (JsonElement jsonElement : invits) {
+            JsonObject invite = jsonElement.getAsJsonObject();
 
-            int sender = invite.getInt("sender_team_id");
+            int sender = invite.get("sender_team_id").getAsInt();
 
 
             ArrayList<String> loreList = new ArrayList<>();
             loreList.add(ChatColor.GRAY + "------------------");
             loreList.add(ChatColor.GRAY + "State: " + ChatColor.WHITE + "Waiting");
-            ItemStack invit = new ItemBuilder(Material.WHITE_WOOL).setDisplayName(ChatColor.GRAY + "Invite From " + ChatColor.WHITE + builderSystem.getTeam(sender).getString("name")).setLore(loreList).build();
+            ItemStack invit = new ItemBuilder(Material.WHITE_WOOL).setDisplayName(ChatColor.GRAY + "Invite From " + ChatColor.WHITE + builderSystem.getTeam(sender).get("name").getAsString()).setLore(loreList).build();
             GuiItem guiItem = new GuiItem(invit, event -> {
                 player.sendMessage("request menu ");
                 event.setCancelled(true);
