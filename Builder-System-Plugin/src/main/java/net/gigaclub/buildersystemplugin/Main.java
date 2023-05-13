@@ -143,6 +143,7 @@ public final class Main extends JavaPlugin implements Listener {
 
     @Override
     public void onDisable() {
+
         // Plugin shutdown logic
     }
 
@@ -159,6 +160,7 @@ public final class Main extends JavaPlugin implements Listener {
     public void onEnable() {
         plugin = this;
         setPlugin(this);
+
 
         setConfig();
 

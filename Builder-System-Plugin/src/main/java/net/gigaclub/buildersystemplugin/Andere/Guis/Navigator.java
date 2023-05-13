@@ -34,12 +34,14 @@ import static net.gigaclub.buildersystemplugin.Andere.Guis.WorldGui.projecktList
 
 public class Navigator implements Listener {
 
+
     HeadDatabaseAPI api = new HeadDatabaseAPI();
     Translation t = Main.getTranslation();
 
     BuilderSystem builderSystem = Main.getBuilderSystem();
 
     public static void Navigate(Player player) {
+
 
         ChestGui navigator = new ChestGui(3, "GcGui");
 
