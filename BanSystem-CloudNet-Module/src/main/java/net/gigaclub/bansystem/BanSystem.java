@@ -1,4 +1,4 @@
-package net.project.bansystem;
+package net.gigaclub.bansystem;
 
 import eu.cloudnetservice.common.document.gson.JsonDocument;
 import eu.cloudnetservice.driver.event.EventManager;
@@ -10,7 +10,7 @@ import eu.cloudnetservice.node.cluster.sync.DataSyncHandler;
 import eu.cloudnetservice.node.cluster.sync.DataSyncRegistry;
 import eu.cloudnetservice.node.module.listener.PluginIncludeListener;
 import jakarta.inject.Singleton;
-import net.project.bansystem.config.BanSystemConfig;
+import net.gigaclub.bansystem.config.BanSystemConfig;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.List;

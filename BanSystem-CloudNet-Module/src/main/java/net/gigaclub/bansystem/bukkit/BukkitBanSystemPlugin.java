@@ -1,4 +1,4 @@
-package net.project.bansystem.bukkit;
+package net.gigaclub.bansystem.bukkit;
 
 import eu.cloudnetservice.driver.event.EventManager;
 import eu.cloudnetservice.driver.util.ModuleHelper;
@@ -15,7 +15,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
         platform = "bukkit",
         name = "BanSystem",
         authors = "GigaClub",
-        version = "1.0.0"
+        version = "1.19.4.1.0.0"
 )
 public final class BukkitBanSystemPlugin implements PlatformEntrypoint {
 

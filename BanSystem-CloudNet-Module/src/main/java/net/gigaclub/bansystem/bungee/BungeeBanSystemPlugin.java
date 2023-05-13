@@ -1,4 +1,4 @@
-package net.project.bansystem.bungee;
+package net.gigaclub.bansystem.bungee;
 
 import eu.cloudnetservice.driver.util.ModuleHelper;
 import eu.cloudnetservice.ext.platforminject.api.PlatformEntrypoint;
@@ -14,7 +14,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
         platform = "bungeecord",
         name = "BanSystem",
         authors = "GigaClub",
-        version = "1.0.0"
+        version = "1.19.1.0.0"
 )
 public class BungeeBanSystemPlugin implements PlatformEntrypoint {
 

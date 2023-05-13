@@ -1,4 +1,4 @@
-package net.project.bansystem.config;
+package net.gigaclub.bansystem.config;
 
 import java.util.List;
 
