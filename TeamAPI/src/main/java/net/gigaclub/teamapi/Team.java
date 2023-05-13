@@ -176,7 +176,7 @@ public class Team {
         return 4;
     }
 
-    public JsonArray getTeamsByMember(String playerUUID) {
+    public com.google.gson.JsonArray getTeamsByMember(String playerUUID) {
         try {
             return this.odoo.gson.toJsonTree(this.odoo.getModels().execute("execute_kw", Arrays.asList(
                     this.odoo.getDatabase(), this.odoo.getUid(), this.odoo.getPassword(),

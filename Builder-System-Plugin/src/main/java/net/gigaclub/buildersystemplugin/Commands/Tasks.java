@@ -63,31 +63,28 @@ public class Tasks implements CommandExecutor, TabCompleter {
                         builderSystem.createTask(args[1], getDescription(args, 4), Integer.parseInt(args[2]), Integer.parseInt(args[3]));
                         player.sendMessage(t.t("builder_team.task.create.task_name_desc_succses", player));
                     }
-                            Main.getTaskCache().invalidateCache();
-                            Main.getTaskCache().invalidateInventoryCache();
 
 
-                        break;
-                    case "remove":
-                        if (args.length == 1) {
-                            player.sendMessage(t.t("builder_team.to_less_arguments", player));
-                            return false;
+                    break;
+                case "remove":
+                    if (args.length == 1) {
+                        player.sendMessage(t.t("builder_team.to_less_arguments", player));
+                        return false;
+                    }
+                    if (player.hasPermission("gigaclub_builder_system.remove_task")) {
+                        if (args.length == 2) {
+                            if (isInt(args[1])) {
+
+                                int i = Integer.parseInt(args[1]);
+                                builderSystem.removeTask(i);
+                                player.sendMessage(t.t("builder_team.task.remove_succses", player));
+
+
+                            } else player.sendMessage(t.t("builder_team.wrong_arguments", player));
                         }
-                        if (player.hasPermission("gigaclub_builder_system.remove_task")) {
-                            if (args.length == 2) {
-                                if (isInt(args[1])) {
 
-                                    int i = Integer.parseInt(args[1]);
-                                    builderSystem.removeTask(i);
-                                    player.sendMessage(t.t("builder_team.task.remove_succses", player));
-                                    Main.getTaskCache().invalidateCache();
-                                    Main.getTaskCache().invalidateInventoryCache();
-
-                                } else player.sendMessage(t.t("builder_team.wrong_arguments", player));
-                            }
-
-                        }
-                        break;
+                    }
+                    break;
                 case "list":
                     player.sendMessage("builder");
                     JSONArray tasks = builderSystem.getAllTasks();
@@ -115,16 +112,16 @@ public class Tasks implements CommandExecutor, TabCompleter {
                         }
                         //  player.sendMessage(ChatColor.GRAY + (t.t("builder_team.task.list.build_size", player)) + " " + ChatColor.WHITE + task.getInt("build_width") + " x " + task.getInt("build_length"));
                         JSONArray worlds = task.getJSONArray("world_ids");
-                            player.sendMessage((t.t("builder_team.task.list.projeckt_count", player)) + " " + worlds.length());
+                        player.sendMessage((t.t("builder_team.task.list.projeckt_count", player)) + " " + worlds.length());
 
-                            player.sendMessage(ChatColor.BOLD + ChatColor.DARK_GRAY.toString() + "----------------------------------");
-                        }
+                        player.sendMessage(ChatColor.BOLD + ChatColor.DARK_GRAY.toString() + "----------------------------------");
+                    }
 
 
-                        break;
-                }
-
+                    break;
             }
+
+        }
 
         return false;
     }

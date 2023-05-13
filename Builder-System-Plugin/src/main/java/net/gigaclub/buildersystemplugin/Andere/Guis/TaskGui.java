@@ -10,10 +10,10 @@ import com.github.stefvanschie.inventoryframework.pane.StaticPane;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import net.gigaclub.buildersystem.BuilderSystem;
 import net.gigaclub.buildersystemplugin.Andere.InterfaceAPI.ItemBuilder;
 import net.gigaclub.buildersystemplugin.Main;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -24,7 +24,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
+import java.util.UUID;
 
 import static net.gigaclub.buildersystemplugin.Andere.Guis.Navigator.Navigate;
 
@@ -60,14 +60,18 @@ public class TaskGui {
             if (worlds.length() == 0) {
                 ItemStack TaskItem = new ItemBuilder(Material.PAPER).setDisplayName(ChatColor.GRAY + "ID: " + ChatColor.WHITE + task.getInt("id") + ChatColor.GRAY + " Name: " + ChatColor.WHITE + task.getString("name")).setLore(loreList).addID(task.getInt("id")).build();
                 GuiItem guiItem = new GuiItem(TaskItem, event -> {
-                    taskSelect(player, task.getInt("id"));
+                    if (player.hasPermission("gigaclub_builder_system.create_world") || player.hasPermission("gigaclub_team.create_world_as_team")) {
+                        taskSelect(player, task.getInt("id"));
+                    } else player.sendMessage("No Permission");
                     event.setCancelled(true);
                 });
                 guiItems.add(guiItem);
             } else {
                 ItemStack TaskItem = new ItemBuilder(Material.MAP).setDisplayName(ChatColor.GRAY + "ID: " + ChatColor.WHITE + task.getInt("id") + ChatColor.GRAY + " Name: " + ChatColor.WHITE + task.getString("name")).setLore(loreList).addID(task.getInt("id")).build();
                 GuiItem guiItem = new GuiItem(TaskItem, event -> {
-                    taskSelect(player, task.getInt("id"));
+                    if (player.hasPermission("gigaclub_builder_system.create_world") || player.hasPermission("gigaclub_team.create_world_as_team")) {
+                        taskSelect(player, task.getInt("id"));
+                    } else player.sendMessage("No Permission");
                     event.setCancelled(true);
                 });
                 guiItems.add(guiItem);
@@ -119,15 +123,24 @@ public class TaskGui {
                 taskList.update();
             } else event.setCancelled(true);
         }), 7, 0);
-
+        navigation.fillWith(outlineintem);
 
         navigation.addItem(new GuiItem(new ItemBuilder(Material.PLAYER_HEAD)
                 .setHeadDatabase(10298)
                 .setDisplayName(ChatColor.DARK_GRAY + "Back to Main Menu")
                 .build(), event -> Navigate(player)), 4, 0);
 
-        navigation.fillWith(outlineintem);
-        taskList.addPane(navigation);
+        if (taskPages.getPages() == 1) {
+            taskList.setTitle("Task List");
+            StaticPane outline4 = new StaticPane(0, 5, 9, 1);
+            outline4.fillWith(outlineintem);
+            outline4.addItem(new GuiItem(new ItemBuilder(Material.PLAYER_HEAD).setHeadDatabase(10298).setDisplayName(ChatColor.DARK_GRAY + "Back to Main Menu").build(), event -> Navigate(player)), 4, 0);
+            taskList.addPane(outline4);
+        } else {
+            taskList.addPane(navigation);
+        }
+
+
         taskList.addPane(taskPages);
         taskList.show(player);
     }
@@ -142,8 +155,17 @@ public class TaskGui {
         StaticPane panel = new StaticPane(0, 0, 3, 3);
         panel.fillWith(outlineintem);
         panel.setOnClick(event -> event.setCancelled(true));
-        panel.addItem(new GuiItem(new ItemBuilder(Material.PLAYER_HEAD).setHeadDatabase(9386).setDisplayName((ChatColor.RED + "Create Projeckt as Team")).build(), event -> teamSelect(player, ID)), 0, 1);
-        panel.addItem(new GuiItem(new ItemBuilder(Material.PLAYER_HEAD).setHeadDatabase(8958).setDisplayName((ChatColor.BLUE + "Create Projeckt as Player")).build(), event -> worldType(player, ID, 0)), 2, 1);
+        panel.addItem(new GuiItem(new ItemBuilder(Material.PLAYER_HEAD).setHeadDatabase(9386).setDisplayName((ChatColor.RED + "Create Projeckt as Team")).build(), event -> {
+            if (player.hasPermission("gigaclub_team.create_world_as_team")) {
+                teamSelect(player, ID);
+            } else player.sendMessage("No Permission");
+        }), 0, 1);
+        panel.addItem(new GuiItem(new ItemBuilder(Material.PLAYER_HEAD).setHeadDatabase(8958).setDisplayName((ChatColor.BLUE + "Create Projeckt as Player")).build(), event -> {
+            if (player.hasPermission("gigaclub_builder_system.create_world")) {
+                worldType(player, ID, 0);
+            } else player.sendMessage("No Permission");
+        }), 2, 1);
+
         panel.addItem(new GuiItem(new ItemBuilder(Material.PLAYER_HEAD)
                 .setHeadDatabase(10299)
                 .setDisplayName(ChatColor.DARK_GRAY + "Back to task List")
@@ -155,16 +177,20 @@ public class TaskGui {
 
     public static void teamSelect(Player player, int ID) {
         BuilderSystem builderSystem = Main.getBuilderSystem();
-        HeadDatabaseAPI hdb = new HeadDatabaseAPI();
-        Random rand = new Random();
+
         List<GuiItem> guiItems = new ArrayList<>();
         ChestGui teamSelect = new ChestGui(2, "Team Select");
         PaginatedPane pane = new PaginatedPane(0, 0, 9, 2);
-
+        pane.setOnClick(event -> event.setCancelled(true));
+        teamSelect.setOnBottomClick(event -> event.setCancelled(true));
         JsonArray teamsUser = builderSystem.getTeamsByMember(player.getUniqueId().toString());
+
         for (JsonElement jsonElement : teamsUser) {
+
             JsonObject team = jsonElement.getAsJsonObject();
-            guiItems.add(new GuiItem(new ItemBuilder(Material.PLAYER_HEAD).setItemMeta(hdb.getRandomHead().getItemMeta()).setDisplayName(team.get("name").getAsString()).build(), event -> worldType(player, ID, team.get("id").getAsInt())));
+            String owner = builderSystem.getTeam(team.get("id").getAsInt()).get("owner_id").getAsString();
+            String ownerName = Bukkit.getOfflinePlayer(UUID.fromString(owner)).getName();
+            guiItems.add(new GuiItem(new ItemBuilder(Material.PLAYER_HEAD).setHead(ownerName).setDisplayName(team.get("name").getAsString()).build(), event -> worldType(player, ID, team.get("id").getAsInt())));
 
         }
         pane.populateWithGuiItems(guiItems);
@@ -198,17 +224,20 @@ public class TaskGui {
     public static void createWorld(int teamID, int ID, InventoryClickEvent event, String worldType) {
         BuilderSystem builderSystem = Main.getBuilderSystem();
         JSONObject task = builderSystem.getTask(ID);
-        JsonObject team = builderSystem.getTeam(teamID);
 
 
         if (teamID != 0) {
+            JsonObject team = builderSystem.getTeam(teamID);
             int res = builderSystem.createWorldAsTeam(event.getWhoClicked().getUniqueId().toString(), teamID, ID, task.getString("name") + "_" + team.get("name").getAsString(), worldType);
             event.getWhoClicked().sendMessage(String.valueOf(res));
         } else
             builderSystem.createWorldAsUser(event.getWhoClicked().getUniqueId().toString(), ID, task.getString("name") + "_" + event.getWhoClicked().getName(), worldType);
 
+
         event.getWhoClicked().closeInventory();
     }
+
+
 }
 
 

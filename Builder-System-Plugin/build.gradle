@@ -55,6 +55,7 @@ task copyJar(type: Copy, dependsOn: shadowJar) {
     into '../Plugins-all'
 }
 
+
 build {
     dependsOn(shadowJar)
     dependsOn(copyJar)

@@ -2,6 +2,7 @@ package net.gigaclub.buildersystemplugin.Andere.InterfaceAPI;
 
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import net.gigaclub.buildersystemplugin.Main;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -29,15 +30,14 @@ public class ItemBuilder {
      */
 
 
-
-
     private ItemStack stack;
 
     public ItemBuilder(Material mat) {
         stack = new ItemStack(mat);
     }
+
     public ItemBuilder(ItemStack item) {
-        stack =new ItemStack(item);
+        stack = new ItemStack(item);
     }
 
     public ItemBuilder(Material mat, short sh) {
@@ -48,6 +48,10 @@ public class ItemBuilder {
         return stack.getItemMeta();
     }
 
+    public ItemBuilder setItemMeta(ItemMeta meta) {
+        stack.setItemMeta(meta);
+        return this;
+    }
 
     public ItemBuilder setColor(Color color) {
         LeatherArmorMeta meta = (LeatherArmorMeta) stack.getItemMeta();
@@ -81,11 +85,6 @@ public class ItemBuilder {
         return this;
     }
 
-    public ItemBuilder setItemMeta(ItemMeta meta) {
-        stack.setItemMeta(meta);
-        return this;
-    }
-
     public ItemBuilder setHead(String owner) {
         SkullMeta meta = (SkullMeta) stack.getItemMeta();
         meta.setOwner(owner);
@@ -97,6 +96,13 @@ public class ItemBuilder {
     public ItemBuilder setDisplayName(String displayname) {
         ItemMeta meta = getItemMeta();
         meta.setDisplayName(displayname);
+        setItemMeta(meta);
+        return this;
+    }
+
+    public ItemBuilder setDisplayName(Component displayname) {
+        ItemMeta meta = getItemMeta();
+        meta.displayName(displayname);
         setItemMeta(meta);
         return this;
     }
@@ -113,6 +119,13 @@ public class ItemBuilder {
         return this;
     }
 
+    public ItemBuilder setLoreComponents(ArrayList<Component> lore) {
+        ItemMeta meta = getItemMeta();
+        meta.lore(lore);
+        setItemMeta(meta);
+        return this;
+    }
+
     public ItemBuilder setLore(String lore) {
         ArrayList<String> loreList = new ArrayList<>();
         loreList.add(lore);
@@ -121,6 +134,16 @@ public class ItemBuilder {
         setItemMeta(meta);
         return this;
     }
+
+    public ItemBuilder setLore(Component lore) {
+        ArrayList<Component> loreList = new ArrayList<>();
+        loreList.add(lore);
+        ItemMeta meta = getItemMeta();
+        meta.lore(loreList);
+        setItemMeta(meta);
+        return this;
+    }
+
 
     public ItemBuilder addEnchant(Enchantment enchantment, int level) {
         ItemMeta meta = getItemMeta();
@@ -152,6 +175,7 @@ public class ItemBuilder {
         setItemMeta(meta);
         return this;
     }
+
     public ItemBuilder addID(int metadata) {
         ItemMeta meta = getItemMeta();
         PersistentDataContainer data = meta.getPersistentDataContainer();
@@ -170,7 +194,7 @@ public class ItemBuilder {
 
     public ItemBuilder setGui(Boolean is_Gui) {
         ItemMeta meta = getItemMeta();
-        if (is_Gui == true) {
+        if (is_Gui) {
             PersistentDataContainer data = meta.getPersistentDataContainer();
             data.set(new NamespacedKey(Main.getPlugin(), "gui"), PersistentDataType.INTEGER, 1);
             setItemMeta(meta);

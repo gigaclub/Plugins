@@ -27,6 +27,15 @@ import java.util.UUID;
 
 public class Worlds implements CommandExecutor, TabCompleter {
 
+    private static boolean isInt(String str) {
+        try {
+            Integer.parseInt(str);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         Player player = (Player) sender;
@@ -35,7 +44,7 @@ public class Worlds implements CommandExecutor, TabCompleter {
         BuilderSystem builderSystem = Main.getBuilderSystem();
         JsonArray ownteamname;
         try {
-             ownteamname = builderSystem.getTeamsByMember(playerUUID);
+            ownteamname = builderSystem.getTeamsByMember(playerUUID);
 
         } catch (Exception e) {
             return false;
@@ -48,7 +57,7 @@ public class Worlds implements CommandExecutor, TabCompleter {
 
 
                 case "createasteam":
-                    
+
                     if (args.length == 1 || args.length == 2) {
                         player.sendMessage(t.t("builder_team.to_less_arguments", player));
                     }
@@ -111,8 +120,8 @@ public class Worlds implements CommandExecutor, TabCompleter {
                         if (isInt(args[1])) {
                             builderSystem.createWorldAsUser(playerUUID, Integer.parseInt(args[1]), args[2], "");
                             player.sendMessage(t.t("BuilderSystem.world.create_user_succses", player));
-                                    break;
-                                }
+                            break;
+                        }
                     } else if (args.length >= 4) {
 
 
@@ -132,7 +141,7 @@ public class Worlds implements CommandExecutor, TabCompleter {
 
                 case "removeteam":
                     // add function to remove other team
-                    
+
                     if (args.length == 2) {
 
                     }
@@ -240,7 +249,6 @@ public class Worlds implements CommandExecutor, TabCompleter {
         return false;
     }
 
-
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
         Player player = (Player) sender;
@@ -299,16 +307,6 @@ public class Worlds implements CommandExecutor, TabCompleter {
 
 
         return null;
-    }
-
-
-    private static boolean isInt(String str) {
-        try {
-            Integer.parseInt(str);
-            return true;
-        } catch (NumberFormatException e) {
-            return false;
-        }
     }
 
 
