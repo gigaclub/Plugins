@@ -3,6 +3,7 @@ package net.gigaclub.buildersystemplugin;
 import eu.cloudnetservice.driver.event.EventManager;
 import eu.cloudnetservice.driver.inject.InjectionLayer;
 import me.arcaniax.hdb.api.DatabaseLoadEvent;
+import net.gigaclub.base.OnServerException;
 import net.gigaclub.buildersystem.BuilderSystem;
 import net.gigaclub.buildersystemplugin.Andere.Guis.Navigator;
 import net.gigaclub.buildersystemplugin.Commands.Tasks;
@@ -223,11 +224,14 @@ public final class Main extends JavaPlugin implements Listener {
             }
         }, 0, 1200);
 
+        PluginManager pluginManager = Bukkit.getPluginManager();
+        pluginManager.registerEvents(new OnServerException(), this);
 
     }
 
     @EventHandler
     public void onDatabaseLoad(DatabaseLoadEvent e) {
+
         PluginManager pluginManager = Bukkit.getPluginManager();
         pluginManager.registerEvents(new joinlistener(), this);
         pluginManager.registerEvents(new Navigator(), this);

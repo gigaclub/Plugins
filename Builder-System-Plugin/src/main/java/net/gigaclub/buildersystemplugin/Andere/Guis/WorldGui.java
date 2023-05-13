@@ -22,6 +22,7 @@ import static net.gigaclub.buildersystemplugin.Andere.Guis.Navigator.Navigate;
 
 public class WorldGui {
 
+
     static ItemStack outlineintem = new ItemBuilder(Material.BLUE_STAINED_GLASS_PANE).setDisplayName(" ").build();
 
     public static List<GuiItem> projectItemList(Player player) {
@@ -47,7 +48,7 @@ public class WorldGui {
                 JSONObject team = teams.getJSONObject(j);
                 String teamname = team.getString("name");
                 StringBuilder res = new StringBuilder();
-                res.append(String.valueOf(ChatColor.GRAY));
+                res.append(ChatColor.GRAY);
                 res.append(teamname).append(ChatColor.WHITE + " , " + ChatColor.GRAY);
 
                 res.toString();
