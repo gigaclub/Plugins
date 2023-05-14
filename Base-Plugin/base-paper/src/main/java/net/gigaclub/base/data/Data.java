@@ -1,8 +1,10 @@
 package net.gigaclub.base.data;
 
 import net.gigaclub.base.odoo.Odoo;
+import org.apache.xmlrpc.XmlRpcException;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -88,12 +90,44 @@ public class Data {
 
     public void updateStatus(String playerUUID, String status) {
         this.odoo.write(
-            "gc.user",
-            Arrays.asList(
-                    List.of(this.getPlayer(playerUUID)),
-                    new HashMap() {{ put("state", status); }}
-            )
+                "gc.user",
+                Arrays.asList(
+                        List.of(this.getPlayer(playerUUID)),
+                        new HashMap() {{
+                            put("state", status);
+                        }}
+                )
         );
+    }
+
+    public void makeIpEntry(String playerUUID, String hashedIpAddress) {
+        try {
+            this.odoo.getModels().execute("execute_kw", Arrays.asList(
+                    this.odoo.getDatabase(),
+                    this.odoo.getUid(),
+                    this.odoo.getPassword(),
+                    "gc.user",
+                    "make_ip_entry",
+                    Arrays.asList(playerUUID, hashedIpAddress)
+            ));
+        } catch (XmlRpcException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public String getLastIpHash(String playerUUID) {
+        try {
+            return (String) this.odoo.getModels().execute("execute_kw", Arrays.asList(
+                    this.odoo.getDatabase(),
+                    this.odoo.getUid(),
+                    this.odoo.getPassword(),
+                    "gc.user",
+                    "get_last_ip_hash",
+                    Collections.singletonList(playerUUID)
+            ));
+        } catch (XmlRpcException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }
