@@ -4,13 +4,11 @@ package net.gigaclub.bansystem.bukkit.Anderes;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.gigaclub.base.odoo.Odoo;
+import org.apache.xmlrpc.XmlRpcException;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class Data {
 
@@ -77,6 +75,45 @@ public class Data {
         } else {
             return null;
         }
+    }
+
+    public String getLastIpHash(String playerUUID) {
+        try {
+            return (String) this.odoo.getModels().execute("execute_kw", Arrays.asList(
+                    this.odoo.getDatabase(),
+                    this.odoo.getUid(),
+                    this.odoo.getPassword(),
+                    "gc.user",
+                    "get_last_ip_hash",
+                    Collections.singletonList(playerUUID)
+            ));
+        } catch (XmlRpcException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public boolean getBannetUUIDs(String name, String playerUUID) {
+        return this.odoo.create(
+                "gc.user",
+                List.of(
+                        new HashMap() {{
+
+                            put("mc_uuid", playerUUID);
+                        }}
+                )
+        ) > 0;
+    }
+
+    public boolean getBannetIpHashes(String name, String playerUUID) {
+        return this.odoo.create(
+                "gc.user",
+                List.of(
+                        new HashMap() {{
+                            put("name", name);
+                            put("mc_uuid", playerUUID);
+                        }}
+                )
+        ) > 0;
     }
 
 
