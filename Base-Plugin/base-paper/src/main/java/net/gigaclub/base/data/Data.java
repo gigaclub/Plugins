@@ -1,5 +1,6 @@
 package net.gigaclub.base.data;
 
+import com.google.gson.JsonArray;
 import net.gigaclub.base.odoo.Odoo;
 import org.apache.xmlrpc.XmlRpcException;
 
@@ -124,6 +125,37 @@ public class Data {
                     "gc.user",
                     "get_last_ip_hash",
                     Collections.singletonList(playerUUID)
+            ));
+        } catch (XmlRpcException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public List<Object> getMinecraftStatsTypes() {
+        try {
+            return Arrays.asList(
+                    (Object[]) this.odoo.getModels().execute("execute_kw", Arrays.asList(
+                            this.odoo.getDatabase(),
+                            this.odoo.getUid(),
+                            this.odoo.getPassword(),
+                            "gc.minecraft.stats",
+                            "get_minecraft_stats_types",
+                            Collections.emptyList()
+                    )));
+        } catch (XmlRpcException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void registerPlayerStats(JsonArray data) {
+        try {
+            this.odoo.getModels().execute("execute_kw", Arrays.asList(
+                    this.odoo.getDatabase(),
+                    this.odoo.getUid(),
+                    this.odoo.getPassword(),
+                    "gc.minecraft.player.stats",
+                    "register_player_stats",
+                    Collections.singletonList(data)
             ));
         } catch (XmlRpcException e) {
             throw new RuntimeException(e);
