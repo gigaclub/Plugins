@@ -24,13 +24,8 @@ public class OnJoin implements Listener {
             Base.getData().createPlayer(playerName, playerUUID);
         }
         Base.getData().updateStatus(playerUUID, "online");
-        String previousPlayerIpHash = Base.getData().getLastIpHash(playerUUID);
         String playerIpHash = this.generateHash(player.getAddress().getHostString());
-        if (previousPlayerIpHash.equals(playerIpHash)) {
-            Base.getData().makeIpEntry(playerUUID, previousPlayerIpHash);
-        } else {
-            Base.getData().makeIpEntry(playerUUID, playerIpHash);
-        }
+        Base.getData().makeIpEntry(playerUUID, playerIpHash);
     }
 
     private String generateHash(String ipString) {
