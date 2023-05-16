@@ -60,4 +60,19 @@ public class BanSystem {
         }
     }
 
+    public JsonArray getWarningTypes() {
+        try {
+            return (JsonArray) this.odoo.getModels().execute("execute_kw", Arrays.asList(
+                    this.odoo.getDatabase(),
+                    this.odoo.getUid(),
+                    this.odoo.getPassword(),
+                    "gc.warning.type",
+                    "get_warning_types",
+                    Collections.emptyList()
+            ));
+        } catch (XmlRpcException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }
