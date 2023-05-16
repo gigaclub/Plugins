@@ -8,6 +8,7 @@ import com.github.stefvanschie.inventoryframework.pane.StaticPane;
 import net.gigaclub.bansystem.bukkit.Anderes.Data;
 import net.gigaclub.bansystem.bukkit.Anderes.ItemBuilder;
 import net.gigaclub.bansystem.bukkit.BukkitBanSystemPlugin;
+import net.gigaclub.bansystemapi.BanSystem;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -36,6 +37,7 @@ public class WarnCommand implements CommandExecutor {
     // /warn <Player_Name> <Grund_ID>
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+        BanSystem banSystem = BukkitBanSystemPlugin.getBanSystem();
 
         Data data = BukkitBanSystemPlugin.getData();
 
@@ -56,7 +58,7 @@ public class WarnCommand implements CommandExecutor {
 
 
             ArrayList<String> loreList = new ArrayList<>();
-            loreList.add("Warn Points:");
+            loreList.add("Warn Points:" + banSystem.getPlayerWarningPoints(args[0]));
             ItemStack wantuserhead = new ItemBuilder(Material.PLAYER_HEAD).setHead(player1.getName()).setDisplayName(player1.getName()).setLore(loreList).build();
             StaticPane panehead = new StaticPane(0, 0, 1, 1, Pane.Priority.HIGHEST);
             panehead.addItem(new GuiItem(wantuserhead, event -> event.setCancelled(true)), 0, 0);

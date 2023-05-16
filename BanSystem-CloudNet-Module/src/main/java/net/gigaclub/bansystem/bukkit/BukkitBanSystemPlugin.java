@@ -11,6 +11,7 @@ import jakarta.inject.Singleton;
 import net.gigaclub.bansystem.bukkit.Anderes.Data;
 import net.gigaclub.bansystem.bukkit.Commads.WarnCommand;
 import net.gigaclub.bansystem.bukkit.config.Config;
+import net.gigaclub.bansystemapi.BanSystem;
 import net.gigaclub.translation.Translation;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -50,6 +51,8 @@ public final class BukkitBanSystemPlugin implements PlatformEntrypoint {
     private static Data data;
     private final WarnCommand warnCommand;
 
+    private static BanSystem banSystem;
+
 
     @Override
     public void onDisable() {
@@ -81,6 +84,7 @@ public final class BukkitBanSystemPlugin implements PlatformEntrypoint {
             throw new NullPointerException("pluginManager is marked non-null but is null");
         } else {
             BukkitBanSystemPlugin.plugin = plugin;
+            banSystem = banSystem;
             this.pluginManager = pluginManager;
             this.moduleHelper = moduleHelper;
             this.eventManager = eventManager;
@@ -99,6 +103,15 @@ public final class BukkitBanSystemPlugin implements PlatformEntrypoint {
     public static void registerTranslations() {
         //allrounder
         BukkitBanSystemPlugin.translation.registerTranslations(List.of());
+    }
+
+
+    public static BanSystem getBanSystem() {
+        return banSystem;
+    }
+
+    public static void setBanSystem(BanSystem banSystem) {
+        BukkitBanSystemPlugin.banSystem = banSystem;
     }
 
     private void setConfig() {

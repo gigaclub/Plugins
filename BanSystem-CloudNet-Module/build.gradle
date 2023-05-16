@@ -12,6 +12,7 @@ moduleJson {
 }
 
 dependencies {
+    api project(":BanSystemAPI")
     api project(":Translation-Plugin:translation-common")
     compileOnly platform('eu.cloudnetservice.cloudnet:bom:4.0.0-RC8-SNAPSHOT')
     compileOnly 'com.github.cloudnetservice.cloud-command-framework:cloud-core:main-SNAPSHOT'
