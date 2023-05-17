@@ -30,9 +30,9 @@ public class BanSystem {
         }
     }
 
-    public List<String> getBlockedIPv4Hashes() {
+    public List<Object> getBlockedIPv4Hashes() {
         try {
-            return (List<String>) this.odoo.getModels().execute("execute_kw", Arrays.asList(
+            return (List<Object>) this.odoo.getModels().execute("execute_kw", Arrays.asList(
                     this.odoo.getDatabase(),
                     this.odoo.getUid(),
                     this.odoo.getPassword(),
@@ -47,14 +47,14 @@ public class BanSystem {
 
     public JsonArray getBannedPlayerUUIDs() {
         try {
-            return (JsonArray) this.odoo.getModels().execute("execute_kw", Arrays.asList(
+            return this.odoo.gson.toJsonTree(this.odoo.getModels().execute("execute_kw", Arrays.asList(
                     this.odoo.getDatabase(),
                     this.odoo.getUid(),
                     this.odoo.getPassword(),
                     "gc.user",
                     "get_banned_players",
                     Collections.emptyList()
-            ));
+            ))).getAsJsonArray();
         } catch (XmlRpcException e) {
             throw new RuntimeException(e);
         }
@@ -62,14 +62,14 @@ public class BanSystem {
 
     public JsonArray getWarningTypes() {
         try {
-            return (JsonArray) this.odoo.getModels().execute("execute_kw", Arrays.asList(
+            return this.odoo.gson.toJsonTree(this.odoo.getModels().execute("execute_kw", Arrays.asList(
                     this.odoo.getDatabase(),
                     this.odoo.getUid(),
                     this.odoo.getPassword(),
                     "gc.warning.type",
                     "get_warning_types",
                     Collections.emptyList()
-            ));
+            ))).getAsJsonArray();
         } catch (XmlRpcException e) {
             throw new RuntimeException(e);
         }

@@ -130,4 +130,35 @@ public class Data {
         }
     }
 
+    public List<Object> getMinecraftStatsTypes() {
+        try {
+            return Arrays.asList(
+                    (Object[]) this.odoo.getModels().execute("execute_kw", Arrays.asList(
+                            this.odoo.getDatabase(),
+                            this.odoo.getUid(),
+                            this.odoo.getPassword(),
+                            "gc.minecraft.stats",
+                            "get_minecraft_stats_types",
+                            Collections.emptyList()
+                    )));
+        } catch (XmlRpcException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void registerPlayerStats(List<HashMap<String, String>> data) {
+        try {
+            this.odoo.getModels().execute("execute_kw", Arrays.asList(
+                    this.odoo.getDatabase(),
+                    this.odoo.getUid(),
+                    this.odoo.getPassword(),
+                    "gc.minecraft.player.stats",
+                    "register_player_stats",
+                    Collections.singletonList(data)
+            ));
+        } catch (XmlRpcException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }
