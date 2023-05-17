@@ -1,4 +1,4 @@
-package net.gigaclub.bansystem.bukkit.Anderes;
+package net.gigaclub.bannsystem.Anderes;
 
 
 import com.google.gson.JsonObject;

@@ -20,5 +20,5 @@ include ':Base-Plugin:base-common',
         'BuilderSystemAPI',
         'Auth-Plugin',
         'BanSystemAPI',
-        'BanSystem-CloudNet-Module'
+        'BanSystem'
 

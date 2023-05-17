@@ -1,7 +1,7 @@
-package net.gigaclub.bansystem.bukkit.Anderes;
+package net.gigaclub.bannsystem.Anderes;
 
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
-import net.gigaclub.bansystem.bukkit.BukkitBanSystemPlugin;
+import net.gigaclub.bannsystem.Main;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Color;
 import org.bukkit.Material;
@@ -171,7 +171,7 @@ public class ItemBuilder {
     public ItemBuilder addIdentifier(String metadata) {
         ItemMeta meta = getItemMeta();
         PersistentDataContainer data = meta.getPersistentDataContainer();
-        data.set(new NamespacedKey(BukkitBanSystemPlugin.plugin, "identifie"), PersistentDataType.STRING, metadata);
+        data.set(new NamespacedKey(Main.getPlugin(), "identifie"), PersistentDataType.STRING, metadata);
         setItemMeta(meta);
         return this;
     }
@@ -179,7 +179,7 @@ public class ItemBuilder {
     public ItemBuilder addIndex(int metadata) {
         ItemMeta meta = getItemMeta();
         PersistentDataContainer data = meta.getPersistentDataContainer();
-        data.set(new NamespacedKey(BukkitBanSystemPlugin.plugin, "index"), PersistentDataType.INTEGER, metadata);
+        data.set(new NamespacedKey(Main.getPlugin(), "index"), PersistentDataType.INTEGER, metadata);
         setItemMeta(meta);
         return this;
     }
@@ -188,7 +188,7 @@ public class ItemBuilder {
         ItemMeta meta = getItemMeta();
         if (is_Gui) {
             PersistentDataContainer data = meta.getPersistentDataContainer();
-            data.set(new NamespacedKey(BukkitBanSystemPlugin.plugin, "gui"), PersistentDataType.INTEGER, 1);
+            data.set(new NamespacedKey(Main.getPlugin(), "gui"), PersistentDataType.INTEGER, 1);
             setItemMeta(meta);
 
             return this;

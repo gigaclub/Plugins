@@ -1,6 +1,6 @@
-package net.gigaclub.bansystem.bukkit.config;
+package net.gigaclub.bannsystem.config;
 
-import net.gigaclub.bansystem.bukkit.BukkitBanSystemPlugin;
+import net.gigaclub.bannsystem.Main;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -17,7 +17,7 @@ public class Config {
     }
 
     public static void createConfig() {
-        Config.configFile = new File("plugins//" + BukkitBanSystemPlugin.plugin.getDescription().getName(), "config.yml");
+        Config.configFile = new File("plugins//" + Main.getPlugin().getDescription().getName(), "config.yml");
         Config.config = YamlConfiguration.loadConfiguration(configFile);
         Config.config.options().copyDefaults(true);
 

@@ -1,13 +1,13 @@
-package net.gigaclub.bansystem.bukkit.Commads;
+package net.gigaclub.bannsystem.Commads;
 
 import com.github.stefvanschie.inventoryframework.gui.GuiItem;
 import com.github.stefvanschie.inventoryframework.gui.type.ChestGui;
 import com.github.stefvanschie.inventoryframework.pane.PaginatedPane;
 import com.github.stefvanschie.inventoryframework.pane.Pane;
 import com.github.stefvanschie.inventoryframework.pane.StaticPane;
-import net.gigaclub.bansystem.bukkit.Anderes.Data;
-import net.gigaclub.bansystem.bukkit.Anderes.ItemBuilder;
-import net.gigaclub.bansystem.bukkit.BukkitBanSystemPlugin;
+import net.gigaclub.bannsystem.Anderes.Data;
+import net.gigaclub.bannsystem.Anderes.ItemBuilder;
+import net.gigaclub.bannsystem.Main;
 import net.gigaclub.bansystemapi.BanSystem;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -37,9 +37,9 @@ public class WarnCommand implements CommandExecutor {
     // /warn <Player_Name> <Grund_ID>
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        BanSystem banSystem = BukkitBanSystemPlugin.getBanSystem();
+        BanSystem banSystem = Main.getBanSystemAPI();
 
-        Data data = BukkitBanSystemPlugin.getData();
+        Data data = Main.getData();
 
         if (!(sender instanceof Player player)) {
             return false;
@@ -76,7 +76,7 @@ public class WarnCommand implements CommandExecutor {
                     String[] User = data.getMCPlayerInfo(username);
                     if (data.checkIfPlayerExists(User[0])) {
                         //ADD USER uuid und ip TO BANN LISTs
-                        String previousPlayerIpHash = BukkitBanSystemPlugin.getData().getLastIpHash(User[0]);
+                        String previousPlayerIpHash = Main.getData().getLastIpHash(User[0]);
                         String playerUUID = User[0];
                         int warnreson = Integer.parseInt(args[2]);
 
