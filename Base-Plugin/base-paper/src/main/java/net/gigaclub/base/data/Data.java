@@ -1,6 +1,5 @@
 package net.gigaclub.base.data;
 
-import com.google.gson.JsonArray;
 import net.gigaclub.base.odoo.Odoo;
 import org.apache.xmlrpc.XmlRpcException;
 
@@ -147,7 +146,7 @@ public class Data {
         }
     }
 
-    public void registerPlayerStats(JsonArray data) {
+    public void registerPlayerStats(List<HashMap<String, String>> data) {
         try {
             this.odoo.getModels().execute("execute_kw", Arrays.asList(
                     this.odoo.getDatabase(),

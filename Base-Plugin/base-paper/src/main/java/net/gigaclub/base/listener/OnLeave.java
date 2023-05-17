@@ -1,7 +1,5 @@
 package net.gigaclub.base.listener;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import net.gigaclub.base.Base;
 import org.bukkit.Statistic;
 import org.bukkit.entity.Player;
@@ -9,6 +7,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class OnLeave implements Listener {
@@ -19,17 +19,16 @@ public class OnLeave implements Listener {
         String playerUUID = player.getUniqueId().toString();
         Base.getData().updateStatus(playerUUID, "offline");
         List<Object> minecraftStatsTypes = Base.getData().getMinecraftStatsTypes();
-        JsonArray data = new JsonArray();
+        List<HashMap<String, String>> data = new ArrayList();
         String server = "test"; // TODO find a way to get a unique server name
         for (Object minecraftStatsType : minecraftStatsTypes) {
-            JsonObject jsonObject = new JsonObject();
-            jsonObject.addProperty("mc_uuid", playerUUID);
-            jsonObject.addProperty("server_name", server);
-            jsonObject.addProperty("stats_name", minecraftStatsType.toString());
-            jsonObject.addProperty("value", player.getStatistic(Statistic.valueOf(minecraftStatsType.toString())));
-            data.add(jsonObject);
+            HashMap<String, String> values = new HashMap<>();
+            values.put("mc_uuid", playerUUID);
+            values.put("server_name", server);
+            values.put("stats_name", minecraftStatsType.toString());
+            values.put("value", String.valueOf(player.getStatistic(Statistic.valueOf(minecraftStatsType.toString()))));
+            data.add(values);
         }
-        System.out.println(data);
         Base.getData().registerPlayerStats(data);
     }
 
