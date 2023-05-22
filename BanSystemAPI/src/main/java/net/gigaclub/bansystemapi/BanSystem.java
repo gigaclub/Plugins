@@ -75,4 +75,19 @@ public class BanSystem {
         }
     }
 
+    public int createWarning(String playerUUID, int warningTypeID) {
+        try {
+            return (int) this.odoo.getModels().execute("execute_kw", Arrays.asList(
+                    this.odoo.getDatabase(),
+                    this.odoo.getUid(),
+                    this.odoo.getPassword(),
+                    "gc.warning",
+                    "create_warning",
+                    Arrays.asList(playerUUID, warningTypeID)
+            ));
+        } catch (XmlRpcException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }
