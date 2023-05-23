@@ -92,29 +92,6 @@ public class Data {
         }
     }
 
-    public boolean getBannetUUIDs(String name, String playerUUID) {
-        return this.odoo.create(
-                "gc.user",
-                List.of(
-                        new HashMap() {{
-
-                            put("mc_uuid", playerUUID);
-                        }}
-                )
-        ) > 0;
-    }
-
-    public boolean getBannetIpHashes(String name, String playerUUID) {
-        return this.odoo.create(
-                "gc.user",
-                List.of(
-                        new HashMap() {{
-                            put("name", name);
-                            put("mc_uuid", playerUUID);
-                        }}
-                )
-        ) > 0;
-    }
 
 
 }

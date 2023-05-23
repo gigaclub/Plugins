@@ -1,0 +1,46 @@
+plugins {
+    id "java-library"
+    id 'com.github.johnrengelman.shadow'
+}
+
+
+repositories {
+    mavenCentral()
+    maven {
+        name = "sonatype"
+        url = "https://oss.sonatype.org/content/groups/public/"
+    }
+    maven {
+        name = "papermc-repo"
+        url = "https://repo.papermc.io/repository/maven-public/"
+    }
+}
+
+dependencies {
+    compileOnly "io.github.waterfallmc:waterfall-api:1.19-R0.1-SNAPSHOT"
+}
+
+
+processResources {
+    def props = [version: version]
+    inputs.properties props
+    expand props
+    filteringCharset 'UTF-8'
+    filesMatching('bungee.yml') {
+        expand props
+    }
+
+    task copyJar(type: Copy, dependsOn: shadowJar) {
+        from 'build/libs/BanProxy-all.jar'
+        into '../Plugins-all'
+    }
+
+
+    build {
+        dependsOn(shadowJar)
+        dependsOn(copyJar)
+
+    }
+
+
+}

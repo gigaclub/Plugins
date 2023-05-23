@@ -20,5 +20,6 @@ include ':Base-Plugin:base-common',
         'BuilderSystemAPI',
         'Auth-Plugin',
         'BanSystemAPI',
-        'BanSystem'
+        'BanSystem',
+        'BanProxy'
 

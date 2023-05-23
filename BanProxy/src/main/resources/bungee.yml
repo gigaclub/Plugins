@@ -1,0 +1,3 @@
+name: BanProxy
+version: '${version}'
+main: net.gigaclub.banproxy.BanProxy

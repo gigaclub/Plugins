@@ -2,6 +2,7 @@ package net.gigaclub.bannsystem.Anderes;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import net.gigaclub.bannsystem.Main;
 import net.gigaclub.bansystemapi.BanSystem;
 import net.kyori.adventure.text.Component;
@@ -26,7 +27,8 @@ public class Listener implements org.bukkit.event.Listener {
 
 
         for (JsonElement jsonElement : bannetUUids) {
-            String uuid = jsonElement.getAsString();
+            JsonObject list = jsonElement.getAsJsonObject();
+            String uuid = list.get("uuid").getAsString();
             if (uuid.equals(UUID)) {
                 event.disallow(PlayerLoginEvent.Result.valueOf("you got banned"), Component.text("Ban Reason").color(NamedTextColor.DARK_RED).appendNewline()
                         .append(Component.text("<reason>", (Style) Placeholder.component("reason", Component.text(reason, NamedTextColor.RED)))).appendNewline()
