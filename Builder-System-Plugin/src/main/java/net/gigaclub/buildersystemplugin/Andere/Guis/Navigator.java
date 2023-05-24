@@ -3,7 +3,7 @@ package net.gigaclub.buildersystemplugin.Andere.Guis;
 import com.github.stefvanschie.inventoryframework.gui.GuiItem;
 import com.github.stefvanschie.inventoryframework.gui.type.ChestGui;
 import com.github.stefvanschie.inventoryframework.pane.StaticPane;
-import me.arcaniax.hdb.api.HeadDatabaseAPI;
+import com.google.gson.JsonArray;
 import net.gigaclub.buildersystem.BuilderSystem;
 import net.gigaclub.buildersystemplugin.Andere.InterfaceAPI.ItemBuilder;
 import net.gigaclub.buildersystemplugin.Main;
@@ -23,6 +23,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.json.JSONArray;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -35,13 +37,12 @@ import static net.gigaclub.buildersystemplugin.Andere.Guis.WorldGui.projecktList
 public class Navigator implements Listener {
 
 
-    HeadDatabaseAPI api = new HeadDatabaseAPI();
+
     Translation t = Main.getTranslation();
 
-    BuilderSystem builderSystem = Main.getBuilderSystem();
+
 
     public static void Navigate(Player player) {
-
 
         ChestGui navigator = new ChestGui(3, "GcGui");
 
@@ -139,6 +140,61 @@ public class Navigator implements Listener {
 
     }
 
+
+    public static void saveWorlds(Player player) {
+        // Erstelle den JsonArray
+        BuilderSystem builderSystem = Main.getBuilderSystem();
+
+
+        JSONArray userWorlds = builderSystem.getUserWorlds(player.getUniqueId().toString());
+        JSONArray jsonArray = userWorlds;
+
+
+        // Speichere den JsonArray in einer Variablen
+        WorldGui.worldArray = jsonArray;
+
+    }
+
+    public static void saveTasks() {
+        // Erstelle den JsonArray
+        BuilderSystem builderSystem = Main.getBuilderSystem();
+
+        JSONArray tasks = builderSystem.getAllTasks();
+        JSONArray jsonArray = tasks;
+
+        // Speichere den JsonArray in einer Variablen
+        TaskGui.taskArray = jsonArray;
+
+    }
+
+    public static void saveTeams(Player player) {
+        // Erstelle den JsonArray
+        BuilderSystem builderSystem = Main.getBuilderSystem();
+
+
+        JsonArray teams = builderSystem.getTeamsByMember(player.getUniqueId().toString());
+        JsonArray jsonArray = teams;
+
+        // Speichere den JsonArray in einer Variablen
+        TeamGui.teamArray = jsonArray;
+
+    }
+
+    private void asyncload(Player player) {
+        // Erstelle eine neue Instanz von BukkitRunnable
+        BukkitRunnable task = new BukkitRunnable() {
+            @Override
+            public void run() {
+                saveWorlds(player);
+                saveTasks();
+                saveTeams(player);
+
+            }
+        };
+        task.runTaskAsynchronously(Main.getPlugin());
+    }
+
+
     @EventHandler
     public void handleGuiOpener(PlayerInteractEvent event) {
         if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
@@ -157,6 +213,9 @@ public class Navigator implements Listener {
                 String identifie = data.get(new NamespacedKey(Main.getPlugin(), "identifie"), PersistentDataType.STRING);
                 if (Objects.equals(identifie, "Gui_Opener")) {
                     Navigate(event.getPlayer());
+                    asyncload(event.getPlayer());
+
+
                 }
             }
         }

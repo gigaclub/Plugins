@@ -20,6 +20,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -35,13 +36,40 @@ public class WorldGui {
 
     static ItemStack outlineintem = new ItemBuilder(Material.BLUE_STAINED_GLASS_PANE).setDisplayName(" ").build();
 
+    public static JSONArray worldArray;
+
+    public static JSONObject projecktUserArray;
+
+    public static void saveProjecktUsers(int projecktID) {
+        // Erstelle den JsonArray
+        BuilderSystem builderSystem = Main.getBuilderSystem();
+
+
+        JSONObject team = builderSystem.getWorld(projecktID);
+        JSONObject jsonObjeckt = team;
+
+        // Speichere den JsonArray in einer Variablen
+        WorldGui.projecktUserArray = jsonObjeckt;
+
+    }
+
+    private static void asyncload(int projecktID) {
+        // Erstelle eine neue Instanz von BukkitRunnable
+        BukkitRunnable task = new BukkitRunnable() {
+            @Override
+            public void run() {
+                saveProjecktUsers(projecktID);
+            }
+        };
+        task.runTaskAsynchronously(Main.getPlugin());
+    }
+
 
     public static List<GuiItem> projectItemList(Player player) {
 
 
-        BuilderSystem builderSystem = Main.getBuilderSystem();
         List<GuiItem> guiItems = new ArrayList<>();
-        JSONArray userWorlds = builderSystem.getUserWorlds(player.getUniqueId().toString());
+        JSONArray userWorlds = worldArray;
 
         for (int i = 0; i < userWorlds.length(); i++) {
 
@@ -85,8 +113,10 @@ public class WorldGui {
                 worldlore.add(ChatColor.GRAY + "Builder: " + ChatColor.WHITE + joinedString1);
             }
             if (!(uuid.equals(player.getUniqueId()))) {
+
                 ItemStack project = new ItemBuilder(Material.PAPER).setDisplayName(ChatColor.GRAY + "Name: " + ChatColor.WHITE + world.getString("name")).setLore(worldlore).build();
                 GuiItem guiItem = new GuiItem(project, event -> {
+                    asyncload(world.getInt("world_id"));
                     projeckt(player, world.getInt("world_id"), world.getString("name"));
                     event.setCancelled(true);
                 });
@@ -95,6 +125,7 @@ public class WorldGui {
                 ItemStack project = new ItemBuilder(Material.MAP).setDisplayName(ChatColor.GRAY + "Name: " + ChatColor.WHITE + world.getString("name")).setLore(worldlore).build();
                 GuiItem guiItem = new GuiItem(project, event -> {
                     projeckt(player, world.getInt("world_id"), world.getString("name"));
+                    asyncload(world.getInt("world_id"));
                     event.setCancelled(true);
                 });
                 guiItems.add(guiItem);
@@ -171,9 +202,11 @@ public class WorldGui {
 
     public static void projeckt(Player player, int projecktID, String projecktName) {
 
+
         ChestGui projecktManage = new ChestGui(3, "Manage " + projecktName);
         StaticPane pane = new StaticPane(0, 0, 9, 3);
         pane.fillWith(outlineintem, event -> event.setCancelled(true));
+
 
         ItemStack editWorldTyp = new ItemBuilder(Material.PLAYER_HEAD).setHeadDatabase(24064).setDisplayName("edit WorldTyp").build();
         GuiItem worldTyp = new GuiItem(editWorldTyp, event -> {
@@ -204,6 +237,8 @@ public class WorldGui {
             player.sendMessage("manage Teams");
             event.setCancelled(true);
         });
+
+
         pane.addItem(teammanage, 5, 1);
         projecktManage.addPane(pane);
         projecktManage.show(player);
@@ -211,17 +246,15 @@ public class WorldGui {
 
 
     public static List<GuiItem> PlayerList(Player player, int projecktID) {
-        BuilderSystem builderSystem = Main.getBuilderSystem();
         List<GuiItem> guiItems = new ArrayList<>();
 
 
-        JSONObject team = builderSystem.getWorld(projecktID);
+        JSONObject projeckt = projecktUserArray;
 
-        JSONArray players = team.getJSONArray("user_ids");
+        JSONArray players = projeckt.getJSONArray("user_ids");
         List<String> stringList = new ArrayList<String>();
 
-
-        String owner = team.getString("owner_id");
+        String owner = projeckt.getString("owner_id");
 
 
         ArrayList<String> loreList1 = new ArrayList<>();
@@ -238,29 +271,35 @@ public class WorldGui {
         for (int i1 = 0; i1 < players.length(); i1++) {
             JSONObject uuid = players.getJSONObject(i1);
             String pid = uuid.getString("mc_uuid");
-            String user_name = Bukkit.getOfflinePlayer(UUID.fromString(pid)).getName();
+            if (!(owner.equals(pid))) {
+                String user_name = Bukkit.getOfflinePlayer(UUID.fromString(pid)).getName();
 
-            stringList.add(user_name);
+                stringList.add(user_name);
+            }
         }
 
         for (int i = 0; i < stringList.size(); i++) {
 
             ArrayList<String> loreList = new ArrayList<>();
-            loreList.add(ChatColor.GOLD + "--------------");
-            ItemStack TaskItem = new ItemBuilder(Material.PLAYER_HEAD).setHead(stringList.get(i)).setDisplayName(ChatColor.WHITE + stringList.get(i)).setLore(loreList).addID(projecktID).build();
-            @NotNull OfflinePlayer managetPlayer = Bukkit.getOfflinePlayer(stringList.get(i));
-            GuiItem guiItem = new GuiItem(TaskItem, event -> {
-                //  if (player.hasPermission("gigaclub_team.edit_user")) {
-                playerManager(projecktID, player, managetPlayer);
-                //  } else { player.sendMessage("No Permission");}
-                event.setCancelled(true);
-            });
-            guiItems.add(guiItem);
+            if ((ownerName.equals(stringList.get(i)))) {
+                JSONObject user = players.getJSONObject(i);
+                JSONArray perms = user.getJSONArray("permissions");
+                loreList.add(ChatColor.GOLD + "--------------");
+                ItemStack TaskItem = new ItemBuilder(Material.PLAYER_HEAD).setHead(stringList.get(i)).setDisplayName(ChatColor.WHITE + stringList.get(i)).setLore(loreList).addID(projecktID).build();
+                @NotNull OfflinePlayer managetPlayer = Bukkit.getOfflinePlayer(stringList.get(i));
+                GuiItem guiItem = new GuiItem(TaskItem, event -> {
+                    //  if (player.hasPermission("gigaclub_team.edit_user")) {
+                    playerManager(projecktID, player, managetPlayer, perms);
+                    //  } else { player.sendMessage("No Permission");}
+                    event.setCancelled(true);
+                });
+                guiItems.add(guiItem);
+            }
         }
         return guiItems;
     }
 
-    public static void playerManager(int projecktID, Player player, OfflinePlayer managetPlayer) {
+    public static void playerManager(int projecktID, Player player, OfflinePlayer managetPlayer, JSONArray perms) {
         BuilderSystem builderSystem = Main.getBuilderSystem();
         ChestGui playermanager = new ChestGui(3, managetPlayer.getName() + " Manager");
         StaticPane pane = new StaticPane(9, 3);
@@ -352,10 +391,12 @@ public class WorldGui {
             invitePlayer.setCost((short) 0);
             StaticPane pane2 = new StaticPane(1, 1);
 
+
             GuiItem slot3 = new GuiItem(new ItemBuilder(Material.PAPER).setDisplayName("Click to Invite Player").build(), event1 -> {
 
 
                 try {
+
                     if (data.MCplayerExists(invitePlayer.getRenameText())) {
                         String[] User = data.getMCPlayerInfo(invitePlayer.getRenameText());
                         if (data.checkIfPlayerExists(User[1])) {
@@ -379,14 +420,28 @@ public class WorldGui {
                     event1.setCancelled(true);
                 }
             });
+
             pane2.addItem(slot3, 0, 0);
+
             invitePlayer.getResultComponent().addPane(pane2);
             invitePlayer.show(player);
             // vom player list
             event.setCancelled(true);
         });
-        navigation.addItem(playerInvite, 8, 0);
 
+        JSONArray users = projecktUserArray.getJSONArray("user_ids");
+
+        for (int i = 0; i < users.length(); i++) {
+            JSONObject user = users.getJSONObject(i);
+            String uuid = user.getString("mc_uuid");
+            if (uuid.equals(String.valueOf(player.getUniqueId()))) {
+                JSONArray perms = user.getJSONArray("permissions");
+                for (int i1 = 0; i1 < perms.length(); i1++) {
+                    if (perms.get(i1).equals("gigaclub_builder_system.invite_user"))
+                        navigation.addItem(playerInvite, 8, 0);
+                }
+            }
+        }
         navigation.addItem(new GuiItem(new ItemBuilder(Material.PLAYER_HEAD)
                 .setHeadDatabase(10298)
                 .setDisplayName(ChatColor.DARK_GRAY + "Back to Team Select")
@@ -397,7 +452,21 @@ public class WorldGui {
             StaticPane outline4 = new StaticPane(0, 5, 9, 1);
             outline4.fillWith(outlineintem);
             outline4.addItem(new GuiItem(new ItemBuilder(Material.PLAYER_HEAD).setHeadDatabase(10298).setDisplayName(ChatColor.DARK_GRAY + "Back to Main Menu").build(), event -> Navigate(player)), 4, 0);
-            outline4.addItem(playerInvite, 8, 0);
+
+            for (int i = 0; i < users.length(); i++) {
+                JSONObject user = users.getJSONObject(i);
+                String uuid = user.getString("mc_uuid");
+                if (uuid.equals(String.valueOf(player.getUniqueId()))) {
+                    JSONArray perms = user.getJSONArray("permissions");
+
+                    for (int i1 = 0; i1 < perms.length(); i1++) {
+
+                        if (perms.get(i1).equals("gigaclub_builder_system.invite_user"))
+                            outline4.addItem(playerInvite, 8, 0);
+                    }
+                }
+            }
+
             taskList.addPane(outline4);
         } else {
             taskList.addPane(navigation);
@@ -410,28 +479,37 @@ public class WorldGui {
 
 
     public static void editWorldTyp(Player player, int projecktID, String projecktName) {
+        JSONArray users = projecktUserArray.getJSONArray("user_ids");
 
-        final String[] worldTyp = {"normal_flat"};
-        final ChestGui[] worldTypes = {new ChestGui(1, "World Typs Select")};
-        StaticPane selector = new StaticPane(9, 1);
-        selector.addItem(new GuiItem(new ItemBuilder(Material.GRASS_BLOCK).setDisplayName("Normal").build(), event -> EditWorldTyp(projecktID, event, "normal", player, projecktName)), 0, 0);
-        selector.addItem(new GuiItem(new ItemBuilder(Material.GRASS_BLOCK).setDisplayName("Normal Flat").build(), event -> EditWorldTyp(projecktID, event, "normal_flat", player, projecktName)), 1, 0);
-        selector.addItem(new GuiItem(new ItemBuilder(Material.GRASS_BLOCK).setDisplayName("Normal Void").build(), event -> EditWorldTyp(projecktID, event, "normal_void", player, projecktName)), 2, 0);
+        for (int i = 0; i < users.length(); i++) {
+            JSONObject user = users.getJSONObject(i);
+            String uuid = user.getString("mc_uuid");
+            if (uuid.equals(String.valueOf(player.getUniqueId()))) {
+                JSONArray perms = user.getJSONArray("permissions");
 
-        selector.addItem(new GuiItem(new ItemBuilder(Material.NETHERRACK).setDisplayName("Nether").build(), event -> EditWorldTyp(projecktID, event, "nether", player, projecktName)), 3, 0);
-        selector.addItem(new GuiItem(new ItemBuilder(Material.NETHERRACK).setDisplayName("Nether Flat").build(), event -> EditWorldTyp(projecktID, event, "nether_flat", player, projecktName)), 4, 0);
-        selector.addItem(new GuiItem(new ItemBuilder(Material.NETHERRACK).setDisplayName("Nether Void").build(), event -> EditWorldTyp(projecktID, event, "nether_void", player, projecktName)), 5, 0);
 
-        selector.addItem(new GuiItem(new ItemBuilder(Material.END_STONE).setDisplayName("End").build(), event -> EditWorldTyp(projecktID, event, "end", player, projecktName)), 6, 0);
-        selector.addItem(new GuiItem(new ItemBuilder(Material.END_STONE).setDisplayName("End Flat").build(), event -> EditWorldTyp(projecktID, event, "end_flat", player, projecktName)), 7, 0);
-        selector.addItem(new GuiItem(new ItemBuilder(Material.END_STONE).setDisplayName("End Void").build(), event -> EditWorldTyp(projecktID, event, "end_void", player, projecktName)), 8, 0);
+                final String[] worldTyp = {"normal_flat"};
+                final ChestGui[] worldTypes = {new ChestGui(1, "World Typs Select")};
+                StaticPane selector = new StaticPane(9, 1);
+                selector.addItem(new GuiItem(new ItemBuilder(Material.GRASS_BLOCK).setDisplayName("Normal").build(), event -> EditWorldTyp(projecktID, event, "normal", player, projecktName, perms)), 0, 0);
+                selector.addItem(new GuiItem(new ItemBuilder(Material.GRASS_BLOCK).setDisplayName("Normal Flat").build(), event -> EditWorldTyp(projecktID, event, "normal_flat", player, projecktName, perms)), 1, 0);
+                selector.addItem(new GuiItem(new ItemBuilder(Material.GRASS_BLOCK).setDisplayName("Normal Void").build(), event -> EditWorldTyp(projecktID, event, "normal_void", player, projecktName, perms)), 2, 0);
 
-        worldTypes[0].addPane(selector);
-        worldTypes[0].show(player);
+                selector.addItem(new GuiItem(new ItemBuilder(Material.NETHERRACK).setDisplayName("Nether").build(), event -> EditWorldTyp(projecktID, event, "nether", player, projecktName, perms)), 3, 0);
+                selector.addItem(new GuiItem(new ItemBuilder(Material.NETHERRACK).setDisplayName("Nether Flat").build(), event -> EditWorldTyp(projecktID, event, "nether_flat", player, projecktName, perms)), 4, 0);
+                selector.addItem(new GuiItem(new ItemBuilder(Material.NETHERRACK).setDisplayName("Nether Void").build(), event -> EditWorldTyp(projecktID, event, "nether_void", player, projecktName, perms)), 5, 0);
 
+                selector.addItem(new GuiItem(new ItemBuilder(Material.END_STONE).setDisplayName("End").build(), event -> EditWorldTyp(projecktID, event, "end", player, projecktName, perms)), 6, 0);
+                selector.addItem(new GuiItem(new ItemBuilder(Material.END_STONE).setDisplayName("End Flat").build(), event -> EditWorldTyp(projecktID, event, "end_flat", player, projecktName, perms)), 7, 0);
+                selector.addItem(new GuiItem(new ItemBuilder(Material.END_STONE).setDisplayName("End Void").build(), event -> EditWorldTyp(projecktID, event, "end_void", player, projecktName, perms)), 8, 0);
+
+                worldTypes[0].addPane(selector);
+                worldTypes[0].show(player);
+            }
+        }
     }
 
-    public static void EditWorldTyp(int projecktID, InventoryClickEvent event, String worldType, Player player, String projecktName) {
+    public static void EditWorldTyp(int projecktID, InventoryClickEvent event, String worldType, Player player, String projecktName, JSONArray perms) {
         BuilderSystem builderSystem = Main.getBuilderSystem();
         DropperGui gui = new DropperGui("warning");
         StaticPane pane = new StaticPane(3, 3);

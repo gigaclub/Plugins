@@ -23,6 +23,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -34,6 +35,34 @@ import static net.gigaclub.buildersystemplugin.Andere.Guis.Navigator.Navigate;
 
 
 public class TeamGui implements Listener {
+
+    public static JsonArray teamArray;
+    public static JsonObject teamUserArray;
+
+    public static void saveTeamsUsers(int teamID) {
+        // Erstelle den JsonArray
+        BuilderSystem builderSystem = Main.getBuilderSystem();
+
+
+        JsonObject team = builderSystem.getTeam(teamID);
+        JsonObject jsonArray = team;
+
+        // Speichere den JsonArray in einer Variablen
+        TeamGui.teamUserArray = jsonArray;
+
+    }
+
+    private static void asyncload(int teamID) {
+        // Erstelle eine neue Instanz von BukkitRunnable
+        BukkitRunnable task = new BukkitRunnable() {
+            @Override
+            public void run() {
+                saveTeamsUsers(teamID);
+            }
+        };
+        task.runTaskAsynchronously(Main.getPlugin());
+    }
+
 
     static ItemStack outlineintem = new ItemBuilder(Material.RED_STAINED_GLASS_PANE).setDisplayName(" ").build();
 
@@ -172,13 +201,13 @@ public class TeamGui implements Listener {
 
 
     public static List<GuiItem> teamItemList(Player player) {
-        BuilderSystem builderSystem = Main.getBuilderSystem();
+
         List<GuiItem> guiItems = new ArrayList<>();
-        JsonArray teams = builderSystem.getTeamsByMember(player.getUniqueId().toString());
+
 
         Data data = Main.getData();
 
-        for (JsonElement jsonElement : teams) {
+        for (JsonElement jsonElement : teamArray) {
             JsonObject team = jsonElement.getAsJsonObject();
 
             int ID = team.get("id").getAsInt();
@@ -207,17 +236,26 @@ public class TeamGui implements Listener {
             if (!(description.isEmpty())) {
                 loreList.add(ChatColor.GRAY + "Description: " + ChatColor.WHITE + description);
             }
-            loreList.add(ChatColor.GRAY + "Team Member: " + ChatColor.WHITE + joinedString);
+            if (!(stringList.isEmpty())) {
+                loreList.add(ChatColor.GRAY + "Team Member: " + ChatColor.WHITE + joinedString);
+            }
+            if (owner.equals(player.getName())) {
+                ItemStack project = new ItemBuilder(Material.MAP).setDisplayName(ChatColor.GRAY + "Name: " + ChatColor.WHITE + name).setLore(loreList).build();
 
+                GuiItem guiItem = new GuiItem(project, event -> {
+                    event.setCancelled(true);
+                    TeamMenu(ID, player);
+                });
+                guiItems.add(guiItem);
+            } else {
+                ItemStack project = new ItemBuilder(Material.PAPER).setDisplayName(ChatColor.GRAY + "Name: " + ChatColor.WHITE + name).setLore(loreList).build();
 
-            ItemStack project = new ItemBuilder(Material.PAPER).setDisplayName(ChatColor.GRAY + "Name: " + ChatColor.WHITE + name).setLore(loreList).build();
-
-            GuiItem guiItem = new GuiItem(project, event -> {
-                event.setCancelled(true);
-                TeamMenu(ID, player);
-            });
-            guiItems.add(guiItem);
-
+                GuiItem guiItem = new GuiItem(project, event -> {
+                    event.setCancelled(true);
+                    TeamMenu(ID, player);
+                });
+                guiItems.add(guiItem);
+            }
         }
         return guiItems;
     }
@@ -259,6 +297,7 @@ public class TeamGui implements Listener {
         HopperGui teamMenu = new HopperGui("         Team Manager");
         StaticPane pane = new StaticPane(0, 0, 5, 1);
         pane.setOnClick(event -> event.setCancelled(true));
+        asyncload(TeamID);
         pane.fillWith(outlineintem);
         pane.addItem(new GuiItem(new ItemBuilder(Material.PLAYER_HEAD).setDisplayName("Player Manager").build(), event -> {
             TeamPlayer(player, TeamID);
@@ -296,7 +335,7 @@ public class TeamGui implements Listener {
         List<GuiItem> guiItems = new ArrayList<>();
 
 
-        JsonObject team = builderSystem.getTeam(teamID);
+        JsonObject team = teamUserArray;
 
         JsonArray players = team.getAsJsonArray("user_ids");
         List<String> stringList = new ArrayList<String>();
@@ -319,9 +358,12 @@ public class TeamGui implements Listener {
         for (JsonElement jsonElement : players) {
             JsonObject uuid = jsonElement.getAsJsonObject();
             String pid = uuid.get("mc_uuid").getAsString();
-            String user_name = Bukkit.getOfflinePlayer(UUID.fromString(pid)).getName();
+            if (owner.equals(pid)) {
 
-            stringList.add(user_name);
+            } else {
+                String user_name = Bukkit.getOfflinePlayer(UUID.fromString(pid)).getName();
+                stringList.add(user_name);
+            }
         }
 
         for (int i = 0; i < stringList.size(); i++) {

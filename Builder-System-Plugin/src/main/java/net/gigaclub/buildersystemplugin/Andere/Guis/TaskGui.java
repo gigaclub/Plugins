@@ -30,15 +30,16 @@ import static net.gigaclub.buildersystemplugin.Andere.Guis.Navigator.Navigate;
 
 public class TaskGui {
 
+    public static JSONArray taskArray;
 
     static ItemStack outlineintem = new ItemBuilder(Material.LIGHT_BLUE_STAINED_GLASS_PANE).setDisplayName(" ").build();
 
     public static List<GuiItem> taskItemList(Player player) {
-        BuilderSystem builderSystem = Main.getBuilderSystem();
+
         List<GuiItem> guiItems = new ArrayList<>();
 
 
-        JSONArray tasks = builderSystem.getAllTasks();
+        JSONArray tasks = taskArray;
         for (int i = 0; i < tasks.length(); i++) {
             JSONObject task = tasks.getJSONObject(i);
             JSONArray worlds = task.getJSONArray("world_ids");
