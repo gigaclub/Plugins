@@ -1,0 +1,9 @@
+name: BanSystem
+version: '${version}'
+main: net.gigaclub.bannsystem.Main
+api-version: 1.19
+depend: [ Translation, HeadDatabase, Base ]
+
+commands:
+  warn:
+    description: "Command to Warn players"
