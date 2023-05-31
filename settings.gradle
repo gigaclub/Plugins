@@ -18,5 +18,7 @@ include ':Base-Plugin:base-common',
         'TeamAPI',
         'Builder-System-Plugin',
         'BuilderSystemAPI',
-        'Auth-Plugin'
+        'Auth-Plugin',
+        'BanSystemAPI',
+        'BanSystem-CloudNet-Module'
 
