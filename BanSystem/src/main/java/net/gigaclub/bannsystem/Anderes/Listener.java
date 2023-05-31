@@ -11,6 +11,9 @@ import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerLoginEvent;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Locale;
 
 
 public class Listener implements org.bukkit.event.Listener {
@@ -25,7 +28,7 @@ public class Listener implements org.bukkit.event.Listener {
 
         JsonArray bannetUUids = banSystem.getBannedPlayerUUIDs();
 
-
+        @NotNull Locale local = event.getPlayer().locale();
         for (JsonElement jsonElement : bannetUUids) {
             JsonObject list = jsonElement.getAsJsonObject();
             String uuid = list.get("uuid").getAsString();
