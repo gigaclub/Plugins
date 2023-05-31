@@ -50,6 +50,14 @@ public class Data {
         ) > 0;
     }
 
+    public String getplayerlang(String playerUUID) {
+        String modelName = "gc.user";
+
+        List<Object> searchResult = odoo.search("mc_uuid", List.of(List.of(Arrays.asList("mc_uuid", "=", playerUUID)), List.of(List.of(List.of("lang")))));
+        return String.valueOf(searchResult);
+
+    }
+
     public boolean MCplayerExists(String playerName) throws IOException {
         String url = "https://api.mojang.com/users/profiles/minecraft/" + playerName;
         URL obj = new URL(url);
@@ -91,7 +99,6 @@ public class Data {
             throw new RuntimeException(e);
         }
     }
-
 
 
 }

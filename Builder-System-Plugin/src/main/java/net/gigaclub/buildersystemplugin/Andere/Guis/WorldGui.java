@@ -34,31 +34,29 @@ import static net.gigaclub.buildersystemplugin.Andere.Guis.Navigator.Navigate;
 
 public class WorldGui {
 
+    public static JSONObject worldObject;
+    public static JSONObject projecktUserArray;
     static ItemStack outlineintem = new ItemBuilder(Material.BLUE_STAINED_GLASS_PANE).setDisplayName(" ").build();
 
-    public static JSONArray worldArray;
-
-    public static JSONObject projecktUserArray;
-
-    public static void saveProjecktUsers(int projecktID) {
+    public static void saveProjecktUsers(int projecktID, Player player) {
         // Erstelle den JsonArray
         BuilderSystem builderSystem = Main.getBuilderSystem();
 
-
+        JSONObject jsonObjeckt = new JSONObject();
         JSONObject team = builderSystem.getWorld(projecktID);
-        JSONObject jsonObjeckt = team;
+        jsonObjeckt.put(player.getName(), team);
 
         // Speichere den JsonArray in einer Variablen
         WorldGui.projecktUserArray = jsonObjeckt;
 
     }
 
-    private static void asyncload(int projecktID) {
+    private static void asyncload(int projecktID, Player player) {
         // Erstelle eine neue Instanz von BukkitRunnable
         BukkitRunnable task = new BukkitRunnable() {
             @Override
             public void run() {
-                saveProjecktUsers(projecktID);
+                saveProjecktUsers(projecktID, player);
             }
         };
         task.runTaskAsynchronously(Main.getPlugin());
@@ -69,6 +67,7 @@ public class WorldGui {
 
 
         List<GuiItem> guiItems = new ArrayList<>();
+        JSONArray worldArray = worldObject.getJSONArray(player.getName());
         JSONArray userWorlds = worldArray;
 
         for (int i = 0; i < userWorlds.length(); i++) {
@@ -116,7 +115,7 @@ public class WorldGui {
 
                 ItemStack project = new ItemBuilder(Material.PAPER).setDisplayName(ChatColor.GRAY + "Name: " + ChatColor.WHITE + world.getString("name")).setLore(worldlore).build();
                 GuiItem guiItem = new GuiItem(project, event -> {
-                    asyncload(world.getInt("world_id"));
+                    asyncload(world.getInt("world_id"), player);
                     projeckt(player, world.getInt("world_id"), world.getString("name"));
                     event.setCancelled(true);
                 });
@@ -124,8 +123,8 @@ public class WorldGui {
             } else {
                 ItemStack project = new ItemBuilder(Material.MAP).setDisplayName(ChatColor.GRAY + "Name: " + ChatColor.WHITE + world.getString("name")).setLore(worldlore).build();
                 GuiItem guiItem = new GuiItem(project, event -> {
+                    asyncload(world.getInt("world_id"), player);
                     projeckt(player, world.getInt("world_id"), world.getString("name"));
-                    asyncload(world.getInt("world_id"));
                     event.setCancelled(true);
                 });
                 guiItems.add(guiItem);
@@ -249,7 +248,7 @@ public class WorldGui {
         List<GuiItem> guiItems = new ArrayList<>();
 
 
-        JSONObject projeckt = projecktUserArray;
+        JSONObject projeckt = projecktUserArray.getJSONObject(player.getName());
 
         JSONArray players = projeckt.getJSONArray("user_ids");
         List<String> stringList = new ArrayList<String>();
@@ -429,7 +428,8 @@ public class WorldGui {
             event.setCancelled(true);
         });
 
-        JSONArray users = projecktUserArray.getJSONArray("user_ids");
+        JSONObject objeckt = projecktUserArray.getJSONObject(player.getName());
+        JSONArray users = objeckt.getJSONArray("user_ids");
 
         for (int i = 0; i < users.length(); i++) {
             JSONObject user = users.getJSONObject(i);
@@ -479,7 +479,8 @@ public class WorldGui {
 
 
     public static void editWorldTyp(Player player, int projecktID, String projecktName) {
-        JSONArray users = projecktUserArray.getJSONArray("user_ids");
+        JSONObject objeckt = projecktUserArray.getJSONObject(player.getName());
+        JSONArray users = objeckt.getJSONArray("user_ids");
 
         for (int i = 0; i < users.length(); i++) {
             JSONObject user = users.getJSONObject(i);

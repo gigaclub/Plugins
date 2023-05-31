@@ -4,6 +4,7 @@ import com.github.stefvanschie.inventoryframework.gui.GuiItem;
 import com.github.stefvanschie.inventoryframework.gui.type.ChestGui;
 import com.github.stefvanschie.inventoryframework.pane.StaticPane;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import net.gigaclub.buildersystem.BuilderSystem;
 import net.gigaclub.buildersystemplugin.Andere.InterfaceAPI.ItemBuilder;
 import net.gigaclub.buildersystemplugin.Main;
@@ -25,6 +26,7 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -37,9 +39,7 @@ import static net.gigaclub.buildersystemplugin.Andere.Guis.WorldGui.projecktList
 public class Navigator implements Listener {
 
 
-
     Translation t = Main.getTranslation();
-
 
 
     public static void Navigate(Player player) {
@@ -118,6 +118,45 @@ public class Navigator implements Listener {
         }
     }
 
+    public static void saveWorlds(Player player) {
+        // Erstelle den JsonArray
+        BuilderSystem builderSystem = Main.getBuilderSystem();
+
+        JSONObject jsonObjeckt = new JSONObject();
+
+        JSONArray userWorlds = builderSystem.getUserWorlds(player.getUniqueId().toString());
+        jsonObjeckt.put(player.getName(), userWorlds);
+
+
+        WorldGui.worldObject = jsonObjeckt;
+
+    }
+
+    public static void saveTasks() {
+
+        BuilderSystem builderSystem = Main.getBuilderSystem();
+
+        JSONArray tasks = builderSystem.getAllTasks();
+        JSONArray jsonArray = tasks;
+
+
+        TaskGui.taskArray = jsonArray;
+
+    }
+
+    public static void saveTeams(Player player) {
+        // Erstelle den JsonArray
+        BuilderSystem builderSystem = Main.getBuilderSystem();
+
+        JsonObject jsonObjeckt = new JsonObject();
+        JsonArray teams = builderSystem.getTeamsByMember(player.getUniqueId().toString());
+        jsonObjeckt.add(player.getName(), teams);
+
+
+        TeamGui.teamObjeckt = jsonObjeckt;
+
+    }
+
     @EventHandler
     public void antiGuiQ(PlayerDropItemEvent event) {
         ItemStack item = event.getItemDrop().getItemStack();
@@ -137,46 +176,6 @@ public class Navigator implements Listener {
                 event.setCancelled(true);
             }
         }
-
-    }
-
-
-    public static void saveWorlds(Player player) {
-        // Erstelle den JsonArray
-        BuilderSystem builderSystem = Main.getBuilderSystem();
-
-
-        JSONArray userWorlds = builderSystem.getUserWorlds(player.getUniqueId().toString());
-        JSONArray jsonArray = userWorlds;
-
-
-        // Speichere den JsonArray in einer Variablen
-        WorldGui.worldArray = jsonArray;
-
-    }
-
-    public static void saveTasks() {
-        // Erstelle den JsonArray
-        BuilderSystem builderSystem = Main.getBuilderSystem();
-
-        JSONArray tasks = builderSystem.getAllTasks();
-        JSONArray jsonArray = tasks;
-
-        // Speichere den JsonArray in einer Variablen
-        TaskGui.taskArray = jsonArray;
-
-    }
-
-    public static void saveTeams(Player player) {
-        // Erstelle den JsonArray
-        BuilderSystem builderSystem = Main.getBuilderSystem();
-
-
-        JsonArray teams = builderSystem.getTeamsByMember(player.getUniqueId().toString());
-        JsonArray jsonArray = teams;
-
-        // Speichere den JsonArray in einer Variablen
-        TeamGui.teamArray = jsonArray;
 
     }
 

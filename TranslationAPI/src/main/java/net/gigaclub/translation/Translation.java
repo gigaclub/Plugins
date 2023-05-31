@@ -16,14 +16,24 @@ import java.util.List;
 public class Translation {
 
     private final Odoo odoo;
-    private String category;
-    private final Plugin plugin;
+    private Plugin plugin;
 
-    public Translation(String hostname, String database, String username, String password, Plugin plugin) {
+    private net.md_5.bungee.api.plugin.Plugin bungeePlugin;
+
+    private String category;
+
+    public Translation(String hostname, String database, String username, String password, Object plugin) {
         this.odoo = new Odoo(hostname, database, username, password);
-        this.plugin = plugin;
         this.category = "";
+        if (plugin instanceof Plugin) {
+            this.plugin = (Plugin) plugin;
+        } else if (plugin instanceof net.md_5.bungee.api.plugin.Plugin) {
+            this.plugin = null;
+            this.bungeePlugin = (net.md_5.bungee.api.plugin.Plugin) plugin;
+        }
+
     }
+
 
     public void setCategory(String category) {
         this.category = category;

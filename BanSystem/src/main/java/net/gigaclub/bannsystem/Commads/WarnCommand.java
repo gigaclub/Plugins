@@ -118,9 +118,12 @@ public class WarnCommand implements CommandExecutor {
         Translation t = Main.getTranslation();
         Data data = Main.getData();
 
+
         if (!(sender instanceof Player player)) {
             return false;
         }
+        String lang = data.getplayerlang(String.valueOf(player.getUniqueId()));
+        player.sendMessage(lang);
         if (args.length == 0) {
             //  /warn <Player>
             t.sendMessage("warn.not.enough", player);

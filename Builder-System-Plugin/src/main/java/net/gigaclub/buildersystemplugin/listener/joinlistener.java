@@ -2,6 +2,7 @@ package net.gigaclub.buildersystemplugin.listener;
 
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import eu.cloudnetservice.driver.event.EventListener;
 import eu.cloudnetservice.driver.event.events.service.CloudServiceEvent;
 import eu.cloudnetservice.driver.inject.InjectionLayer;
@@ -10,6 +11,8 @@ import eu.cloudnetservice.driver.service.*;
 import eu.cloudnetservice.modules.bridge.player.CloudPlayer;
 import eu.cloudnetservice.modules.bridge.player.PlayerManager;
 import net.gigaclub.buildersystem.BuilderSystem;
+import net.gigaclub.buildersystemplugin.Andere.Guis.TeamGui;
+import net.gigaclub.buildersystemplugin.Andere.Guis.WorldGui;
 import net.gigaclub.buildersystemplugin.Andere.InterfaceAPI.ItemBuilder;
 import net.gigaclub.buildersystemplugin.Main;
 import net.gigaclub.translation.Translation;
@@ -21,11 +24,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Arrays;
@@ -188,6 +193,38 @@ public class joinlistener implements Listener {
         }
         if (player.hasPermission("gigaclub_builder_system.Gui")) {
             player.getInventory().setItem(0, GuiOpener);
+        }
+
+    }
+
+    @EventHandler
+    public void leaveListener(PlayerQuitEvent event) {
+
+        JsonObject teamObjeckt = TeamGui.teamObjeckt;
+        JSONObject worldUser = WorldGui.projecktUserArray;
+        JsonObject teamUser = TeamGui.teamUserArray;
+        Player player = event.getPlayer();
+        String name = player.getName();
+
+        JSONObject worldObject = WorldGui.worldObject;
+
+        if (!(worldObject.isEmpty()) || !(worldObject == null)) {
+            worldObject.remove(name);
+        }
+        if (!(teamObjeckt.size() == 0 || !(teamObjeckt == null))) {
+            teamObjeckt.remove(name);
+        }
+        if (!(worldUser.isEmpty()) || !(worldUser == null)) {
+            worldUser.remove(name);
+        }
+        if (!(teamUser.size() == 0) || !(teamUser == null)) {
+            teamUser.remove(name);
+        }
+
+        try {
+            worldObject.get(name);
+        } catch (JSONException e) {
+            System.out.println("remove");
         }
 
     }

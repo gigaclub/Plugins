@@ -36,35 +36,31 @@ import static net.gigaclub.buildersystemplugin.Andere.Guis.Navigator.Navigate;
 
 public class TeamGui implements Listener {
 
-    public static JsonArray teamArray;
+    public static JsonObject teamObjeckt;
     public static JsonObject teamUserArray;
+    static ItemStack outlineintem = new ItemBuilder(Material.RED_STAINED_GLASS_PANE).setDisplayName(" ").build();
 
-    public static void saveTeamsUsers(int teamID) {
-        // Erstelle den JsonArray
+    public static void saveTeamsUsers(int teamID, Player player) {
         BuilderSystem builderSystem = Main.getBuilderSystem();
 
-
+        JsonObject jsonObject = new JsonObject();
         JsonObject team = builderSystem.getTeam(teamID);
-        JsonObject jsonArray = team;
+        jsonObject.add(player.getName(), team);
 
-        // Speichere den JsonArray in einer Variablen
-        TeamGui.teamUserArray = jsonArray;
+        TeamGui.teamUserArray = jsonObject;
 
     }
 
-    private static void asyncload(int teamID) {
+    private static void asyncload(int teamID, Player player) {
         // Erstelle eine neue Instanz von BukkitRunnable
         BukkitRunnable task = new BukkitRunnable() {
             @Override
             public void run() {
-                saveTeamsUsers(teamID);
+                saveTeamsUsers(teamID, player);
             }
         };
         task.runTaskAsynchronously(Main.getPlugin());
     }
-
-
-    static ItemStack outlineintem = new ItemBuilder(Material.RED_STAINED_GLASS_PANE).setDisplayName(" ").build();
 
     public static void teams(Player player) {
         ChestGui teams = new ChestGui(4, "Team");
@@ -199,13 +195,11 @@ public class TeamGui implements Listener {
     }
 
 
-
     public static List<GuiItem> teamItemList(Player player) {
 
         List<GuiItem> guiItems = new ArrayList<>();
 
-
-        Data data = Main.getData();
+        JsonArray teamArray = teamObjeckt.getAsJsonArray(player.getName());
 
         for (JsonElement jsonElement : teamArray) {
             JsonObject team = jsonElement.getAsJsonObject();
@@ -297,7 +291,7 @@ public class TeamGui implements Listener {
         HopperGui teamMenu = new HopperGui("         Team Manager");
         StaticPane pane = new StaticPane(0, 0, 5, 1);
         pane.setOnClick(event -> event.setCancelled(true));
-        asyncload(TeamID);
+        asyncload(TeamID, player);
         pane.fillWith(outlineintem);
         pane.addItem(new GuiItem(new ItemBuilder(Material.PLAYER_HEAD).setDisplayName("Player Manager").build(), event -> {
             TeamPlayer(player, TeamID);
@@ -331,11 +325,11 @@ public class TeamGui implements Listener {
     }
 
     public static List<GuiItem> TeamPlayerList(Player player, int teamID) {
-        BuilderSystem builderSystem = Main.getBuilderSystem();
+
         List<GuiItem> guiItems = new ArrayList<>();
 
 
-        JsonObject team = teamUserArray;
+        JsonObject team = teamUserArray.getAsJsonObject(player.getName());
 
         JsonArray players = team.getAsJsonArray("user_ids");
         List<String> stringList = new ArrayList<String>();
@@ -529,7 +523,7 @@ public class TeamGui implements Listener {
             taskList.setTitle("Team Player");
             StaticPane outline4 = new StaticPane(0, 5, 9, 1);
             outline4.fillWith(outlineintem);
-            outline4.addItem(new GuiItem(new ItemBuilder(Material.PLAYER_HEAD).setHeadDatabase(10298).setDisplayName(ChatColor.DARK_GRAY + "Back to Main Menu").build(), event -> Navigate(player)), 4, 0);
+            outline4.addItem(new GuiItem(new ItemBuilder(Material.PLAYER_HEAD).setHeadDatabase(10298).setDisplayName(ChatColor.DARK_GRAY + "Back to team select").build(), event -> TeamList(player)), 4, 0);
             outline4.addItem(playerInvite, 8, 0);
             taskList.addPane(outline4);
         } else {
@@ -667,13 +661,13 @@ public class TeamGui implements Listener {
             } else event.setCancelled(true);
         }), 7, 0);
 
-        navigation.addItem(new GuiItem(new ItemBuilder(Material.PLAYER_HEAD).setHeadDatabase(10298).setDisplayName(ChatColor.DARK_GRAY + "Back to Main Menu").build(), event -> Navigate(player)), 4, 0);
+        navigation.addItem(new GuiItem(new ItemBuilder(Material.PLAYER_HEAD).setHeadDatabase(10298).setDisplayName(ChatColor.DARK_GRAY + "Back to Team select").build(), event -> TeamList(player)), 4, 0);
         navigation.fillWith(outlineintem);
         if (taskPages.getPages() == 1) {
             teamInits.setTitle("Invites");
             StaticPane outline4 = new StaticPane(0, 5, 9, 1);
             outline4.fillWith(outlineintem);
-            outline4.addItem(new GuiItem(new ItemBuilder(Material.PLAYER_HEAD).setHeadDatabase(10298).setDisplayName(ChatColor.DARK_GRAY + "Back to Main Menu").build(), event -> Navigate(player)), 4, 0);
+            outline4.addItem(new GuiItem(new ItemBuilder(Material.PLAYER_HEAD).setHeadDatabase(10298).setDisplayName(ChatColor.DARK_GRAY + "Back to Team select").build(), event -> TeamList(player)), 4, 0);
             teamInits.addPane(outline4);
         } else {
             teamInits.addPane(navigation);
