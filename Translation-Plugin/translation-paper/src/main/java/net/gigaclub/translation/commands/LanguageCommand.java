@@ -64,7 +64,7 @@ public class LanguageCommand implements CommandExecutor, TabCompleter {
             arguments.add("set");
             arguments.add("list");
             return arguments;
-        }else if (args.length == 2) {
+        } else if (args.length == 2) {
             if (args[0].equalsIgnoreCase("set")) {
                 List<String> languages = Main.getData().getAvailableLanguages();
                 return languages;

@@ -25,7 +25,7 @@ repositories {
 }
 
 dependencies {
-    api project(":BuilderSystemAPI")
+    implementation project(":BuilderSystemAPI")
     api project(":TranslationAPI")
     compileOnly("io.papermc.paper:paper-api:1.19.4-R0.1-SNAPSHOT")
     compileOnly("me.clip:placeholderapi:2.11.3")
@@ -54,6 +54,7 @@ task copyJar(type: Copy, dependsOn: shadowJar) {
     from 'build/libs/Builder-System-Plugin-all.jar'
     into '../Plugins-all'
 }
+
 
 build {
     dependsOn(shadowJar)

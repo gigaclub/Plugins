@@ -26,7 +26,7 @@ public class TeamCommand implements CommandExecutor {
         Team team = Main.getTeam();
         Gson gson = new Gson();
         int status;
-        if(!(sender instanceof Player)) {
+        if (!(sender instanceof Player)) {
             Bukkit.getLogger().info("You´r not a Player  XD");
             return true;
         }

@@ -1,7 +1,7 @@
-package net.gigaclub.buildersystemplugin.Andere.InterfaceAPI;
+package net.gigaclub.bannsystem.Anderes;
 
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
-import net.gigaclub.buildersystemplugin.Main;
+import net.gigaclub.bannsystem.Main;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Color;
 import org.bukkit.Material;
@@ -135,7 +135,7 @@ public class ItemBuilder {
         return this;
     }
 
-    public ItemBuilder setLore(Component lore) {
+    public ItemBuilder setLoreComponents(Component lore) {
         ArrayList<Component> loreList = new ArrayList<>();
         loreList.add(lore);
         ItemMeta meta = getItemMeta();
@@ -172,14 +172,6 @@ public class ItemBuilder {
         ItemMeta meta = getItemMeta();
         PersistentDataContainer data = meta.getPersistentDataContainer();
         data.set(new NamespacedKey(Main.getPlugin(), "identifie"), PersistentDataType.STRING, metadata);
-        setItemMeta(meta);
-        return this;
-    }
-
-    public ItemBuilder addID(int metadata) {
-        ItemMeta meta = getItemMeta();
-        PersistentDataContainer data = meta.getPersistentDataContainer();
-        data.set(new NamespacedKey(Main.getPlugin(), "id"), PersistentDataType.INTEGER, metadata);
         setItemMeta(meta);
         return this;
     }

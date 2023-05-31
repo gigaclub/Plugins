@@ -6,10 +6,12 @@ import com.google.gson.JsonElement;
 import net.gigaclub.base.odoo.Odoo;
 import org.apache.xmlrpc.XmlRpcException;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class Data {
-    private Odoo odoo;
+    private final Odoo odoo;
 
     public Data(String hostname, String database, String username, String password) {
         this.odoo = new Odoo(hostname, database, username, password);
@@ -18,8 +20,8 @@ public class Data {
     public boolean checkIfLanguageExists(String languageCode) {
         return this.odoo.search_count(
                 "res.lang",
-                Arrays.asList(
-                        Arrays.asList(
+                List.of(
+                        List.of(
                                 Arrays.asList("code", "=", languageCode)
                         )
                 )
@@ -30,9 +32,9 @@ public class Data {
         try {
             Gson gson = new Gson();
             JsonElement installedLanguages = gson.toJsonTree((this.odoo.getModels().execute("execute_kw", Arrays.asList(
-                    this.odoo.getDatabase(), this.odoo.getUid(), this.odoo.getPassword(),
-                    "res.lang", "get_installed", Arrays.asList()
-                )
+                            this.odoo.getDatabase(), this.odoo.getUid(), this.odoo.getPassword(),
+                            "res.lang", "get_installed", List.of()
+                    )
             )));
             List<String> languages = new ArrayList<>();
             installedLanguages.getAsJsonArray().forEach(language -> {

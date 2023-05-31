@@ -210,11 +210,11 @@ public class BuilderSystem extends Team {
     // 2: Other error
     // 1: World does not exist
     // 0: Success
-    public int editWorldType(int worldID, String worldType) {
+    public int editWorldType(String playerUUID, int worldID, String worldType) {
         try {
             return (int) this.odoo.getModels().execute("execute_kw", Arrays.asList(
                     this.odoo.getDatabase(), this.odoo.getUid(), this.odoo.getPassword(),
-                    "gc.builder.world", "edit_world_type", Arrays.asList(worldID, worldType)
+                    "gc.builder.world", "edit_world_type", Arrays.asList(playerUUID, worldID, worldType)
             ));
         } catch (XmlRpcException e) {
             e.printStackTrace();
