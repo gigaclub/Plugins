@@ -25,12 +25,21 @@ public class Translation {
     public Translation(String hostname, String database, String username, String password, Object plugin) {
         this.odoo = new Odoo(hostname, database, username, password);
         this.category = "";
-        if (plugin instanceof Plugin) {
+
+        try {
             this.plugin = (Plugin) plugin;
-        } else if (plugin instanceof net.md_5.bungee.api.plugin.Plugin) {
+        } catch (NoClassDefFoundError e) {
             this.plugin = null;
             this.bungeePlugin = (net.md_5.bungee.api.plugin.Plugin) plugin;
+            return;
         }
+
+        try {
+            this.bungeePlugin = (net.md_5.bungee.api.plugin.Plugin) plugin;
+        } catch (NoClassDefFoundError e) {
+            this.plugin = (Plugin) plugin;
+        }
+
 
     }
 

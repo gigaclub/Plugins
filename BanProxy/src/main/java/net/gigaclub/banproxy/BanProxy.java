@@ -1,6 +1,8 @@
 package net.gigaclub.banproxy;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import net.gigaclub.bansystemapi.BanSystem;
 import net.gigaclub.translation.Translation;
 import net.md_5.bungee.api.plugin.Plugin;
@@ -14,7 +16,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public final class BanProxy extends Plugin {
@@ -23,6 +27,8 @@ public final class BanProxy extends Plugin {
     private static BanSystem banSystemAPI;
     private static TaskScheduler scheduler;
     private static JsonArray UUids;
+
+    private static Map<Integer, String> warntyps;
     private net.md_5.bungee.config.Configuration config;
     private ScheduledTask taskId;
 
@@ -54,6 +60,10 @@ public final class BanProxy extends Plugin {
         return UUids;
     }
 
+    public static Map<Integer, String> getWarntyps() {
+        return warntyps;
+    }
+
     public static void registerTranslations() {
         BanProxy.translation.registerTranslations(List.of(
 
@@ -64,8 +74,6 @@ public final class BanProxy extends Plugin {
     public void onEnable() {
         plugin = this;
         setPlugin(this);
-
-        reloadBannList();
 
         // Listener registrieren
         getProxy().getPluginManager().registerListener(this, new PlayerPreLoginListener());
@@ -112,6 +120,8 @@ public final class BanProxy extends Plugin {
 
         registerTranslations();
 
+        reloadBannList();
+        reloadwarns();
 
     }
 
@@ -134,15 +144,43 @@ public final class BanProxy extends Plugin {
             try {
                 UUids = banSystem.getBannedPlayerUUIDs();
             } catch (NullPointerException e) {
-                System.out.println("Bann List Leer");
+                getProxy().getLogger().info("Bann List ist Leer");
                 return;
             }
 
+
             UUids = banSystem.getBannedPlayerUUIDs();
-            getProxy().getLogger().info("Asynchrone Aufgabe alle 5 Minuten");
-        }, 0, 5, TimeUnit.MINUTES);
+        }, 0, 1, TimeUnit.MINUTES);
     }
 
+    public void reloadwarns() {
+        scheduler = getProxy().getScheduler();
+        // Weitere Initialisierung deines Plugins
+
+        // Task alle 5 Minuten starten
+        taskId = scheduler.schedule(this, () -> {
+            BanSystem banSystem = BanProxy.getBanSystemAPI();
+
+            try {
+                banSystem.getWarningTypes();
+            } catch (NullPointerException e) {
+                getProxy().getLogger().info("warns List ist Leer");
+                return;
+            }
+
+            Map<Integer, String> hashMap = new HashMap<>();
+
+            // Das JSON-Array durchlaufen und nur die Parameter "name" und "id" extrahieren
+            for (JsonElement jsonElement : banSystem.getWarningTypes()) {
+                JsonObject jsonObject = jsonElement.getAsJsonObject();
+                String name = jsonObject.get("name").getAsString();
+                int id = jsonObject.get("id").getAsInt();
+                hashMap.put(id, name);
+            }
+
+            warntyps = hashMap;
+        }, 0, 60, TimeUnit.MINUTES);
+    }
 
 }
 

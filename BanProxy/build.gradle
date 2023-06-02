@@ -5,18 +5,14 @@ plugins {
 
 
 repositories {
+
+
     mavenCentral()
-    maven {
-        name = "sonatype"
-        url = "https://oss.sonatype.org/content/groups/public/"
-    }
-    maven {
-        name = "papermc-repo"
-        url = "https://repo.papermc.io/repository/maven-public/"
-    }
 }
 
 dependencies {
+    implementation "net.kyori:adventure-api:4.13.1"
+    implementation "net.kyori:adventure-text-minimessage:4.13.1"
     compileOnly "io.github.waterfallmc:waterfall-api:1.19-R0.1-SNAPSHOT"
     implementation project(":BanSystemAPI")
     api project(":TranslationAPI")
@@ -24,13 +20,13 @@ dependencies {
 
 
 processResources {
-    def props = [version: version]
+    def props = [version: project.version]
     inputs.properties props
-    expand props
     filteringCharset 'UTF-8'
-    filesMatching('bungee.yml') {
+    filesMatching('plugin.yml') {
         expand props
     }
+}
 
     task copyJar(type: Copy, dependsOn: shadowJar) {
         from 'build/libs/BanProxy-all.jar'
@@ -45,4 +41,4 @@ processResources {
     }
 
 
-}
+
