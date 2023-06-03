@@ -3,8 +3,8 @@ package net.gigaclub.banproxy;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import net.gigaclub.translation.Translation;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.md_5.bungee.api.ProxyServer;
@@ -44,17 +44,20 @@ public class PlayerPreLoginListener implements Listener {
                 JsonObject banntUser = jsonElement.getAsJsonObject();
                 UUID uuid = UUID.fromString(banntUser.get("mc_uuid").getAsString());
                 if (playerUUId.equals(uuid)) {
+
                     String bann_date = banntUser.get("ban_expiration_datetime").getAsString();
                     int warnIP = banntUser.get("current_warning_id").getAsInt();
                     Map<Integer, String> warnTyps = BanProxy.getWarntyps();
 
                     String reason = warnTyps.get(warnIP);
+
+
                     String result = "\n" +
                             "<dark_red><b>Du wurdes Gebannt</b></dark_red>\n" +
                             "<gold>Grund: </gold><white></white><reason>\n" +
                             "<gold>Dauer: </gold><date>";
-
-                    Component bann = MiniMessage.miniMessage().deserialize(result, Placeholder.parsed("date", bann_date), Placeholder.parsed("reason", reason));
+                    Translation t = BanProxy.getTranslation();
+                    Component bann = t.t("bann.disconnect", player, Placeholder.parsed("reason", reason), Placeholder.parsed("date", bann_date));
                     String json = GsonComponentSerializer.gson().serialize(bann);
                     BaseComponent[] bungeeComponent = ComponentSerializer.parse(json);
                     player.disconnect(bungeeComponent);

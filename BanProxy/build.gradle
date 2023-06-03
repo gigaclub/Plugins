@@ -6,27 +6,21 @@ plugins {
 
 repositories {
     maven {
-        name = "codemc-snapshots"
-        url = uri("https://repo.codemc.io/repository/maven-snapshots/")
-    }
-    maven {
-        url 'https://jitpack.io/'
-    }
-    maven {
-        url 'https://s01.oss.sonatype.org/content/repositories/snapshots/'
-    }
-    maven {
-        url 'https://oss.sonatype.org/content/repositories/snapshots'
+        name = "sonatype-oss-snapshots1"
+        url = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
     }
 
     mavenCentral()
 }
 
 dependencies {
-    compileOnly("io.papermc.paper:paper-api:1.19.4-R0.1-SNAPSHOT")
-    compileOnly "io.github.waterfallmc:waterfall-api:1.19-R0.1-SNAPSHOT"
+
+    implementation "net.kyori:adventure-api:4.13.1"
+    implementation "net.kyori:adventure-text-minimessage:4.13.1"
+    compileOnly 'io.github.waterfallmc:waterfall-api:1.19-R0.1-SNAPSHOT'
     implementation project(":BanSystemAPI")
     implementation project(":TranslationAPI")
+
 }
 
 
