@@ -187,12 +187,13 @@ public class joinlistener implements Listener {
         FileConfiguration config = getConfig();
 
         Player player = event.getPlayer();
+        if (player.hasPermission("gigaclub_builder_system.Gui")) {
+            player.getInventory().setItem(0, GuiOpener);
+        }
+
         if (config.getBoolean("Gui.Remove_items_on_Join")) {
             player.getInventory().clear();
             player.getInventory().clear();
-        }
-        if (player.hasPermission("gigaclub_builder_system.Gui")) {
-            player.getInventory().setItem(0, GuiOpener);
         }
 
     }

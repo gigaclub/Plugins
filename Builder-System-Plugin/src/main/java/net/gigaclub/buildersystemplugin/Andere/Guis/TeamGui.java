@@ -68,7 +68,10 @@ public class TeamGui implements Listener {
         pane.fillWith(outlineintem);
         pane.setOnClick(event -> event.setCancelled(true));
         pane.addItem(new GuiItem(new ItemBuilder(Material.PLAYER_HEAD).setHeadDatabase(9943).setDisplayName("Create Team").setGlow(true).build(), event -> {
-            teamCreate(player, null, null);
+            if (player.hasPermission("gigaclub_team.create_team")) {
+                teamCreate(player, null, null);
+                event.setCancelled(true);
+            } else player.sendMessage("du hast keine berechtigung");
             event.setCancelled(true);
         }), 2, 1);
         pane.addItem(new GuiItem(new ItemBuilder(Material.PLAYER_HEAD).setHeadDatabase(9386).setDisplayName("Your Teams").setGlow(true).build(), event -> {

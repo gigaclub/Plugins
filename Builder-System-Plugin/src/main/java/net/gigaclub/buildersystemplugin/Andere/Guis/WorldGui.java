@@ -455,7 +455,7 @@ public class WorldGui {
             taskList.setTitle("Projeckt Player");
             StaticPane outline4 = new StaticPane(0, 5, 9, 1);
             outline4.fillWith(outlineintem);
-            outline4.addItem(new GuiItem(new ItemBuilder(Material.PLAYER_HEAD).setHeadDatabase(10298).setDisplayName(ChatColor.DARK_GRAY + "Back to Main Menu").build(), event -> Navigate(player)), 4, 0);
+            outline4.addItem(new GuiItem(new ItemBuilder(Material.PLAYER_HEAD).setHeadDatabase(10298).setDisplayName(ChatColor.DARK_GRAY + "Back to Projeckt List").build(), event -> projecktList(player)), 4, 0);
 
             for (int i = 0; i < users.length(); i++) {
                 JSONObject user = users.getJSONObject(i);

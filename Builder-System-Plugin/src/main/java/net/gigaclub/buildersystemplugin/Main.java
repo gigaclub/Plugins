@@ -131,12 +131,21 @@ public final class Main extends JavaPlugin implements Listener {
                 "builder_team.world.tab_world_name",
                 "builder_team.world.tab_team_id",
 
-
                 // countdown
-                "BuilderSystem.countdown_begin"
+                "BuilderSystem.countdown_begin",
 
                 //      status msg´s
 
+                // Navigator Gui
+                "BuilderSystem.navigator.team.lore1",
+                "BuilderSystem.navigator.team.lore2",
+                "BuilderSystem.navigator.team.lore3",
+                "BuilderSystem.navigator.world.lore1",
+                "BuilderSystem.navigator.world.lore2",
+                "BuilderSystem.navigator.world.lore3",
+                "BuilderSystem.navigator.task.lore1",
+                "BuilderSystem.navigator.task.lore2",
+                "BuilderSystem.navigator.task.lore3"
 
         ));
     }

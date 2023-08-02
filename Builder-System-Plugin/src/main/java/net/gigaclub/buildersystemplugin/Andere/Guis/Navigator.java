@@ -9,6 +9,7 @@ import net.gigaclub.buildersystem.BuilderSystem;
 import net.gigaclub.buildersystemplugin.Andere.InterfaceAPI.ItemBuilder;
 import net.gigaclub.buildersystemplugin.Main;
 import net.gigaclub.translation.Translation;
+import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -54,17 +55,17 @@ public class Navigator implements Listener {
         navigator.addPane(outline);
 
 
-        ItemStack teamGui = new ItemBuilder(Material.PLAYER_HEAD).setHeadDatabase(9386).setDisplayName(ChatColor.RED + "Team").setLore(teamloreList()).build();
+        ItemStack teamGui = new ItemBuilder(Material.PLAYER_HEAD).setHeadDatabase(9386).setDisplayName(ChatColor.RED + "Team").setLoreComponents(teamloreList(player)).build();
         GuiItem teamItem = new GuiItem(teamGui, event -> teams(player));
         outline.addItem(teamItem, 1, 1);
 
 
-        ItemStack TaskGui = new ItemBuilder(Material.PLAYER_HEAD).setHeadDatabase(10142).setDisplayName((ChatColor.AQUA) + "Tasks").setLore(taskloreList()).build();
+        ItemStack TaskGui = new ItemBuilder(Material.PLAYER_HEAD).setHeadDatabase(10142).setDisplayName((ChatColor.AQUA) + "Tasks").setLoreComponents(taskloreList(player)).build();
         GuiItem taskItem = new GuiItem(TaskGui, event -> TaskList(player));
         outline.addItem(taskItem, 4, 1);
 
 
-        ItemStack projectGui = new ItemBuilder(Material.PLAYER_HEAD).setHeadDatabase(32442).setDisplayName((ChatColor.BLUE + "Project")).setLore(worldloreList()).build();
+        ItemStack projectGui = new ItemBuilder(Material.PLAYER_HEAD).setHeadDatabase(32442).setDisplayName((ChatColor.BLUE + "Project")).setLoreComponents(worldloreList(player)).build();
         GuiItem prjectItem = new GuiItem(projectGui, event -> projecktList(player));
         outline.addItem(prjectItem, 7, 1);
 
@@ -73,27 +74,27 @@ public class Navigator implements Listener {
     }
 
 
-    public static ArrayList<String> teamloreList() {
-        ArrayList<String> loreList = new ArrayList<>();
-        loreList.add(ChatColor.GOLD + "--------------");
-        loreList.add(ChatColor.GOLD + "Open Team Menu");
-        loreList.add(ChatColor.GOLD + "--------------");
+    public static ArrayList<Component> teamloreList(Player player) {
+        ArrayList<Component> loreList = new ArrayList<>();
+        loreList.add(Main.getTranslation().t("BuilderSystem.navigator.team.lore1", player));
+        loreList.add(Main.getTranslation().t("BuilderSystem.navigator.team.lore2", player));
+        loreList.add(Main.getTranslation().t("BuilderSystem.navigator.team.lore3", player));
         return loreList;
     }
 
-    public static ArrayList<String> worldloreList() {
-        ArrayList<String> loreList = new ArrayList<>();
-        loreList.add(ChatColor.GOLD + "-----------------");
-        loreList.add(ChatColor.GOLD + "Open Project Menu");
-        loreList.add(ChatColor.GOLD + "-----------------");
+    public static ArrayList<Component> worldloreList(Player player) {
+        ArrayList<Component> loreList = new ArrayList<>();
+        loreList.add(Main.getTranslation().t("BuilderSystem.navigator.world.lore1", player));
+        loreList.add(Main.getTranslation().t("BuilderSystem.navigator.world.lore2", player));
+        loreList.add(Main.getTranslation().t("BuilderSystem.navigator.world.lore3", player));
         return loreList;
     }
 
-    public static ArrayList<String> taskloreList() {
-        ArrayList<String> loreList = new ArrayList<>();
-        loreList.add(ChatColor.GOLD + "--------------");
-        loreList.add(ChatColor.GOLD + "Open Task List");
-        loreList.add(ChatColor.GOLD + "--------------");
+    public static ArrayList<Component> taskloreList(Player player) {
+        ArrayList<Component> loreList = new ArrayList<>();
+        loreList.add(Main.getTranslation().t("BuilderSystem.navigator.task.lore1", player));
+        loreList.add(Main.getTranslation().t("BuilderSystem.navigator.task.lore2", player));
+        loreList.add(Main.getTranslation().t("BuilderSystem.navigator.task.lore3", player));
         return loreList;
     }
 
