@@ -18,8 +18,8 @@ import java.util.List;
 import java.util.Objects;
 
 
-@Plugin(name = "Auth", version = "1.19.4.1.0.0")
-@ApiVersion(ApiVersion.Target.v1_19)
+@Plugin(name = "Auth", version = "1.20.1.1.0.0")
+@ApiVersion(ApiVersion.Target.v1_20)
 @Dependency("Translation")
 @LoadOrder(PluginLoadOrder.POSTWORLD)
 public final class Main extends JavaPlugin {
