@@ -15,10 +15,10 @@ import java.util.Arrays;
 import java.util.List;
 
 public class CreateServer {
-    BuilderSystem builderSystem = Main.getBuilderSystem();
 
 
-    private void startServer1(int world_id, Player player) {
+    public static void startServer(int world_id, Player player) {
+        BuilderSystem builderSystem = Main.getBuilderSystem();
         Translation t = Main.getTranslation();
         String playerUUID = player.getUniqueId().toString();
         JSONObject world = builderSystem.getWorld(world_id);

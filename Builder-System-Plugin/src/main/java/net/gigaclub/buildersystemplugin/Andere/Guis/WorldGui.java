@@ -10,6 +10,7 @@ import com.github.stefvanschie.inventoryframework.pane.Pane;
 import com.github.stefvanschie.inventoryframework.pane.StaticPane;
 import com.github.stefvanschie.inventoryframework.pane.util.Slot;
 import net.gigaclub.buildersystem.BuilderSystem;
+import net.gigaclub.buildersystemplugin.Andere.CreateServer;
 import net.gigaclub.buildersystemplugin.Andere.Data;
 import net.gigaclub.buildersystemplugin.Andere.InterfaceAPI.ItemBuilder;
 import net.gigaclub.buildersystemplugin.Main;
@@ -202,8 +203,8 @@ public class WorldGui {
     public static void projeckt(Player player, int projecktID, String projecktName) {
 
 
-        ChestGui projecktManage = new ChestGui(3, "Manage " + projecktName);
-        StaticPane pane = new StaticPane(0, 0, 9, 3);
+        ChestGui projecktManage = new ChestGui(4, "Manage " + projecktName);
+        StaticPane pane = new StaticPane(0, 0, 9, 4);
         pane.fillWith(outlineintem, event -> event.setCancelled(true));
 
 
@@ -236,9 +237,12 @@ public class WorldGui {
             player.sendMessage("manage Teams");
             event.setCancelled(true);
         });
-
-
         pane.addItem(teammanage, 5, 1);
+        ItemStack joinButton = new ItemBuilder(Material.GRASS_BLOCK).setDisplayName(Main.getTranslation().t("buildersystem.worldgui.manage.join", player)).build();
+        GuiItem joinButtonGuiItem = new GuiItem(joinButton, event -> {
+            CreateServer.startServer(projecktID, player);
+        });
+        pane.addItem(joinButtonGuiItem, 4, 2);
         projecktManage.addPane(pane);
         projecktManage.show(player);
     }
