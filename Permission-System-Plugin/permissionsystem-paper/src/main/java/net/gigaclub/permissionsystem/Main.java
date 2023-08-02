@@ -134,7 +134,7 @@ public final class Main extends JavaPlugin {
         for (Player player : players) {
             JsonArray groupsOfPlayer = permissionSystem.getGroups(player.getUniqueId().toString());
             PermissionUser permissionUser = permissionManagement.user(player.getUniqueId());
-            permissionUser.groups().forEach(groupOfUser -> permissionUser.removeGroup(groupOfUser.group()));
+            permissionUser.groups().clear();
             for (JsonElement jsonElement : groupsOfPlayer) {
                 JsonObject group = jsonElement.getAsJsonObject();
                 String groupName = group.get("name").getAsString();
