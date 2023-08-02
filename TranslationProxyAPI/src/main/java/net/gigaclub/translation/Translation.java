@@ -4,9 +4,8 @@ import net.gigaclub.base.odoo.Odoo;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
+import net.md_5.bungee.api.plugin.Plugin;
 import org.apache.xmlrpc.XmlRpcException;
-import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -34,14 +33,13 @@ public class Translation {
         this.category = category;
     }
 
-    public @NotNull Component t(String name, Player player, TagResolver... tagResolvers) {
+    public @NotNull Component t(String name, String UUID, TagResolver... tagResolvers) {
         try {
-            String playerUUID;
-            playerUUID = player.getUniqueId().toString();
+
 
             String result = (String) this.odoo.getModels().execute("execute_kw", Arrays.asList(
                     this.odoo.getDatabase(), this.odoo.getUid(), this.odoo.getPassword(),
-                    "gc.translation", "get_translation_by_player_uuid", Arrays.asList(name, playerUUID, this.category)
+                    "gc.translation", "get_translation_by_player_uuid", Arrays.asList(name, UUID, this.category)
             ));
             try {
                 return MiniMessage.miniMessage().deserialize(result, tagResolvers);
@@ -54,9 +52,6 @@ public class Translation {
         return Component.text("");
     }
 
-    public void sendMessage(String name, Player player, TagResolver... tagResolvers) {
-        player.sendMessage(t(name, player, tagResolvers));
-    }
 
     public boolean checkIfTranslationExists(String translationName) {
         return this.odoo.search_count(

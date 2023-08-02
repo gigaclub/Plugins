@@ -21,5 +21,7 @@ include ':Base-Plugin:base-common',
         'Auth-Plugin',
         'BanSystemAPI',
         'BanSystem',
-        'BanProxy'
+        'BanProxy',
+        'BaseProxyAPI',
+        'TranslationProxyAPI'
 

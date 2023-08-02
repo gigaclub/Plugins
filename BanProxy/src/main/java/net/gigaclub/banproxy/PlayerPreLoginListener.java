@@ -18,8 +18,12 @@ import net.md_5.bungee.event.EventHandler;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.Set;
+
+import static net.gigaclub.banproxy.BanProxy.TimeDifferenceExample;
 
 
 public class PlayerPreLoginListener implements Listener {
@@ -32,41 +36,64 @@ public class PlayerPreLoginListener implements Listener {
         return uuid;
     }
 
+
     @EventHandler
     public void onPlayerPreLogin(PreLoginEvent event) {
         try {
             BanSystem banSystem = BanProxy.getBanSystemAPI();
-            JsonArray bannedUUIDs = banSystem.getBannedPlayerUUIDs();
-            if (bannedUUIDs != null) {
-                String playerName = event.getConnection().getName();
-                String[] playerData = getMCPlayerInfo(playerName);
-                if (playerData != null) {
-                    String playerUUID = playerData[0];
+            if (banSystem == null) {
+                return;
+            }
 
-                    for (JsonElement jsonElement : bannedUUIDs) {
-                        JsonObject bannedUser = jsonElement.getAsJsonObject();
-                        String uuid = bannedUser.get("mc_uuid").getAsString();
+            Set<String> bannedUUIDsCache = BanProxy.getBannedUUIDsCache();
 
-                        if (playerUUID.equals(uuid)) {
-                            String banDate = bannedUser.get("ban_expiration_datetime").getAsString();
-                            int warnIP = bannedUser.get("current_warning_id").getAsInt();
-                            Map<Integer, String> warnTypes = BanProxy.getWarntyps();
-                            String reason = warnTypes.get(warnIP);
+            String playerName = event.getConnection().getName();
+            String[] playerData = getMCPlayerInfo(playerName);
+            if (playerData != null) {
+                String playerUUID = playerData[0];
+                if (bannedUUIDsCache.contains(playerUUID)) {
+                    JsonObject bannedUser = getBannedUser(banSystem, playerUUID);
+                    if (bannedUser != null) {
+                        String banDate = bannedUser.get("ban_expiration_datetime").getAsString();
+                        List<Integer> bannTime = TimeDifferenceExample(banDate);
+                        int Jahr = bannTime.get(0);
+                        int Monate = bannTime.get(1);
+                        int Tage = bannTime.get(2);
+                        int Stunden = bannTime.get(3);
+                        int Minuten = bannTime.get(4);
+                        int Sekunden = bannTime.get(5);
 
-                            Translation translation = BanProxy.getTranslation();
-                            Component banDisconnectMessage = translation.t("bann.disconnect", playerUUID, Placeholder.parsed("reason", reason), Placeholder.parsed("date", banDate));
-                            String json = GsonComponentSerializer.gson().serialize(banDisconnectMessage);
-                            BaseComponent[] bungeeComponent = ComponentSerializer.parse(json);
-                            event.setCancelReason(bungeeComponent);
-                            event.setCancelled(true);
-                            return;
-                        }
+                        int warnIP = bannedUser.get("current_warning_id").getAsInt();
+                        Map<Integer, String> warnTyps = BanProxy.getWarntyps();
+                        String reason = warnTyps.get(warnIP);
+
+                        Translation t = BanProxy.getTranslation();
+                        Component bann = t.t("bann.disconnect", playerUUID, Placeholder.parsed("reason", reason), Placeholder.parsed("jahr", String.valueOf(Jahr)), Placeholder.parsed("monat", String.valueOf(Monate)), Placeholder.parsed("tag", String.valueOf(Tage)), Placeholder.parsed("stunde", String.valueOf(Stunden)), Placeholder.parsed("minute", String.valueOf(Minuten)), Placeholder.parsed("sekunde", String.valueOf(Sekunden)));
+                        String json = GsonComponentSerializer.gson().serialize(bann);
+                        BaseComponent[] bungeeComponent = ComponentSerializer.parse(json);
+                        event.setCancelReason(bungeeComponent);
+                        event.setCancelled(true);
                     }
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+
+    private JsonObject getBannedUser(BanSystem banSystem, String playerUUID) {
+        JsonArray bannedUUIDs = banSystem.getBannedPlayerUUIDs();
+        if (bannedUUIDs != null) {
+            for (JsonElement jsonElement : bannedUUIDs) {
+                JsonObject bannedUser = jsonElement.getAsJsonObject();
+                String uuid = bannedUser.get("mc_uuid").getAsString();
+                if (playerUUID.equals(uuid)) {
+                    return bannedUser;
+                }
+            }
+        }
+        return null;
     }
 
     @EventHandler

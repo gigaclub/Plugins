@@ -661,13 +661,13 @@ public class TeamGui implements Listener {
             } else event.setCancelled(true);
         }), 7, 0);
 
-        navigation.addItem(new GuiItem(new ItemBuilder(Material.PLAYER_HEAD).setHeadDatabase(10298).setDisplayName(ChatColor.DARK_GRAY + "Back to Team select").build(), event -> TeamList(player)), 4, 0);
+        navigation.addItem(new GuiItem(new ItemBuilder(Material.PLAYER_HEAD).setHeadDatabase(10298).setDisplayName(ChatColor.DARK_GRAY + "Back to Team Gui").build(), event -> teams(player)), 4, 0);
         navigation.fillWith(outlineintem);
         if (taskPages.getPages() == 1) {
             teamInits.setTitle("Invites");
             StaticPane outline4 = new StaticPane(0, 5, 9, 1);
             outline4.fillWith(outlineintem);
-            outline4.addItem(new GuiItem(new ItemBuilder(Material.PLAYER_HEAD).setHeadDatabase(10298).setDisplayName(ChatColor.DARK_GRAY + "Back to Team select").build(), event -> TeamList(player)), 4, 0);
+            outline4.addItem(new GuiItem(new ItemBuilder(Material.PLAYER_HEAD).setHeadDatabase(10298).setDisplayName(ChatColor.DARK_GRAY + "Back to Team Gui").build(), event -> teams(player)), 4, 0);
             teamInits.addPane(outline4);
         } else {
             teamInits.addPane(navigation);

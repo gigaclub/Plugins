@@ -14,12 +14,11 @@ repositories {
 }
 
 dependencies {
-
-    implementation "net.kyori:adventure-api:4.13.1"
     implementation "net.kyori:adventure-text-minimessage:4.13.1"
-    compileOnly 'io.github.waterfallmc:waterfall-api:1.19-R0.1-SNAPSHOT'
+    implementation "net.kyori:adventure-text-serializer-gson:4.9.3"
+    compileOnly 'io.github.waterfallmc:waterfall-api:1.20-R0.1-SNAPSHOT'
     implementation project(":BanSystemAPI")
-    implementation project(":TranslationAPI")
+    implementation project(":TranslationProxyAPI")
 
 }
 
