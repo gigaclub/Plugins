@@ -16,35 +16,35 @@ import java.util.List;
 
 public class CreateServer {
 
-
-    public static void startServer(int world_id, Player player) {
+    public static void startServer(int worldId, Player player) {
         BuilderSystem builderSystem = Main.getBuilderSystem();
         Translation t = Main.getTranslation();
-        String playerUUID = player.getUniqueId().toString();
-        JSONObject world = builderSystem.getWorld(world_id);
-
-
-        String world_name = world.getString("name");
-        int task_id = world.getInt("task_id");
-        JSONObject task = builderSystem.getTask(task_id);
-
-        String task_name = task.getString("name");
-
-        String worlds_typ = world.getString("world_type");
+        JSONObject world = builderSystem.getWorld(worldId);
+        String worldTyp = world.getString("world_type");
         //  world_name, task_name, task_id, worlds_typ, word_id, team_name
-        player.sendMessage(t.t("bsc.Command.CreateServer", player));
+        t.sendMessage("bsc.Command.CreateServer", player);
         ServiceInfoSnapshot serviceInfoSnapshot = ServiceConfiguration.builder()
-                .taskName(String.valueOf(world_id))
+                .taskName(String.valueOf(worldId))
                 .node("Node-1")
                 .autoDeleteOnStop(true)
                 .staticService(false)
-                .templates(Arrays.asList(ServiceTemplate.builder().prefix("Builder").name(worlds_typ).storage("local").build(), ServiceTemplate.builder().prefix("Builder").name("Plugins").storage("local").build()))
+                .templates(Arrays.asList(ServiceTemplate.builder().prefix("Builder").name(worldTyp).storage("local").build(), ServiceTemplate.builder().prefix("Builder").name("Plugins").storage("local").build()))
                 .groups(List.of("Builder"))
                 .maxHeapMemory(1525)
                 .environment(ServiceEnvironmentType.MINECRAFT_SERVER)
                 .build()
                 .createNewService().serviceInfo();
+        if (serviceInfoSnapshot != null)
+            serviceInfoSnapshot.provider().start();
     }
+
+    public static void stopServer(int worldId) {
+        ServiceInfoSnapshot serviceInfoSnapshot = ServiceConfiguration.builder().taskName(String.valueOf(worldId)).build().createNewService().serviceInfo();
+        if (serviceInfoSnapshot != null) {
+            serviceInfoSnapshot.provider().stop();
+        }
+    }
+
 }
 
 

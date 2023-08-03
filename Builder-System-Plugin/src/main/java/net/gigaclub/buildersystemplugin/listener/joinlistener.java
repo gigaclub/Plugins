@@ -94,108 +94,16 @@ public class joinlistener implements Listener {
     }
 
     @EventHandler
-    public void handlePlayerJoin(PlayerJoinEvent event) {
-        Player player = event.getPlayer();
-        String playerUUID = player.getUniqueId().toString();
-        Translation t = Main.getTranslation();
-        BuilderSystem builderSystem = Main.getBuilderSystem();
-        FileConfiguration config = getConfig();
-
-
-        if (config.getBoolean("server.server_autostart")) {
-            String playerName = player.getName();
-            JSONArray worlds = builderSystem.getAllWorlds();
-            if (worlds.length() == 0) return;
-
-            for (int i = 0; i < worlds.length(); i++) {
-                JSONObject world = worlds.getJSONObject(i);
-                JSONArray users = world.getJSONArray("user_ids");
-                for (int j = 0; j < users.length(); j++) {
-                    JSONObject user = users.getJSONObject(j);
-                    String userUUID = user.getString("mc_uuid");
-                    if (Objects.equals(userUUID, playerUUID)) {
-                        startServer(worlds, i, builderSystem, playerUUID, playerName, t, player);
-                    }
-                }
-            }
-
-
-            try {
-                JsonArray team = builderSystem.getTeamsByMember(playerUUID);
-
-            } catch (Exception e) {
-                return;
-            }
-            JsonArray teams = builderSystem.getTeamsByMember(playerUUID);
-
-/*            for (int j = 0; j < teams.length(); j++) {
-                JSONArray teamworlds = teams.getJSONArray(j);
-                JSONArray team = teamworlds.getJSONArray("")
-
-                JSONArray teamWorlds = worldid.getJSONObject("world_ids");
-                JSONArray teamWorldManagers = team.getJSONArray("world_manager_ids");
-                for (int i = 0; i < teamWorlds.length(); i++) {
-                    startServer(teamWorlds, i, builderSystem, playerUUID, j, t, player);
-                }*/
-
-            //           }
-        }
-    }
-
-    private void startServer(JSONArray teamWorlds, int i, BuilderSystem builderSystem, String playerUUID, String team_name, Translation t, Player player) {
-
-        JSONObject world_data = teamWorlds.getJSONObject(i);
-        int world_id = 0;
-        try {
-            world_id = world_data.getInt("id");
-        } catch (Exception e) {
-            world_id = world_data.getInt("world_id");
-        }
-        JSONObject world = builderSystem.getWorld(world_id);
-
-        String world_name = world.getString("name");
-        int task_id = world.getInt("task_id");
-        JSONObject task = builderSystem.getTask(task_id);
-
-        String task_name = task.getString("name");
-
-        String worlds_typ = world.getString("world_type");
-        //  world_name, task_name, task_id, worlds_typ, word_id, team_name
-        player.sendMessage(t.t("bsc.Command.CreateServer", player));
-        player.sendMessage(t.t("bsc.Command.Teleport", player));
-        ServiceInfoSnapshot serviceInfoSnapshot = ServiceConfiguration.builder()
-                .taskName(world.getString("name"))
-                .node("Node-1")
-                .autoDeleteOnStop(true)
-                .staticService(false)
-                .templates(Arrays.asList(ServiceTemplate.builder().prefix("Builder").name(worlds_typ).storage("local").build(), ServiceTemplate.builder().prefix("Builder").name("Plugins").storage("local").build()))
-                .groups(List.of("Builder"))
-                .maxHeapMemory(1525)
-                .environment(ServiceEnvironmentType.MINECRAFT_SERVER)
-                .build()
-                .createNewService().serviceInfo();
-
-
-        if (serviceInfoSnapshot != null) {
-            serviceInfoSnapshot.provider().start();
-            serviceId = serviceInfoSnapshot.serviceId().taskServiceId();
-        }
-    }
-
-    @EventHandler
     public void joinListener(PlayerJoinEvent event) {
         FileConfiguration config = getConfig();
-
         Player player = event.getPlayer();
-        if (player.hasPermission("gigaclub_builder_system.Gui")) {
-            player.getInventory().setItem(0, GuiOpener);
-        }
-
         if (config.getBoolean("Gui.Remove_items_on_Join")) {
             player.getInventory().clear();
             player.getInventory().clear();
         }
-
+        if (player.hasPermission("gigaclub_builder_system.Gui")) {
+            player.getInventory().setItem(0, GuiOpener);
+        }
     }
 
     @EventHandler
