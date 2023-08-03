@@ -18,6 +18,7 @@ import net.gigaclub.buildersystemplugin.Andere.InterfaceAPI.ItemBuilder;
 import net.gigaclub.buildersystemplugin.Main;
 import net.gigaclub.translation.Translation;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -83,7 +84,7 @@ public class TeamGui implements Listener {
             event.setCancelled(true);
         }), 2, 1);
         // Your Teams
-        pane.addItem(new GuiItem(new ItemBuilder(Material.PLAYER_HEAD).setHeadDatabase(9386).setDisplayName(t.t("BuilderSystem.team.gui.item.your", player)).setGlow(true).build(), event -> {
+        pane.addItem(new GuiItem(new ItemBuilder(Material.PLAYER_HEAD).setHeadDatabase(9386).setDisplayName(t.t("BuilderSystem.team.gui.item.yourteams", player)).setGlow(true).build(), event -> {
             TeamList(player);
             event.setCancelled(true);
         }), 6, 1);
@@ -154,13 +155,13 @@ public class TeamGui implements Listener {
             loreList.add(t.t("BuilderSystem.team.create.teamname", player));
         }
 
-        pane.addItem(new GuiItem(new ItemBuilder(Material.BOOK).setDisplayName("Description").setLoreComponents(loreList).build(), event -> {
+        pane.addItem(new GuiItem(new ItemBuilder(Material.BOOK).setDisplayName(t.t("BuilderSystem.team.create.description.item", player)).setLoreComponents(loreList).build(), event -> {
             event.setCancelled(true);
             AnvilGui setDescription = new AnvilGui(data.setGuiName("BuilderSystem.team.create.setdescription.gui.name", player));
 
             StaticPane pane1 = new StaticPane(1, 1);
             if (description == null) {
-                GuiItem slot1 = new GuiItem(new ItemBuilder(Material.PAPER).setDisplayName("Description").build(), event1 -> {
+                GuiItem slot1 = new GuiItem(new ItemBuilder(Material.PAPER).setDisplayName(t.t("BuilderSystem.team.create.description.item", player)).build(), event1 -> {
                     event1.setCancelled(true);
                 });
                 pane1.addItem(slot1, 0, 0);
@@ -177,7 +178,7 @@ public class TeamGui implements Listener {
             }
             setDescription.getFirstItemComponent().addPane(pane1);
             StaticPane pane2 = new StaticPane(1, 1);
-            GuiItem slot3 = new GuiItem(new ItemBuilder(Material.PAPER).setDisplayName("Click to Save Description").build(), event1 -> {
+            GuiItem slot3 = new GuiItem(new ItemBuilder(Material.PAPER).setDisplayName(t.t("BuilderSystem.team.create.description.accept", player)).build(), event1 -> {
                 teamCreate(player, name, setDescription.getRenameText());
                 event1.setCancelled(true);
 
@@ -190,18 +191,19 @@ public class TeamGui implements Listener {
 
         loreList.clear();
 
-        pane.addItem(new GuiItem(new ItemBuilder(Material.PLAYER_HEAD).setHeadDatabase(21771).setDisplayName("Create Team").setLoreComponents(loreList).build(), event -> {
+        pane.addItem(new GuiItem(new ItemBuilder(Material.PLAYER_HEAD).setHeadDatabase(21771).setDisplayName(t.t("BuilderSystem.team.create.description.accept", player)).setLoreComponents(loreList).build(), event -> {
             if (name == null) {
-                player.sendMessage("the team name is still missing");
+                player.sendMessage(t.t("BuilderSystem.team.create.missing.name", player));
             } else {
                 if (description == null) {
                     builderSystem.createTeam(String.valueOf(player.getUniqueId()), name);
                     teamCreate.getInventory().close();
-                    player.sendMessage("Team " + name + " Wurde erstellt");
+                    // "Team " + name + " Wurde erstellt"
+                    player.sendMessage(t.t("BuilderSystem.team.create.succses", player, Placeholder.parsed("teamName", name)));
                 } else {
                     builderSystem.createTeam(String.valueOf(player.getUniqueId()), name, description);
                     teamCreate.getInventory().close();
-                    player.sendMessage("Team " + name + " Wurde erstellt");
+                    player.sendMessage(t.t("BuilderSystem.team.create.succses", player, Placeholder.parsed("teamName", name)));
                 }
             }
 
@@ -217,6 +219,7 @@ public class TeamGui implements Listener {
 
 
     public static List<GuiItem> teamItemList(Player player) {
+        Translation t = Main.getTranslation();
 
         List<GuiItem> guiItems = new ArrayList<>();
 
@@ -245,17 +248,22 @@ public class TeamGui implements Listener {
 
             String joinedString = String.join(", ", stringList);
 
-            ArrayList<String> loreList = new ArrayList<>();
-            loreList.add(ChatColor.GRAY + "ID: " + ChatColor.WHITE + ID);
-            loreList.add(ChatColor.GRAY + "Team Owner: " + ChatColor.WHITE + owner);
+            ArrayList<Component> loreList = new ArrayList<>();
+            // ChatColor.GRAY + "ID: " + ChatColor.WHITE + ID
+            loreList.add(t.t("BuilderSystem.team.list.team.id", player, Placeholder.parsed("ID", String.valueOf(ID))));
+            // ChatColor.GRAY + "Team Owner: " + ChatColor.WHITE + owner
+            loreList.add(t.t("BuilderSystem.team.list.team.owner", player, Placeholder.parsed("Owner", owner)));
             if (!(description.isEmpty())) {
-                loreList.add(ChatColor.GRAY + "Description: " + ChatColor.WHITE + description);
+                // ChatColor.GRAY + "Description: " + ChatColor.WHITE + description
+                loreList.add(t.t("BuilderSystem.team.list.team.description", player, Placeholder.parsed("Description", description)));
             }
             if (!(stringList.isEmpty())) {
-                loreList.add(ChatColor.GRAY + "Team Member: " + ChatColor.WHITE + joinedString);
+                // ChatColor.GRAY + "Team Member: " + ChatColor.WHITE + joinedString
+                loreList.add(t.t("BuilderSystem.team.list.team.member", player, Placeholder.parsed("Owner", owner)));
             }
             if (owner.equals(player.getName())) {
-                ItemStack project = new ItemBuilder(Material.MAP).setDisplayName(ChatColor.GRAY + "Name: " + ChatColor.WHITE + name).setLore(loreList).build();
+                // ChatColor.GRAY + "Name: " + ChatColor.WHITE + name
+                ItemStack project = new ItemBuilder(Material.MAP).setDisplayName(t.t("BuilderSystem.team.list.team.name", player, Placeholder.parsed("Name", name))).setLoreComponents(loreList).build();
 
                 GuiItem guiItem = new GuiItem(project, event -> {
                     event.setCancelled(true);
@@ -263,7 +271,7 @@ public class TeamGui implements Listener {
                 });
                 guiItems.add(guiItem);
             } else {
-                ItemStack project = new ItemBuilder(Material.PAPER).setDisplayName(ChatColor.GRAY + "Name: " + ChatColor.WHITE + name).setLore(loreList).build();
+                ItemStack project = new ItemBuilder(Material.PAPER).setDisplayName(t.t("BuilderSystem.team.list.team.name", player, Placeholder.parsed("Name", name))).setLoreComponents(loreList).build();
 
                 GuiItem guiItem = new GuiItem(project, event -> {
                     event.setCancelled(true);
@@ -302,6 +310,7 @@ public class TeamGui implements Listener {
 
         outline4.addItem(new GuiItem(new ItemBuilder(Material.PLAYER_HEAD)
                 .setHeadDatabase(10298)
+                // "Back to Main Menu"
                 .setDisplayName(ChatColor.DARK_GRAY + "Back to Main Menu")
                 .build(), event -> Navigate(player)), 4, 0);
         taskList.addPane(taskPages);

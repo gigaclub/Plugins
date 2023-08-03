@@ -158,7 +158,7 @@ public final class Main extends JavaPlugin implements Listener {
 
                 "BuilderSystem.team.gui.name",
                 "BuilderSystem.team.gui.item.create",
-                "BuilderSystem.team.gui.item.your",
+                "BuilderSystem.team.gui.item.yourteams",
                 "BuilderSystem.team.gui.item.invits",
 
                 // Team create
