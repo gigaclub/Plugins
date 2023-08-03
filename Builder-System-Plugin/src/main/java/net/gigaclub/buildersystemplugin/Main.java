@@ -137,15 +137,33 @@ public final class Main extends JavaPlugin implements Listener {
                 //      status msg´s
 
                 // Navigator Gui
+                "BuilderSystem.navigator.gui.name",
+                // Navigator team
+                "BuilderSystem.navigator.team.item",
                 "BuilderSystem.navigator.team.lore1",
                 "BuilderSystem.navigator.team.lore2",
                 "BuilderSystem.navigator.team.lore3",
+                // Navigator Projeckt
+                "BuilderSystem.navigator.world.item",
                 "BuilderSystem.navigator.world.lore1",
                 "BuilderSystem.navigator.world.lore2",
                 "BuilderSystem.navigator.world.lore3",
+
+                // Navigator Task
+                "BuilderSystem.navigator.task.item",
                 "BuilderSystem.navigator.task.lore1",
                 "BuilderSystem.navigator.task.lore2",
-                "BuilderSystem.navigator.task.lore3"
+                "BuilderSystem.navigator.task.lore3",
+                // Team Gui
+
+                "BuilderSystem.team.gui.name",
+                "BuilderSystem.team.gui.item.create",
+                "BuilderSystem.team.gui.item.your",
+                "BuilderSystem.team.gui.item.invits",
+
+                // Team create
+                "BuilderSystem.team.create.setname.gui.name"
+
 
         ));
     }

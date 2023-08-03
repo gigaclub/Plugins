@@ -1,8 +1,15 @@
 package net.gigaclub.buildersystemplugin.Andere;
 
+import com.github.stefvanschie.inventoryframework.adventuresupport.TextHolder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.gigaclub.base.odoo.Odoo;
+import net.gigaclub.buildersystemplugin.Main;
+import net.gigaclub.translation.Translation;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.net.URL;
@@ -78,5 +85,12 @@ public class Data {
         }
     }
 
+    public @NotNull TextHolder setGuiName(String name, Player player, TagResolver... tagResolvers) {
+        Translation t = Main.getTranslation();
+
+        final String legacy = LegacyComponentSerializer.legacyAmpersand().serialize(t.t("BuilderSystem.navigator.gui.name", player));
+
+        return TextHolder.deserialize(legacy);
+    }
 
 }

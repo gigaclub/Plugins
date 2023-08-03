@@ -16,6 +16,8 @@ import net.gigaclub.buildersystem.BuilderSystem;
 import net.gigaclub.buildersystemplugin.Andere.Data;
 import net.gigaclub.buildersystemplugin.Andere.InterfaceAPI.ItemBuilder;
 import net.gigaclub.buildersystemplugin.Main;
+import net.gigaclub.translation.Translation;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -63,22 +65,30 @@ public class TeamGui implements Listener {
     }
 
     public static void teams(Player player) {
-        ChestGui teams = new ChestGui(4, "Team");
+        Translation t = Main.getTranslation();
+        Data data = Main.getData();
+
+
+        // Team
+        ChestGui teams = new ChestGui(4, data.setGuiName("BuilderSystem.team.gui.name", player));
         StaticPane pane = new StaticPane(0, 0, 9, 4);
         pane.fillWith(outlineintem);
         pane.setOnClick(event -> event.setCancelled(true));
-        pane.addItem(new GuiItem(new ItemBuilder(Material.PLAYER_HEAD).setHeadDatabase(9943).setDisplayName("Create Team").setGlow(true).build(), event -> {
+        // Create Team
+        pane.addItem(new GuiItem(new ItemBuilder(Material.PLAYER_HEAD).setHeadDatabase(9943).setDisplayName(t.t("BuilderSystem.team.gui.item.create", player)).setGlow(true).build(), event -> {
             if (player.hasPermission("gigaclub_team.create_team")) {
                 teamCreate(player, null, null);
                 event.setCancelled(true);
-            } else player.sendMessage("du hast keine berechtigung");
+            } else player.sendMessage(t.t("builder_team.no_permission", player));
             event.setCancelled(true);
         }), 2, 1);
-        pane.addItem(new GuiItem(new ItemBuilder(Material.PLAYER_HEAD).setHeadDatabase(9386).setDisplayName("Your Teams").setGlow(true).build(), event -> {
+        // Your Teams
+        pane.addItem(new GuiItem(new ItemBuilder(Material.PLAYER_HEAD).setHeadDatabase(9386).setDisplayName(t.t("BuilderSystem.team.gui.item.your", player)).setGlow(true).build(), event -> {
             TeamList(player);
             event.setCancelled(true);
         }), 6, 1);
-        pane.addItem(new GuiItem(new ItemBuilder(Material.PLAYER_HEAD).setHeadDatabase(9937).setDisplayName("Team Invites").build(), event -> {
+        // Team Invites
+        pane.addItem(new GuiItem(new ItemBuilder(Material.PLAYER_HEAD).setHeadDatabase(9937).setDisplayName(t.t("BuilderSystem.team.gui.item.invits", player)).build(), event -> {
             TeamInvits(player);
         }), 4, 2);
         teams.addPane(pane);
@@ -86,23 +96,28 @@ public class TeamGui implements Listener {
     }
 
     public static void teamCreate(Player player, String name, String description) {
+        Translation t = Main.getTranslation();
+        Data data = Main.getData();
         BuilderSystem builderSystem = Main.getBuilderSystem();
-        HopperGui teamCreate = new HopperGui("         Team Create");
+        //          Team Create
+        HopperGui teamCreate = new HopperGui(data.setGuiName("BuilderSystem.team.create.gui.name", player));
         StaticPane pane = new StaticPane(0, 0, 5, 1);
         pane.fillWith(outlineintem);
 
 
-        ArrayList<String> loreList = new ArrayList<>();
+        ArrayList<Component> loreList = new ArrayList<>();
         if (!(name == null)) {
-            loreList.add(ChatColor.GRAY + "Team Name: " + ChatColor.WHITE + name);
+            // Team Name:     name
+            loreList.add(t.t("BuilderSystem.team.create.teamname", player));
         }
-        pane.addItem(new GuiItem(new ItemBuilder(Material.BOOK).setDisplayName("Name").setLore(loreList).build(), event -> {
+
+        pane.addItem(new GuiItem(new ItemBuilder(Material.BOOK).setDisplayName(t.t("BuilderSystem.team.create.name.item", player)).setLoreComponents(loreList).build(), event -> {
             event.setCancelled(true);
-            AnvilGui setName = new AnvilGui("Set Name");
+            AnvilGui setName = new AnvilGui(data.setGuiName("BuilderSystem.team.create.setname.gui.name", player));
 
             StaticPane pane1 = new StaticPane(1, 1);
             if (description == null) {
-                GuiItem slot1 = new GuiItem(new ItemBuilder(Material.PAPER).setDisplayName("Name").build(), event1 -> {
+                GuiItem slot1 = new GuiItem(new ItemBuilder(Material.PAPER).setDisplayName(t.t("BuilderSystem.team.create.name.item", player)).build(), event1 -> {
                     event1.setCancelled(true);
                 });
                 pane1.addItem(slot1, 0, 0);
@@ -119,7 +134,8 @@ public class TeamGui implements Listener {
             }
             setName.getFirstItemComponent().addPane(pane1);
             StaticPane pane2 = new StaticPane(1, 1);
-            GuiItem slot3 = new GuiItem(new ItemBuilder(Material.PAPER).setDisplayName("Click to Save Name").build(), event1 -> {
+            // klick to accept
+            GuiItem slot3 = new GuiItem(new ItemBuilder(Material.PAPER).setDisplayName(t.t("BuilderSystem.team.create.name.accept", player)).build(), event1 -> {
                 teamCreate(player, setName.getRenameText(), description);
                 event1.setCancelled(true);
 
@@ -134,11 +150,13 @@ public class TeamGui implements Listener {
         loreList.clear();
 
         if (!(description == null)) {
-            loreList.add(ChatColor.GRAY + "Team Description: " + ChatColor.WHITE + description);
+            // Team Description:     description
+            loreList.add(t.t("BuilderSystem.team.create.teamname", player));
         }
-        pane.addItem(new GuiItem(new ItemBuilder(Material.BOOK).setDisplayName("Description").setLore(loreList).build(), event -> {
+
+        pane.addItem(new GuiItem(new ItemBuilder(Material.BOOK).setDisplayName("Description").setLoreComponents(loreList).build(), event -> {
             event.setCancelled(true);
-            AnvilGui setDescription = new AnvilGui("Set Description");
+            AnvilGui setDescription = new AnvilGui(data.setGuiName("BuilderSystem.team.create.setdescription.gui.name", player));
 
             StaticPane pane1 = new StaticPane(1, 1);
             if (description == null) {
@@ -172,7 +190,7 @@ public class TeamGui implements Listener {
 
         loreList.clear();
 
-        pane.addItem(new GuiItem(new ItemBuilder(Material.PLAYER_HEAD).setHeadDatabase(21771).setDisplayName("Create Team").setLore(loreList).build(), event -> {
+        pane.addItem(new GuiItem(new ItemBuilder(Material.PLAYER_HEAD).setHeadDatabase(21771).setDisplayName("Create Team").setLoreComponents(loreList).build(), event -> {
             if (name == null) {
                 player.sendMessage("the team name is still missing");
             } else {

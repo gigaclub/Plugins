@@ -6,11 +6,11 @@ import com.github.stefvanschie.inventoryframework.pane.StaticPane;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.gigaclub.buildersystem.BuilderSystem;
+import net.gigaclub.buildersystemplugin.Andere.Data;
 import net.gigaclub.buildersystemplugin.Andere.InterfaceAPI.ItemBuilder;
 import net.gigaclub.buildersystemplugin.Main;
 import net.gigaclub.translation.Translation;
 import net.kyori.adventure.text.Component;
-import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -40,12 +40,15 @@ import static net.gigaclub.buildersystemplugin.Andere.Guis.WorldGui.projecktList
 public class Navigator implements Listener {
 
 
-    Translation t = Main.getTranslation();
+
 
 
     public static void Navigate(Player player) {
+        Translation t = Main.getTranslation();
+        Data data = Main.getData();
 
-        ChestGui navigator = new ChestGui(3, "GcGui");
+
+        ChestGui navigator = new ChestGui(3, data.setGuiName("BuilderSystem.navigator.gui.name", player));
 
         navigator.setOnBottomClick(event -> event.setCancelled(true));
         StaticPane outline = new StaticPane(0, 0, 9, 3);
@@ -54,21 +57,20 @@ public class Navigator implements Listener {
         outline.fillWith(outlineintem);
         navigator.addPane(outline);
 
-
-        ItemStack teamGui = new ItemBuilder(Material.PLAYER_HEAD).setHeadDatabase(9386).setDisplayName(ChatColor.RED + "Team").setLoreComponents(teamloreList(player)).build();
+        // Teams
+        ItemStack teamGui = new ItemBuilder(Material.PLAYER_HEAD).setHeadDatabase(9386).setDisplayName(t.t("BuilderSystem.navigator.team.item", player)).setLoreComponents(teamloreList(player)).build();
         GuiItem teamItem = new GuiItem(teamGui, event -> teams(player));
         outline.addItem(teamItem, 1, 1);
 
-
-        ItemStack TaskGui = new ItemBuilder(Material.PLAYER_HEAD).setHeadDatabase(10142).setDisplayName((ChatColor.AQUA) + "Tasks").setLoreComponents(taskloreList(player)).build();
+        // Aufgaben
+        ItemStack TaskGui = new ItemBuilder(Material.PLAYER_HEAD).setHeadDatabase(10142).setDisplayName(t.t("BuilderSystem.navigator.task.item", player)).setLoreComponents(taskloreList(player)).build();
         GuiItem taskItem = new GuiItem(TaskGui, event -> TaskList(player));
         outline.addItem(taskItem, 4, 1);
 
-
-        ItemStack projectGui = new ItemBuilder(Material.PLAYER_HEAD).setHeadDatabase(32442).setDisplayName((ChatColor.BLUE + "Project")).setLoreComponents(worldloreList(player)).build();
+        // Projects
+        ItemStack projectGui = new ItemBuilder(Material.PLAYER_HEAD).setHeadDatabase(32442).setDisplayName(t.t("BuilderSystem.navigator.world.item", player)).setLoreComponents(worldloreList(player)).build();
         GuiItem prjectItem = new GuiItem(projectGui, event -> projecktList(player));
         outline.addItem(prjectItem, 7, 1);
-
 
         navigator.show(player);
     }
@@ -177,7 +179,6 @@ public class Navigator implements Listener {
                 event.setCancelled(true);
             }
         }
-
     }
 
     private void asyncload(Player player) {
