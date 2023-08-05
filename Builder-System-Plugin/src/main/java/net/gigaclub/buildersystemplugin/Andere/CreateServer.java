@@ -28,7 +28,7 @@ public class CreateServer {
 
     private int worldId;
     private CloudServiceProvider cloudServiceProvider;
-    private ServiceInfoSnapshot serviceInfoSnapshot;
+    public ServiceInfoSnapshot serviceInfoSnapshot;
     private String taskName;
 
     public CreateServer(int worldId) {

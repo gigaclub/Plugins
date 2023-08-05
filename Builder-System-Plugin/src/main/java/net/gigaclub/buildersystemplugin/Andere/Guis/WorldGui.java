@@ -237,9 +237,13 @@ public class WorldGui {
         });
         pane.addItem(teammanage, 5, 1);
         ItemStack serverButton = null;
-        serverButton = new ItemBuilder(Material.GRASS_BLOCK).setDisplayName(Main.getTranslation().t("buildersystem.worldgui.manage.join", player)).build();
+        CreateServer createServer = new CreateServer(projectID);
+        if (createServer.serviceInfoSnapshot.connected()) {
+            serverButton = new ItemBuilder(Material.GRASS_BLOCK).setDisplayName(Main.getTranslation().t("buildersystem.worldgui.manage.join", player)).build();
+        } else {
+            serverButton = new ItemBuilder(Material.GRASS_BLOCK).setDisplayName(Main.getTranslation().t("buildersystem.worldgui.manage.start", player)).build();
+        }
         GuiItem joinButtonGuiItem = new GuiItem(serverButton, event -> {
-            CreateServer createServer = new CreateServer(projectID);
             createServer.joinServer(player);
         });
         pane.addItem(joinButtonGuiItem, 4, 2);
