@@ -55,9 +55,11 @@ public class CreateServer {
         String worldTyp = world.getString("world_type");
         this.serviceInfoSnapshot = ServiceConfiguration.builder()
                 .taskName(this.taskName)
+                // TODO make node configurable
                 .node("Node-1")
                 .autoDeleteOnStop(true)
                 .staticService(false)
+                // TODO make templates configurable
                 .templates(
                     Arrays.asList(
                         ServiceTemplate.builder()
@@ -72,7 +74,9 @@ public class CreateServer {
                             .build()
                     )
                 )
+                // TODO make group name list configurable
                 .groups(List.of("Builder"))
+                // TODO make memory configurable
                 .maxHeapMemory(1525)
                 .environment(ServiceEnvironmentType.MINECRAFT_SERVER)
                 .build()

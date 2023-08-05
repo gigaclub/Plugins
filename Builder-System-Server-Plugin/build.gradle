@@ -8,6 +8,9 @@ dependencies {
     compileOnly 'org.spigotmc:plugin-annotations:1.2.3-SNAPSHOT'
     annotationProcessor 'org.spigotmc:plugin-annotations:1.2.3-SNAPSHOT'
     compileOnly 'io.papermc.paper:paper-api:1.20.1-R0.1-SNAPSHOT'
+    compileOnly platform('eu.cloudnetservice.cloudnet:bom:4.0.0-RC8-SNAPSHOT')
+    compileOnly 'eu.cloudnetservice.cloudnet:driver'
+    compileOnly 'eu.cloudnetservice.cloudnet:bridge'
 }
 
 processResources {
