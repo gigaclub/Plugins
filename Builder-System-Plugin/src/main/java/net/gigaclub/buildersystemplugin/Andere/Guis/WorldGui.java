@@ -200,17 +200,15 @@ public class WorldGui {
         taskList.show(player);
     }
 
-    public static void projeckt(Player player, int projecktID, String projecktName) {
-
-
-        ChestGui projecktManage = new ChestGui(4, "Manage " + projecktName);
+    public static void projeckt(Player player, int projectID, String projectName) {
+        ChestGui projectManage = new ChestGui(4, "Manage " + projectName);
         StaticPane pane = new StaticPane(0, 0, 9, 4);
         pane.fillWith(outlineintem, event -> event.setCancelled(true));
 
 
         ItemStack editWorldTyp = new ItemBuilder(Material.PLAYER_HEAD).setHeadDatabase(24064).setDisplayName("edit WorldTyp").build();
         GuiItem worldTyp = new GuiItem(editWorldTyp, event -> {
-            editWorldTyp(player, projecktID, projecktName);
+            editWorldTyp(player, projectID, projectName);
             event.setCancelled(true);
         });
         pane.addItem(worldTyp, 1, 1);
@@ -228,7 +226,7 @@ public class WorldGui {
 
         ItemStack playermanager = new ItemBuilder(Material.PLAYER_HEAD).setDisplayName("Player Manager").build();
         GuiItem playerms = new GuiItem(playermanager, event -> {
-            ProjecktPlayer(player, projecktID);
+            ProjecktPlayer(player, projectID);
             event.setCancelled(true);
         });
         pane.addItem(playerms, 3, 1);
@@ -238,13 +236,15 @@ public class WorldGui {
             event.setCancelled(true);
         });
         pane.addItem(teammanage, 5, 1);
-        ItemStack joinButton = new ItemBuilder(Material.GRASS_BLOCK).setDisplayName(Main.getTranslation().t("buildersystem.worldgui.manage.join", player)).build();
-        GuiItem joinButtonGuiItem = new GuiItem(joinButton, event -> {
-            CreateServer.startServer(projecktID, player);
+        ItemStack serverButton = null;
+        serverButton = new ItemBuilder(Material.GRASS_BLOCK).setDisplayName(Main.getTranslation().t("buildersystem.worldgui.manage.join", player)).build();
+        GuiItem joinButtonGuiItem = new GuiItem(serverButton, event -> {
+            CreateServer createServer = new CreateServer(projectID);
+            createServer.joinServer(player);
         });
         pane.addItem(joinButtonGuiItem, 4, 2);
-        projecktManage.addPane(pane);
-        projecktManage.show(player);
+        projectManage.addPane(pane);
+        projectManage.show(player);
     }
 
 

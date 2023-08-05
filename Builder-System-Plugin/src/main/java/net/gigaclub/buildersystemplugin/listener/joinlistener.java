@@ -40,58 +40,8 @@ import java.util.Objects;
 import static net.gigaclub.buildersystemplugin.Config.Config.getConfig;
 
 public class joinlistener implements Listener {
-    private final PlayerManager playerManager = InjectionLayer.boot().instance(ServiceRegistry.class)
-            .firstProvider(PlayerManager.class);
     ItemStack GuiOpener = new ItemBuilder(Material.NETHER_STAR).setDisplayName((ChatColor.BLUE + "BuilderGui")).setLore((ChatColor.AQUA + "Open The BuilderGui")).setGui(true).addIdentifier("Gui_Opener").build();
-    private int serviceId;
-    private Player player;
     private @NotNull BukkitTask taskID;
-
-    @EventListener
-    public void handleServiceConnected(CloudServiceEvent event) {
-        String playerUUID = player.getUniqueId().toString();
-        Translation t = Main.getTranslation();
-
-        ServiceInfoSnapshot serviceInfoSnapshot = event.serviceInfo(); //The serviceInfoSnapshot with all important information from a service
-
-        ServiceLifeCycle serviceLifeCycle = serviceInfoSnapshot.lifeCycle();
-        ServiceId serviceId = serviceInfoSnapshot.serviceId();
-
-        if (this.serviceId == serviceId.taskServiceId()) {
-
-            if (serviceLifeCycle == ServiceLifeCycle.RUNNING) {
-
-                if (player != null) {
-                    System.out.println(4);
-                    List<? extends CloudPlayer> cloudPlayers = this.playerManager.onlinePlayers(this.player.getName());
-                    if (!cloudPlayers.isEmpty()) {
-                        CloudPlayer entry = cloudPlayers.get(0);
-                        PlayerManager playerManager = this.playerManager;
-                        int serviceId1 = this.serviceId;
-                        Player player2 = player;
-                        @NotNull BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
-
-
-                        taskID = scheduler.runTaskTimer(Main.getPlugin(), new Runnable() {
-                            int countdown = 10;
-
-                            public void run() {
-                                player2.sendMessage(t.t("BuilderSystem.countdown_begin", player));
-                                if (countdown > 0) {
-                                    player2.sendMessage(String.valueOf(countdown));
-                                } else {
-                                    playerManager.playerExecutor(entry.uniqueId()).connect(event.serviceInfo().serviceId().taskName() + "-" + serviceId1);
-                                    scheduler.cancelTask(taskID.getTaskId());
-                                    return;
-                                }
-                                countdown--;
-                            }
-                        }, 0, 20);
-                    }
-                }
-            }
-        }
-    }
 
     @EventHandler
     public void joinListener(PlayerJoinEvent event) {
