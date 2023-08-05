@@ -21,6 +21,7 @@ import org.json.JSONObject;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Function;
 
 
 public class CreateServer {
@@ -79,15 +80,17 @@ public class CreateServer {
     }
 
     public void joinServer(Player player) {
-        PlayerManager playerManager = InjectionLayer.boot().instance(ServiceRegistry.class)
-            .firstProvider(PlayerManager.class);
+        PlayerManager playerManager = InjectionLayer.boot().instance(ServiceRegistry.class).firstProvider(PlayerManager.class);
         Translation t = Main.getTranslation();
-        //  world_name, task_name, task_id, worlds_typ, word_id, team_name
-        t.sendMessage("bsc.Command.CreateServer", player);
         if (this.serviceInfoSnapshot != null) {
-            this.serviceInfoSnapshot.provider().start();
-            CloudPlayer cloudPlayer = playerManager.firstOnlinePlayer(player.getName());
-            playerManager.playerExecutor(cloudPlayer.uniqueId()).connect(this.serviceInfoSnapshot.name());
+            Function<Void, Void> joinPlayer = result -> {
+                // if server not started wait...
+                t.sendMessage("builder.system.player.send.to.server", player);
+                CloudPlayer cloudPlayer = playerManager.firstOnlinePlayer(player.getName());
+                playerManager.playerExecutor(cloudPlayer.uniqueId()).connect(this.serviceInfoSnapshot.name());
+                return null;
+            };
+            this.serviceInfoSnapshot.provider().startAsync().thenApply(joinPlayer);
         }
     }
 
