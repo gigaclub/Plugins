@@ -1,6 +1,8 @@
 package net.gigaclub.buildersystemplugin.Andere;
 
 
+import eu.cloudnetservice.driver.document.Document;
+import eu.cloudnetservice.driver.document.property.DocProperty;
 import eu.cloudnetservice.driver.inject.InjectionLayer;
 import eu.cloudnetservice.driver.provider.CloudServiceProvider;
 import eu.cloudnetservice.driver.registry.ServiceRegistry;
@@ -14,10 +16,12 @@ import lombok.NonNull;
 import net.gigaclub.buildersystem.BuilderSystem;
 import net.gigaclub.buildersystemplugin.Main;
 import net.gigaclub.translation.Translation;
+
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.UnmodifiableView;
 import org.json.JSONObject;
 
+import io.leangen.geantyref.TypeFactory;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -87,6 +91,12 @@ public class CreateServer {
         PlayerManager playerManager = InjectionLayer.boot().instance(ServiceRegistry.class).firstProvider(PlayerManager.class);
         Translation t = Main.getTranslation();
         if (this.serviceInfoSnapshot != null) {
+            var stringType = TypeFactory.parameterizedClass(String.class);
+            DocProperty<String> docProperty = DocProperty.genericProperty("fetchPlayerUUID", stringType);
+            Document doc = this.serviceInfoSnapshot.propertyHolder();
+            Document.Mutable docMut = doc.mutableCopy();
+            docMut.writeProperty(docProperty, player.getUniqueId().toString());
+            this.serviceInfoSnapshot.provider().updateProperties(docMut);
             Function<Void, Void> joinPlayer = result -> {
                 // if server not started wait...
                 t.sendMessage("builder.system.player.send.to.server", player);

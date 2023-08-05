@@ -1,9 +1,12 @@
 package net.gigaclub.buildersystemserver;
 
 import java.util.Collection;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginLoadOrder;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.java.annotation.dependency.Dependency;
@@ -13,9 +16,14 @@ import org.bukkit.plugin.java.annotation.plugin.Plugin;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.UnmodifiableView;
 
+import eu.cloudnetservice.driver.document.property.DocProperty;
 import eu.cloudnetservice.driver.inject.InjectionLayer;
 import eu.cloudnetservice.driver.provider.CloudServiceProvider;
+import eu.cloudnetservice.driver.registry.ServiceRegistry;
 import eu.cloudnetservice.driver.service.ServiceInfoSnapshot;
+import eu.cloudnetservice.modules.bridge.player.CloudPlayer;
+import eu.cloudnetservice.modules.bridge.player.PlayerManager;
+import io.leangen.geantyref.TypeFactory;
 
 @Plugin(name = "BuilderSystemServer", version = "1.20.1.1.0.0")
 @ApiVersion(ApiVersion.Target.v1_20)
@@ -40,7 +48,11 @@ public final class Main extends JavaPlugin {
         this.cloudServiceProvider = InjectionLayer.boot().instance(CloudServiceProvider.class);
         this.setCurrentServiceInfoSnapshot();
         this.setWorldId();
-        System.out.println(this.worldId);
+        var stringType = TypeFactory.parameterizedClass(String.class);
+        DocProperty<String> docProperty = DocProperty.genericProperty("fetchPlayerUUID", stringType);
+        PlayerManager playerManager = InjectionLayer.boot().instance(ServiceRegistry.class).firstProvider(PlayerManager.class);
+        CloudPlayer cloudPlayer = playerManager.onlinePlayer(UUID.fromString(this.serviceInfoSnapshot.readProperty(docProperty)));
+        playerManager.playerExecutor(cloudPlayer.uniqueId()).connect(this.serviceInfoSnapshot.name());
     }
 
     public static void setPlugin(Main plugin) {

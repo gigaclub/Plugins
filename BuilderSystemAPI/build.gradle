@@ -5,4 +5,5 @@ plugins {
 dependencies {
     api project(":TeamAPI")
     api("org.json:json:20230618")  // TODO: replace all org.json with com.google.gson
+    api("io.leangen.geantyref:geantyref:1.3.13")
 }
