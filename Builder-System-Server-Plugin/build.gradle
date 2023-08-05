@@ -1,0 +1,30 @@
+plugins {
+    id 'com.github.johnrengelman.shadow'
+}
+
+dependencies {
+    implementation project(":BuilderSystemAPI")
+    implementation project(":TranslationAPI")
+    compileOnly 'org.spigotmc:plugin-annotations:1.2.3-SNAPSHOT'
+    annotationProcessor 'org.spigotmc:plugin-annotations:1.2.3-SNAPSHOT'
+    compileOnly 'io.papermc.paper:paper-api:1.20.1-R0.1-SNAPSHOT'
+}
+
+processResources {
+    def props = [version: project.version]
+    inputs.properties props
+    filteringCharset 'UTF-8'
+    filesMatching('plugin.yml') {
+        expand props
+    }
+}
+
+task copyJar(type: Copy, dependsOn: shadowJar) {
+    from 'build/libs/Builder-System-Server-Plugin-all.jar'
+    into '../Plugins-all'
+}
+
+build {
+    dependsOn(shadowJar)
+    dependsOn(copyJar)
+}
