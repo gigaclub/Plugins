@@ -1,41 +1,25 @@
 package net.gigaclub.buildersystemplugin.listener;
 
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import eu.cloudnetservice.driver.event.EventListener;
-import eu.cloudnetservice.driver.event.events.service.CloudServiceEvent;
-import eu.cloudnetservice.driver.inject.InjectionLayer;
-import eu.cloudnetservice.driver.registry.ServiceRegistry;
-import eu.cloudnetservice.driver.service.*;
-import eu.cloudnetservice.modules.bridge.player.CloudPlayer;
-import eu.cloudnetservice.modules.bridge.player.PlayerManager;
-import net.gigaclub.buildersystem.BuilderSystem;
 import net.gigaclub.buildersystemplugin.Andere.Guis.TeamGui;
 import net.gigaclub.buildersystemplugin.Andere.Guis.WorldGui;
 import net.gigaclub.buildersystemplugin.Andere.InterfaceAPI.ItemBuilder;
-import net.gigaclub.buildersystemplugin.Main;
-import net.gigaclub.translation.Translation;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
 
 import static net.gigaclub.buildersystemplugin.Config.Config.getConfig;
 
@@ -88,6 +72,16 @@ public class joinlistener implements Listener {
 
     }
 
+    @EventHandler
+    public void DeahtListener(PlayerDeathEvent event) {
+        event.getDrops().remove(GuiOpener);
+    }
 
+    @EventHandler
+    public void RespawnListner(PlayerRespawnEvent event) {
+        Player player = event.getPlayer();
+        player.getInventory().setItem(0, GuiOpener);
+
+    }
 }
 

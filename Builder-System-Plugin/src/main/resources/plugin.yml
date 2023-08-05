@@ -19,4 +19,5 @@ commands:
     description: command zum verwalten von task
   gcprojekt:
     description: command zum verwalten von welten/Projeckte
-
+  getgui:
+    description: get the Gui Item
