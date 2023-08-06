@@ -83,7 +83,8 @@ public final class Main extends JavaPlugin {
         DocProperty<String> docProperty = DocProperty.genericProperty("fetchPlayerUUID", stringType);
         PlayerManager playerManager = InjectionLayer.boot().instance(ServiceRegistry.class).firstProvider(PlayerManager.class);
         CloudPlayer cloudPlayer = playerManager.onlinePlayer(UUID.fromString(Main.serviceInfoSnapshot.readProperty(docProperty)));
-        playerManager.playerExecutor(cloudPlayer.uniqueId()).connect(Main.serviceInfoSnapshot.name());
+        if (cloudPlayer != null)
+            playerManager.playerExecutor(cloudPlayer.uniqueId()).connect(Main.serviceInfoSnapshot.name());
 
         Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
             public void run() {
