@@ -1,5 +1,6 @@
 package net.gigaclub.buildersystem;
 
+import com.google.gson.JsonObject;
 import net.gigaclub.teamapi.Team;
 import org.apache.xmlrpc.XmlRpcException;
 import org.json.JSONArray;
@@ -270,12 +271,12 @@ public class BuilderSystem extends Team {
         return null;
     }
 
-    public JSONObject getWorld(int id) {
+    public JsonObject getWorld(int id) {
         try {
-            return new JSONObject((Map<String, String>) this.odoo.getModels().execute("execute_kw", Arrays.asList(
+            return this.odoo.gson.toJsonTree(this.odoo.getModels().execute("execute_kw", Arrays.asList(
                     this.odoo.getDatabase(), this.odoo.getUid(), this.odoo.getPassword(),
                     "gc.builder.world", "get_world", List.of(id)
-            )));
+            ))).getAsJsonObject();
         } catch (XmlRpcException e) {
             e.printStackTrace();
         }

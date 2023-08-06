@@ -1,6 +1,7 @@
 package net.gigaclub.buildersystemplugin.Andere;
 
 
+import com.google.gson.JsonObject;
 import eu.cloudnetservice.driver.document.Document;
 import eu.cloudnetservice.driver.document.property.DocProperty;
 import eu.cloudnetservice.driver.inject.InjectionLayer;
@@ -12,16 +13,14 @@ import eu.cloudnetservice.driver.service.ServiceInfoSnapshot;
 import eu.cloudnetservice.driver.service.ServiceTemplate;
 import eu.cloudnetservice.modules.bridge.player.CloudPlayer;
 import eu.cloudnetservice.modules.bridge.player.PlayerManager;
+import io.leangen.geantyref.TypeFactory;
 import lombok.NonNull;
 import net.gigaclub.buildersystem.BuilderSystem;
 import net.gigaclub.buildersystemplugin.Main;
 import net.gigaclub.translation.Translation;
-
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.UnmodifiableView;
-import org.json.JSONObject;
 
-import io.leangen.geantyref.TypeFactory;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -30,10 +29,10 @@ import java.util.function.Function;
 
 public class CreateServer {
 
-    private int worldId;
-    private CloudServiceProvider cloudServiceProvider;
+    private final int worldId;
+    private final CloudServiceProvider cloudServiceProvider;
     public ServiceInfoSnapshot serviceInfoSnapshot;
-    private String taskName;
+    private final String taskName;
 
     public CreateServer(int worldId) {
         this.worldId = worldId;
@@ -55,8 +54,8 @@ public class CreateServer {
 
     private void createServiceSnapshot() {
         BuilderSystem builderSystem = Main.getBuilderSystem();
-        JSONObject world = builderSystem.getWorld(this.worldId);
-        String worldTyp = world.getString("world_type");
+        JsonObject world = builderSystem.getWorld(this.worldId);
+        String worldTyp = world.get("world_type").getAsString();
         this.serviceInfoSnapshot = ServiceConfiguration.builder()
                 .taskName(this.taskName)
                 // TODO make node configurable
@@ -81,7 +80,7 @@ public class CreateServer {
                 // TODO make group name list configurable
                 .groups(List.of("Builder"))
                 // TODO make memory configurable
-                .maxHeapMemory(1525)
+                .maxHeapMemory(6000)
                 .environment(ServiceEnvironmentType.MINECRAFT_SERVER)
                 .build()
                 .createNewService().serviceInfo();

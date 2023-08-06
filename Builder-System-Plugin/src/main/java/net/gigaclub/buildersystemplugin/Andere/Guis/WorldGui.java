@@ -9,6 +9,7 @@ import com.github.stefvanschie.inventoryframework.pane.PaginatedPane;
 import com.github.stefvanschie.inventoryframework.pane.Pane;
 import com.github.stefvanschie.inventoryframework.pane.StaticPane;
 import com.github.stefvanschie.inventoryframework.pane.util.Slot;
+import com.google.gson.JsonObject;
 import net.gigaclub.buildersystem.BuilderSystem;
 import net.gigaclub.buildersystemplugin.Andere.CreateServer;
 import net.gigaclub.buildersystemplugin.Andere.Data;
@@ -44,7 +45,7 @@ public class WorldGui {
         BuilderSystem builderSystem = Main.getBuilderSystem();
 
         JSONObject jsonObjeckt = new JSONObject();
-        JSONObject team = builderSystem.getWorld(projecktID);
+        JsonObject team = builderSystem.getWorld(projecktID);
         jsonObjeckt.put(player.getName(), team);
 
         // Speichere den JsonArray in einer Variablen
