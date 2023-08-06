@@ -11,10 +11,12 @@ import eu.cloudnetservice.modules.bridge.player.CloudPlayer;
 import eu.cloudnetservice.modules.bridge.player.PlayerManager;
 import io.leangen.geantyref.TypeFactory;
 import net.gigaclub.buildersystem.BuilderSystem;
+import net.gigaclub.buildersystemserver.listener.JoinListener;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.PluginLoadOrder;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.java.annotation.dependency.Dependency;
 import org.bukkit.plugin.java.annotation.plugin.ApiVersion;
@@ -39,7 +41,7 @@ public final class Main extends JavaPlugin {
     public static int worldId;
     public CloudServiceProvider cloudServiceProvider;
     public static ServiceInfoSnapshot serviceInfoSnapshot;
-    private static BuilderSystem builderSystem;
+    public static BuilderSystem builderSystem;
     
     public static BuilderSystem getBuilderSystem() {
         return Main.builderSystem;
@@ -100,6 +102,8 @@ public final class Main extends JavaPlugin {
                 Main.serviceInfoSnapshot.provider().stop();
             }
         }, 0, 2400);
+
+        this.registerListener();
     }
 
     public void setCurrentServiceInfoSnapshot() {
@@ -132,6 +136,11 @@ public final class Main extends JavaPlugin {
 
     public void saveWorld() {
 
+    }
+
+    private void registerListener() {
+        PluginManager pluginManager = Bukkit.getPluginManager();
+        pluginManager.registerEvents(new JoinListener(), this);
     }
 
 }

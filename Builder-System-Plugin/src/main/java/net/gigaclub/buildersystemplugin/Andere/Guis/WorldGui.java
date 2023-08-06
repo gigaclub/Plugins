@@ -10,6 +10,10 @@ import com.github.stefvanschie.inventoryframework.pane.Pane;
 import com.github.stefvanschie.inventoryframework.pane.StaticPane;
 import com.github.stefvanschie.inventoryframework.pane.util.Slot;
 import com.google.gson.JsonObject;
+import eu.cloudnetservice.driver.inject.InjectionLayer;
+import eu.cloudnetservice.driver.provider.CloudServiceProvider;
+import eu.cloudnetservice.driver.service.ServiceInfoSnapshot;
+import lombok.NonNull;
 import net.gigaclub.buildersystem.BuilderSystem;
 import net.gigaclub.buildersystemplugin.Andere.CreateServer;
 import net.gigaclub.buildersystemplugin.Andere.Data;
@@ -24,11 +28,13 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.UnmodifiableView;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -530,6 +536,11 @@ public class WorldGui {
         GuiItem Check = new GuiItem(check, event1 -> {
             int res = builderSystem.editWorldType(player.getUniqueId().toString(), projecktID, worldType);
             player.sendPlainMessage("edit successful");
+            CloudServiceProvider cloudServiceProvider = InjectionLayer.boot().instance(CloudServiceProvider.class);
+            @UnmodifiableView @NonNull Collection<ServiceInfoSnapshot> serviceInfoSnapshots = cloudServiceProvider.servicesByTask(String.valueOf(projecktID));
+            for (ServiceInfoSnapshot sis : serviceInfoSnapshots) {
+                sis.provider().stop();
+            }
             projeckt(player, projecktID, projecktName);
             event1.setCancelled(true);
         });

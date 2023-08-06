@@ -2,6 +2,7 @@ package net.gigaclub.buildersystemplugin;
 
 import eu.cloudnetservice.driver.event.EventManager;
 import eu.cloudnetservice.driver.inject.InjectionLayer;
+import lombok.Getter;
 import me.arcaniax.hdb.api.DatabaseLoadEvent;
 import net.gigaclub.buildersystem.BuilderSystem;
 import net.gigaclub.buildersystemplugin.Andere.Data;
@@ -29,20 +30,14 @@ import java.util.HashMap;
 public final class Main extends JavaPlugin implements Listener {
 
     final public static String PREFIX = "[GC-BSP]: ";
+    @Getter
     private static Main plugin;
+    @Getter
     private static Translation translation;
     private static BuilderSystem builderSystem;
 
-    public static Translation getTranslation() {
-        return translation;
-    }
-
     public static void setTranslation(Translation translation) {
         Main.translation = translation;
-    }
-
-    public static Main getPlugin() {
-        return plugin;
     }
 
     public static void setPlugin(Main plugin) {
@@ -57,11 +52,8 @@ public final class Main extends JavaPlugin implements Listener {
         Main.builderSystem = builderSystem;
     }
 
+    @Getter
     private static Data data;
-
-    public static Data getData() {
-        return data;
-    }
 
     public static void setData(Data data) {
         Main.data = data;
@@ -372,7 +364,6 @@ public final class Main extends JavaPlugin implements Listener {
 
 
     }
-
 
     @EventHandler
     public void onDatabaseLoad(DatabaseLoadEvent e) {
