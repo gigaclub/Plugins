@@ -429,7 +429,6 @@ public class TeamGui implements Listener {
         Translation t = Main.getTranslation();
         Data data = Main.getData();
         BuilderSystem builderSystem = Main.getBuilderSystem();
-        // managetPlayer.getName() + " Manager"
         ChestGui playermanager = new ChestGui(3, data.setGuiName("BuilderSystem.team.player.manager.gui", player, Placeholder.parsed("managetPlayer", managetPlayer.getName())));
         StaticPane pane = new StaticPane(9, 3);
         pane.fillWith(outlineintem);
@@ -442,14 +441,7 @@ public class TeamGui implements Listener {
             event.setCancelled(true);
         });
         pane.addItem(addPermsGroup, 2, 1);
-        // set player perms
-        GuiItem adduserperms = new GuiItem(new ItemBuilder(Material.PLAYER_HEAD).setHeadDatabase(997).setDisplayName(t.t("BuilderSystem.team.player.manager.player.set.perms", player)).build(), event -> {
-            player.sendMessage("set player perms");
-            event.setCancelled(true);
-        });
-        pane.addItem(adduserperms, 4, 1);
 
-        // "Kick " + managetPlayer.getName() + " from Team"
         GuiItem kickUser = new GuiItem(new ItemBuilder(Material.PLAYER_HEAD).setHeadDatabase(9348).setDisplayName(t.t("BuilderSystem.team.player.manager.kick.player", player, Placeholder.parsed("kicktPlayer", managetPlayer.getName()))).build(), event -> {
             DispenserGui confirm = new DispenserGui(data.setGuiName("BuilderSystem.team.player.manager.kick.player.confirm.gui", player, Placeholder.parsed("kicktPlayer", managetPlayer.getName())));
             StaticPane cpane = new StaticPane(3, 3);
@@ -457,7 +449,6 @@ public class TeamGui implements Listener {
             GuiItem check = new GuiItem(new ItemBuilder(Material.PLAYER_HEAD).setHeadDatabase(21774).setDisplayName(t.t("BuilderSystem.team.player.manager.kick.player.confirm", player, Placeholder.parsed("kicktPlayer", managetPlayer.getName()))).build(), event1 -> {
                 builderSystem.kickMember(String.valueOf(player.getUniqueId()), TeamID, String.valueOf(managetPlayer.getUniqueId()));
                 confirm.getInventory().close();
-                // " got kicked"
                 player.sendMessage(t.t("BuilderSystem.team.player.manager.kick.player.got.kickt", player, Placeholder.parsed("kicktPlayer", managetPlayer.getName())));
                 event1.setCancelled(true);
             });
@@ -481,7 +472,7 @@ public class TeamGui implements Listener {
         Translation t = Main.getTranslation();
         Data data = Main.getData();
 
-        // "Team Player List Page 1"
+
         ChestGui taskList = new ChestGui(6, data.setGuiName("BuilderSystem.team.player.list.gui", player));
         StaticPane outline = new StaticPane(0, 0, 9, 1);
         StaticPane outline2 = new StaticPane(0, 1, 1, 4);
@@ -510,7 +501,6 @@ public class TeamGui implements Listener {
         navigation.addItem(new GuiItem(new ItemBuilder(Material.PLAYER_HEAD).setHeadDatabase(8784).setDisplayName(t.t("BuilderSystem.page.list.back", player)).build(), event -> {
             if (taskPages.getPage() > 0) {
                 taskPages.setPage(taskPages.getPage() - 1);
-                //"Team List Page " + (taskPages.getPage() + 1)
                 taskList.setTitle(data.setGuiName("BuilderSystem.team.player.list.gui.pages", player, Placeholder.parsed("page", String.valueOf(taskPages.getPage() + 1))));
                 taskList.update();
             } else event.setCancelled(true);
@@ -524,10 +514,9 @@ public class TeamGui implements Listener {
             } else event.setCancelled(true);
         }), 6, 0);
         GuiItem playerInvite = new GuiItem(new ItemBuilder(Material.PLAYER_HEAD).setHeadDatabase(21771).setDisplayName(t.t("BuilderSystem.team.player.list.invite.player", player)).build(), event -> {
-            // To DO
+
             BuilderSystem builderSystem = Main.getBuilderSystem();
             AnvilGui invitePlayer = new AnvilGui(data.setGuiName("BuilderSystem.team.player.list.invite.player.gui", player));
-            // "Player Name"
             GuiItem slot1 = new GuiItem(new ItemBuilder(Material.PAPER).setDisplayName(t.t("BuilderSystem.team.player.list.invite.player.tipe.player.name", player)).build(), event1 -> {
                 event1.setCancelled(true);
             });
@@ -537,7 +526,7 @@ public class TeamGui implements Listener {
 
             invitePlayer.setCost((short) 0);
             StaticPane pane2 = new StaticPane(1, 1);
-            // "Click to Invite Player"
+
             GuiItem slot3 = new GuiItem(new ItemBuilder(Material.PAPER).setDisplayName(t.t("BuilderSystem.team.player.list.invite.player.click.to.invite", player)).build(), event1 -> {
 
 
@@ -546,7 +535,7 @@ public class TeamGui implements Listener {
                         String[] User = data.getMCPlayerInfo(invitePlayer.getRenameText());
                         if (data.checkIfPlayerExists(User[1])) {
                             builderSystem.inviteMember(String.valueOf(player.getUniqueId()), teamID, String.valueOf(Bukkit.getOfflinePlayer(invitePlayer.getRenameText()).getUniqueId()));
-                            // User[1] + "was sent a request"
+
                             player.sendMessage(t.t("BuilderSystem.team.player.list.invite.player.invite.sent", player, Placeholder.parsed("invitetPlayer", User[1])));
                             TeamPlayer(player, teamID);
                             event1.setCancelled(true);
@@ -555,7 +544,6 @@ public class TeamGui implements Listener {
                             data.createPlayer(User[1], String.valueOf(UUID.fromString(User[0])));
                             builderSystem.inviteMember(String.valueOf(player.getUniqueId()), teamID, String.valueOf(UUID.fromString(User[0])));
 
-                            // "Your request will be sent to the player (" + User[1] + ") when he joins the server"
                             player.sendMessage(t.t("BuilderSystem.team.player.list.invite.player.invite.if.first.join", player, Placeholder.parsed("invitetPlayer", User[1])));
                             TeamPlayer(player, teamID);
                             event1.setCancelled(true);
@@ -576,7 +564,6 @@ public class TeamGui implements Listener {
 
         navigation.addItem(new GuiItem(new ItemBuilder(Material.PLAYER_HEAD)
                 .setHeadDatabase(10298)
-                //"Back to Team Select"
                 .setDisplayName(t.t("BuilderSystem.back.to.team.select", player))
                 .build(), event -> TeamList(player)), 4, 0);
 
@@ -605,7 +592,6 @@ public class TeamGui implements Listener {
         AnvilGui editname = new AnvilGui(data.setGuiName("BuilderSystem.team.edit.team.name.gui", player));
 
         if (editName) {
-            // builderSystem.getTeam(teamID).get("name").getAsString()
             GuiItem slot1 = new GuiItem(new ItemBuilder(Material.PAPER).setDisplayName(t.t("BuilderSystem.team.edit.team.name.old", player)).build(), event -> {
                 event.setCancelled(true);
             });
