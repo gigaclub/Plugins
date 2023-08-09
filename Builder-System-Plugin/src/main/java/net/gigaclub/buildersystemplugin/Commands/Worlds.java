@@ -63,8 +63,8 @@ public class Worlds implements CommandExecutor, TabCompleter {
                     }
                     if (args.length == 3) {
 
-                        JSONObject task = builderSystem.getTask(Integer.getInteger(args[2]));
-                        String TaskName = task.getString("name");
+                        JsonObject task = builderSystem.getTask(Integer.getInteger(args[2]));
+                        String TaskName = task.get("name").getAsString();
 
                         builderSystem.createWorldAsTeam(playerUUID, Integer.parseInt(args[1]), Integer.parseInt(args[2]), TaskName, "default");
                         player.sendMessage(t.t("BuilderSystem.world.create_team_succses", player));
@@ -102,8 +102,8 @@ public class Worlds implements CommandExecutor, TabCompleter {
                     if (args.length == 2) {
                         // task auswahl per id oder name
                         JSONArray allTasks = builderSystem.getAllTasks();
-                        JSONObject task = builderSystem.getTask(Integer.getInteger(args[2]));
-                        String TaskName = task.getString("name");
+                        JsonObject task = builderSystem.getTask(Integer.getInteger(args[2]));
+                        String TaskName = task.get("name").getAsString();
 
 
                         if (isInt(args[1])) {

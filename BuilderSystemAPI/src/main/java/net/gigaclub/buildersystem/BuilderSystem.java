@@ -4,9 +4,11 @@ import com.google.gson.JsonObject;
 import net.gigaclub.teamapi.Team;
 import org.apache.xmlrpc.XmlRpcException;
 import org.json.JSONArray;
-import org.json.JSONObject;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 
 public class BuilderSystem extends Team {
 
@@ -85,12 +87,12 @@ public class BuilderSystem extends Team {
         return null;
     }
 
-    public JSONObject getTask(int id) {
+    public JsonObject getTask(int id) {
         try {
-            return new JSONObject((Map<String, String>) this.odoo.getModels().execute("execute_kw", Arrays.asList(
+            return this.odoo.gson.toJsonTree(this.odoo.getModels().execute("execute_kw", Arrays.asList(
                     this.odoo.getDatabase(), this.odoo.getUid(), this.odoo.getPassword(),
                     "project.task", "get_task", List.of(id)
-            )));
+            ))).getAsJsonObject();
         } catch (XmlRpcException e) {
             e.printStackTrace();
         }

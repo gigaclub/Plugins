@@ -11,6 +11,7 @@ dependencies {
     compileOnly platform('eu.cloudnetservice.cloudnet:bom:4.0.0-RC9-SNAPSHOT')
     compileOnly 'eu.cloudnetservice.cloudnet:driver'
     compileOnly 'eu.cloudnetservice.cloudnet:bridge'
+    compileOnly("org.projectlombok:lombok:1.18.28")
 }
 
 processResources {

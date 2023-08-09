@@ -13,6 +13,7 @@ import io.leangen.geantyref.TypeFactory;
 import net.gigaclub.buildersystem.BuilderSystem;
 import net.gigaclub.buildersystemserver.listener.JoinListener;
 import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.PluginLoadOrder;
@@ -42,7 +43,37 @@ public final class Main extends JavaPlugin {
     public CloudServiceProvider cloudServiceProvider;
     public static ServiceInfoSnapshot serviceInfoSnapshot;
     public static BuilderSystem builderSystem;
-    
+
+    @lombok.Getter
+    public World world;
+
+    public void setWorld() {
+        JsonObject world = Main.builderSystem.getWorld(Main.worldId);
+        String worldType = world.get("world_type").getAsString();
+        if (worldType.contains("nether")) {
+            for (World netherWorld : Bukkit.getWorlds()) {
+                if (netherWorld.getName().contains("nether")) {
+                    this.world = netherWorld;
+                    break;
+                }
+            }
+        } else if (worldType.contains("end")) {
+            for (World endWorld : Bukkit.getWorlds()) {
+                if (endWorld.getName().contains("end")) {
+                    this.world = endWorld;
+                    break;
+                }
+            }
+        } else {
+            for (World normalWorld : Bukkit.getWorlds()) {
+                if (!normalWorld.getName().contains("end") && !normalWorld.getName().contains("nether")) {
+                    this.world = normalWorld;
+                    break;
+                }
+            }
+        }
+    }
+
     public static BuilderSystem getBuilderSystem() {
         return Main.builderSystem;
     }
@@ -80,6 +111,7 @@ public final class Main extends JavaPlugin {
         this.cloudServiceProvider = InjectionLayer.boot().instance(CloudServiceProvider.class);
         this.setCurrentServiceInfoSnapshot();
         this.setWorldId();
+        this.setWorld();
         this.loadWorld();
         var stringType = TypeFactory.parameterizedClass(String.class);
         DocProperty<String> docProperty = DocProperty.genericProperty("fetchPlayerUUID", stringType);
@@ -131,7 +163,8 @@ public final class Main extends JavaPlugin {
     }
 
     public void loadWorld() {
-
+        JsonObject world = Main.builderSystem.getWorld(Main.worldId);
+        JsonObject task = Main.builderSystem.getTask(world.get("task_id").getAsInt());
     }
 
     public void saveWorld() {

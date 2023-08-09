@@ -224,15 +224,15 @@ public class TaskGui {
 
     public static void createWorld(int teamID, int ID, InventoryClickEvent event, String worldType) {
         BuilderSystem builderSystem = Main.getBuilderSystem();
-        JSONObject task = builderSystem.getTask(ID);
+        JsonObject task = builderSystem.getTask(ID);
 
 
         if (teamID != 0) {
             JsonObject team = builderSystem.getTeam(teamID);
-            int res = builderSystem.createWorldAsTeam(event.getWhoClicked().getUniqueId().toString(), teamID, ID, task.getString("name") + "_" + team.get("name").getAsString(), worldType);
+            int res = builderSystem.createWorldAsTeam(event.getWhoClicked().getUniqueId().toString(), teamID, ID, task.get("name").getAsString() + "_" + team.get("name").getAsString(), worldType);
             event.getWhoClicked().sendMessage(String.valueOf(res));
         } else
-            builderSystem.createWorldAsUser(event.getWhoClicked().getUniqueId().toString(), ID, task.getString("name") + "_" + event.getWhoClicked().getName(), worldType);
+            builderSystem.createWorldAsUser(event.getWhoClicked().getUniqueId().toString(), ID, task.get("name").getAsString() + "_" + event.getWhoClicked().getName(), worldType);
 
 
         event.getWhoClicked().closeInventory();
