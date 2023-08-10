@@ -14,6 +14,7 @@ import net.gigaclub.buildersystem.BuilderSystem;
 import net.gigaclub.buildersystemserver.listener.JoinListener;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.bukkit.WorldBorder;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.PluginLoadOrder;
@@ -163,8 +164,16 @@ public final class Main extends JavaPlugin {
     }
 
     public void loadWorld() {
-        JsonObject world = Main.builderSystem.getWorld(Main.worldId);
-        JsonObject task = Main.builderSystem.getTask(world.get("task_id").getAsInt());
+        JsonObject builderSystemWorld = Main.builderSystem.getWorld(Main.worldId);
+        JsonObject task = Main.builderSystem.getTask(builderSystemWorld.get("task_id").getAsInt());
+        // just get one parameter because both should always be the same in the current logic
+        int worldSize = task.get("build_width").getAsInt();
+        if (worldSize <= 1)
+            worldSize = 1;
+        WorldBorder border = this.world.getWorldBorder();
+        border.setSize(worldSize);
+        // TODO center needs to be set by user if the world is not flat or void
+        border.setCenter(0.5, 0.5);
     }
 
     public void saveWorld() {
