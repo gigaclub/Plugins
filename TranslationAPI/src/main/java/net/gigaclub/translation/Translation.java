@@ -17,18 +17,13 @@ public class Translation {
 
     private final Odoo odoo;
     private final Plugin plugin;
-
-
     private String category;
 
     public Translation(String hostname, String database, String username, String password, Object plugin) {
         this.odoo = new Odoo(hostname, database, username, password);
         this.category = "";
         this.plugin = (Plugin) plugin;
-
-
     }
-
 
     public void setCategory(String category) {
         this.category = category;
@@ -38,7 +33,6 @@ public class Translation {
         try {
             String playerUUID;
             playerUUID = player.getUniqueId().toString();
-
             String result = (String) this.odoo.getModels().execute("execute_kw", Arrays.asList(
                     this.odoo.getDatabase(), this.odoo.getUid(), this.odoo.getPassword(),
                     "gc.translation", "get_translation_by_player_uuid", Arrays.asList(name, playerUUID, this.category)
@@ -110,6 +104,5 @@ public class Translation {
             }
         }
     }
-
 
 }

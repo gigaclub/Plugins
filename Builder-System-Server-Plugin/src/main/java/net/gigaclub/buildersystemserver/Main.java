@@ -10,8 +10,11 @@ import eu.cloudnetservice.driver.service.ServiceInfoSnapshot;
 import eu.cloudnetservice.modules.bridge.player.CloudPlayer;
 import eu.cloudnetservice.modules.bridge.player.PlayerManager;
 import io.leangen.geantyref.TypeFactory;
+import lombok.Getter;
 import net.gigaclub.buildersystem.BuilderSystem;
+import net.gigaclub.buildersystemserver.commands.SetCenterCommand;
 import net.gigaclub.buildersystemserver.listener.JoinListener;
+import net.gigaclub.translation.Translation;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.WorldBorder;
@@ -29,6 +32,7 @@ import org.jetbrains.annotations.UnmodifiableView;
 
 import java.io.File;
 import java.util.Collection;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -45,8 +49,14 @@ public final class Main extends JavaPlugin {
     public static ServiceInfoSnapshot serviceInfoSnapshot;
     public static BuilderSystem builderSystem;
 
-    @lombok.Getter
+    @Getter
+    public Translation translation;
+    @Getter
     public World world;
+
+    public void setTranslation(Translation translation) {
+        this.translation = translation;
+    }
 
     public void setWorld() {
         JsonObject world = Main.builderSystem.getWorld(Main.worldId);
@@ -103,6 +113,13 @@ public final class Main extends JavaPlugin {
         setPlugin(this);
         File file = new File("plugins//" + "Odoo", "config.yml");
         FileConfiguration config = YamlConfiguration.loadConfiguration(file);
+        setTranslation(new Translation(
+                config.getString("Odoo.Host"),
+                config.getString("Odoo.Database"),
+                config.getString("Odoo.Username"),
+                config.getString("Odoo.Password"),
+                getPlugin()
+        ));
         setBuilderSystem(new BuilderSystem(
                 config.getString("Odoo.Host"),
                 config.getString("Odoo.Database"),
@@ -137,6 +154,7 @@ public final class Main extends JavaPlugin {
         }, 0, 2400);
 
         this.registerListener();
+        this.registerCommands();
     }
 
     public void setCurrentServiceInfoSnapshot() {
@@ -152,7 +170,7 @@ public final class Main extends JavaPlugin {
     }
 
     public void setWorldId() {
-        // TODO the delimitter needs to be configurable
+        // TODO the delimiter needs to be configurable
         String pattern = "(\\d+)-\\d+";
         Pattern regexPattern = Pattern.compile(pattern);
         String serverName = Main.serviceInfoSnapshot.name();
@@ -166,23 +184,29 @@ public final class Main extends JavaPlugin {
     public void loadWorld() {
         JsonObject builderSystemWorld = Main.builderSystem.getWorld(Main.worldId);
         JsonObject task = Main.builderSystem.getTask(builderSystemWorld.get("task_id").getAsInt());
+        // do not set the center position if it is a pre generated world
+        if (!builderSystemWorld.get("world_type").getAsString().contains("_"))
+            return;
         // just get one parameter because both should always be the same in the current logic
         int worldSize = task.get("build_width").getAsInt();
         if (worldSize <= 1)
             worldSize = 1;
         WorldBorder border = this.world.getWorldBorder();
         border.setSize(worldSize);
-        // TODO center needs to be set by user if the world is not flat or void
         border.setCenter(0.5, 0.5);
     }
 
     public void saveWorld() {
-
+        // lets wait until AdvancedSlimePaper is available for 1.20.1...
     }
 
     private void registerListener() {
         PluginManager pluginManager = Bukkit.getPluginManager();
         pluginManager.registerEvents(new JoinListener(), this);
+    }
+
+    private void registerCommands() {
+        Objects.requireNonNull(getCommand("setcenter")).setExecutor(new SetCenterCommand());
     }
 
 }
