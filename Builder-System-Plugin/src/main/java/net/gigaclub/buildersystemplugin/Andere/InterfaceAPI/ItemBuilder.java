@@ -126,6 +126,15 @@ public class ItemBuilder {
         return this;
     }
 
+    public ItemBuilder setLoreComponents(Component lore) {
+        ItemMeta meta = getItemMeta();
+        ArrayList<Component> loreList = new ArrayList<>();
+        loreList.add(lore);
+        meta.lore(loreList);
+        setItemMeta(meta);
+        return this;
+    }
+
     public ItemBuilder setLore(String lore) {
         ArrayList<String> loreList = new ArrayList<>();
         loreList.add(lore);

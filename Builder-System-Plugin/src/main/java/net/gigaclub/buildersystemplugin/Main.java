@@ -36,10 +36,18 @@ public final class Main extends JavaPlugin implements Listener {
     private static Translation translation;
     private static BuilderSystem builderSystem;
 
+
+    public static Translation getTranslation() {
+        return translation;
+    }
+
     public static void setTranslation(Translation translation) {
         Main.translation = translation;
     }
 
+    public static Main getPlugin() {
+        return plugin;
+    }
     public static void setPlugin(Main plugin) {
         Main.plugin = plugin;
     }
@@ -54,6 +62,10 @@ public final class Main extends JavaPlugin implements Listener {
 
     @Getter
     private static Data data;
+
+    public static Data getData() {
+        return data;
+    }
 
     public static void setData(Data data) {
         Main.data = data;
@@ -147,6 +159,9 @@ public final class Main extends JavaPlugin implements Listener {
                 "BuilderSystem.back.to.main",
                 "BuilderSystem.page.list.back",
                 "BuilderSystem.page.list.next",
+                "BuilderSystem.task.list.one.page.gui",
+                "BuilderSystem.back.to.team.select",
+                "BuilderSystem.back.to.project.list",
 
                 // Navigator Task
                 "BuilderSystem.navigator.task.item",
@@ -172,39 +187,31 @@ public final class Main extends JavaPlugin implements Listener {
                 "BuilderSystem.team.create.description.item",
                 "BuilderSystem.team.create.set.description.gui.name",
                 "BuilderSystem.team.create.description.accept",
-
                 "BuilderSystem.team.create.succses",
-
                 new HashMap<String, String>() {{
                     put("translationName", "BuilderSystem.team.create.succses");
-                    put("teamName", "Name");
+                    put("teamname", "Name");
                 }},
-
                 new HashMap<String, String>() {{
                     put("translationName", "BuilderSystem.team.list.team.id");
-                    put("ID", "1");
+                    put("id", "1");
                 }},
-
                 new HashMap<String, String>() {{
                     put("translationName", "BuilderSystem.team.list.team.owner");
-                    put("Owner", "GigaClub");
+                    put("owner", "GigaClub");
                 }},
-
                 new HashMap<String, String>() {{
                     put("translationName", "BuilderSystem.team.list.team.description");
-                    put("Description", "Description");
+                    put("description", "Description");
                 }},
-
                 new HashMap<String, String>() {{
                     put("translationName", "BuilderSystem.team.list.team.member");
-                    put("teamMember", "player1 ,player2");
+                    put("teammember", "player1 ,player2");
                 }},
-
                 new HashMap<String, String>() {{
                     put("translationName", "BuilderSystem.team.list.team.name");
-                    put("Name", "Name");
+                    put("name", "Name");
                 }},
-
                 "BuilderSystem.team.team.list",
                 "BuilderSystem.team.team.menu.team.mangae.gui",
                 "BuilderSystem.team.team.menu.player.Manager",
@@ -214,63 +221,48 @@ public final class Main extends JavaPlugin implements Listener {
                 "BuilderSystem.team.team.edit.description",
                 "BuilderSystem.team.team.player.list.owner.lore1",
                 "BuilderSystem.team.team.player.list.owner.lore2",
-
                 new HashMap<String, String>() {{
                     put("translationName", "BuilderSystem.team.team.player.list.owner.name");
-                    put("OwnerName", "GigaClub");
+                    put("ownername", "GigaClub");
                 }},
-
                 "BuilderSystem.team.team.player.list.player.lore1",
                 "BuilderSystem.team.team.player.list.player.lore2",
-
-
                 new HashMap<String, String>() {{
                     put("translationName", "BuilderSystem.team.player.manager.gui");
-                    put("managetPlayer", "GigaClub");
+                    put("managetplayer", "GigaClub");
                 }},
-
                 "BuilderSystem.team.player.manager.player",
                 "BuilderSystem.team.player.manager.player.set.group",
                 "BuilderSystem.team.player.manager.player.set.perms",
-
                 new HashMap<String, String>() {{
                     put("translationName", "BuilderSystem.team.player.manager.kick.player");
-                    put("kicktPlayer", "GigaClub");
+                    put("kicktplayer", "GigaClub");
                 }},
-
                 new HashMap<String, String>() {{
                     put("translationName", "BuilderSystem.team.player.manager.kick.player.confirm");
-                    put("kicktPlayer", "GigaClub");
+                    put("kicktplayer", "GigaClub");
                 }},
-
                 new HashMap<String, String>() {{
                     put("translationName", "BuilderSystem.team.player.manager.kick.player.got.kickt");
-                    put("kicktPlayer", "GigaClub");
+                    put("kicktplayer", "GigaClub");
                 }},
-
                 new HashMap<String, String>() {{
                     put("translationName", "BuilderSystem.team.player.manager.kick.player.confirm.dont.kick");
-                    put("kicktPlayer", "GigaClub");
+                    put("kicktplayer", "GigaClub");
                 }},
-
                 "BuilderSystem.team.player.list.gui",
-
                 new HashMap<String, String>() {{
                     put("translationName", "BuilderSystem.team.player.list.gui.pages");
                     put("page", "1");
                 }},
-
-
                 "BuilderSystem.team.player.list.invite.player",
                 "BuilderSystem.team.player.list.invite.player.gui",
                 "BuilderSystem.team.player.list.invite.player.tipe.player.name",
                 "BuilderSystem.team.player.list.invite.player.click.to.invite",
-
                 new HashMap<String, String>() {{
                     put("translationName", "BuilderSystem.team.player.list.invite.player.invite.sent");
-                    put("invitetPlayer", "Gigaclub");
+                    put("invitetplayer", "Gigaclub");
                 }},
-
                 "BuilderSystem.team.player.list.invite.player.is.not.player",
                 "BuilderSystem.back.to.team.select",
                 "BuilderSystem.team.player.list.players.teams.gui",
@@ -278,22 +270,152 @@ public final class Main extends JavaPlugin implements Listener {
                 "BuilderSystem.team.edit.team.name.old",
                 "BuilderSystem.team.edit.team.description",
                 "BuilderSystem.team.edit.team.description.empty",
-
                 new HashMap<String, String>() {{
                     put("translationName", "BuilderSystem.team.edit.team.description.old");
                     put("description", "Gigaclub");
                 }},
-
                 "BuilderSystem.team.edit.team.name.save",
                 "BuilderSystem.team.invits.item.lore1",
                 "BuilderSystem.team.invits.item.lore2",
-
                 new HashMap<String, String>() {{
                     put("translationName", "BuilderSystem.team.invits.item.invite.from");
-                    put("inviteFrom", "Gigaclub");
+                    put("invitefrom", "Gigaclub");
+                }},
+                "BuilderSystem.team.invits.list.gui",
+
+                // Task Gui
+                "BuilderSystem.task.task.item.line.separator",
+                new HashMap<String, String>() {{
+                    put("translationName", "BuilderSystem.task.task.size");
+                    put("buildwidth", "1500");
+                    put("buildlength", "1500");
+                }},
+                new HashMap<String, String>() {{
+                    put("translationName", "BuilderSystem.task.task.description");
+                    put("description", "description");
+                }},
+                new HashMap<String, String>() {{
+                    put("translationName", "BuilderSystem.task.task.projeckt.count");
+                    put("projecktcount", "1");
+                }},
+                new HashMap<String, String>() {{
+                    put("translationName", "BuilderSystem.task.task.item.id.and.name");
+                    put("taskid", "14");
+                    put("taskname", "GigaTeam");
                 }},
 
-                "BuilderSystem.team.invits.list.gui"
+                "BuilderSystem.task.select.gui",
+                "BuilderSystem.task.select.create.projeckt.as.team",
+                "BuilderSystem.task.select.create.projeckt.as.player",
+                "BuilderSystem.back.to.task.list",
+                "BuilderSystem.task.create.projeckt.select.team.gui",
+                new HashMap<String, String>() {{
+                    put("translationName", "BuilderSystem.task.create.projeckt.select.team.name");
+                    put("teamname", "GigaTeam");
+                }},
+                "BuilderSystem.task.create.type.select.gui",
+
+                "BuilderSystem.task.create.type.select.normal",
+                "BuilderSystem.task.create.type.select.normal.flat",
+                "BuilderSystem.task.create.type.select.normal.void",
+
+                "BuilderSystem.task.create.type.select.nether",
+                "BuilderSystem.task.create.type.select.nether.flat",
+                "BuilderSystem.task.create.type.select.nether.void",
+
+                "BuilderSystem.task.create.type.select.end",
+                "BuilderSystem.task.create.type.select.end.flat",
+                "BuilderSystem.task.create.type.select.end.void",
+
+                // world Gui
+                new HashMap<String, String>() {{
+                    put("translationName", "BuilderSystem.worldgui.list.item.id");
+                    put("id", "6");
+                }},
+                new HashMap<String, String>() {{
+                    put("translationName", "BuilderSystem.worldgui.list.item.world.type");
+                    put("worldtype", "normal");
+                }},
+                new HashMap<String, String>() {{
+                    put("translationName", "BuilderSystem.worldgui.list.item.projeckt.owner");
+                    put("owner", "Gigaclub");
+                }},
+                new HashMap<String, String>() {{
+                    put("translationName", "BuilderSystem.worldgui.list.item.builder.teams");
+                    put("teamslist", "Team1, Team2");
+                }},
+                new HashMap<String, String>() {{
+                    put("translationName", "BuilderSystem.worldgui.list.item.builder.users");
+                    put("userlist", "User1, User2");
+                }},
+                new HashMap<String, String>() {{
+                    put("translationName", "BuilderSystem.worldgui.list.item.projeckt.name");
+                    put("name", "Gigaclub");
+                }},
+                new HashMap<String, String>() {{
+                    put("translationName", "BuilderSystem.worldgui.list.gui");
+                    put("page", "1");
+                }},
+                "BuilderSystem.worldgui.list.gui.first.page",
+                new HashMap<String, String>() {{
+                    put("translationName", "BuilderSystem.worldgui.manage.project");
+                    put("projectname", "Project1");
+                }},
+                "BuilderSystem.worldgui.manage.project.edit.worldTyp",
+                "BuilderSystem.worldgui.manage.project.server.info",
+                "BuilderSystem.worldgui.manage.project.players.manage",
+                "BuilderSystem.worldgui.manage.project.teams.manage",
+                "buildersystem.worldgui.manage.join",
+                "buildersystem.worldgui.manage.start",
+                "BuilderSystem.worldgui.player.list.owner.line",
+                "BuilderSystem.worldgui.player.list.owner.text",
+                new HashMap<String, String>() {{
+                    put("translationName", "BuilderSystem.worldgui.player.list.owner.name");
+                    put("ownername", "Gigaclub");
+                }},
+                "BuilderSystem.worldgui.player.list.owner.cant.managet",
+                "BuilderSystem.worldgui.player.list.line",
+                "BuilderSystem.worldgui.player.manager.gui",
+                "BuilderSystem.worldgui.player.manager.edit.user.perms",
+                new HashMap<String, String>() {{
+                    put("translationName", "BuilderSystem.worldgui.player.manager.kick.player");
+                    put("playername", "Gigaclub");
+                }},
+                new HashMap<String, String>() {{
+                    put("translationName", "BuilderSystem.worldgui.player.manager.kick.player.confirm.kick");
+                    put("playername", "Gigaclub");
+                }},
+                new HashMap<String, String>() {{
+                    put("translationName", "BuilderSystem.worldgui.player.manager.kick.player.confirm.got.kickt");
+                    put("playername", "Gigaclub");
+                }},
+                new HashMap<String, String>() {{
+                    put("translationName", "BuilderSystem.worldgui.player.manager.kick.player.confirm.dount.kick");
+                    put("playername", "Gigaclub");
+                }},
+                new HashMap<String, String>() {{
+                    put("translationName", "BuilderSystem.worldgui.world.player.list.gui");
+                    put("page", "1");
+                }},
+                "BuilderSystem.worldgui.world.invite.player.gui",
+                "BuilderSystem.worldgui.world.invite.player.set.player.name",
+                "BuilderSystem.worldgui.world.invite.player.click.to.invite",
+                new HashMap<String, String>() {{
+                    put("translationName", "BuilderSystem.worldgui.world.invite.player.send.invite.to");
+                    put("invitetname", "Gigaclub");
+                }},
+                new HashMap<String, String>() {{
+                    put("translationName", "BuilderSystem.worldgui.world.invite.player.send.invite.if.joint");
+                    put("invitetname", "Gigaclub");
+                }},
+                "BuilderSystem.worldgui.world.invite.player.not.exist",
+                "BuilderSystem.worldgui.world.player.list.gui.one.page",
+                "BuilderSystem.worldgui.world.type.select.warning.gui",
+                "BuilderSystem.worldgui.world.type.select.warning",
+                "BuilderSystem.worldgui.world.type.select.save.edit",
+                "BuilderSystem.worldgui.world.type.select.save.edit.lore",
+                "BuilderSystem.worldgui.world.type.select.save.edit.successful"
+
 
         ));
     }
@@ -364,6 +486,7 @@ public final class Main extends JavaPlugin implements Listener {
 
 
     }
+
 
     @EventHandler
     public void onDatabaseLoad(DatabaseLoadEvent e) {

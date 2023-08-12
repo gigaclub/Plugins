@@ -198,6 +198,7 @@ public class Navigator implements Listener {
 
     @EventHandler
     public void handleGuiOpener(PlayerInteractEvent event) {
+
         if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             ItemStack item = event.getItem();
             if (item == null) {
@@ -208,7 +209,6 @@ public class Navigator implements Listener {
                     return;
                 }
             }
-
             PersistentDataContainer data = item.getItemMeta().getPersistentDataContainer();
             if (data.has(new NamespacedKey(Main.getPlugin(), "identifie"))) {
                 String identifie = data.get(new NamespacedKey(Main.getPlugin(), "identifie"), PersistentDataType.STRING);

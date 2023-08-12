@@ -249,20 +249,20 @@ public class TeamGui implements Listener {
 
             ArrayList<Component> loreList = new ArrayList<>();
             // ChatColor.GRAY + "ID: " + ChatColor.WHITE + ID
-            loreList.add(t.t("BuilderSystem.team.list.team.id", player, Placeholder.parsed("ID", String.valueOf(ID))));
+            loreList.add(t.t("BuilderSystem.team.list.team.id", player, Placeholder.parsed("id", String.valueOf(ID))));
             // ChatColor.GRAY + "Team Owner: " + ChatColor.WHITE + owner
-            loreList.add(t.t("BuilderSystem.team.list.team.owner", player, Placeholder.parsed("Owner", owner)));
+            loreList.add(t.t("BuilderSystem.team.list.team.owner", player, Placeholder.parsed("owner", owner)));
             if (!(description.isEmpty())) {
                 // ChatColor.GRAY + "Description: " + ChatColor.WHITE + description
-                loreList.add(t.t("BuilderSystem.team.list.team.description", player, Placeholder.parsed("Description", description)));
+                loreList.add(t.t("BuilderSystem.team.list.team.description", player, Placeholder.parsed("description", description)));
             }
             if (!(stringList.isEmpty())) {
                 // ChatColor.GRAY + "Team Member: " + ChatColor.WHITE + joinedString
-                loreList.add(t.t("BuilderSystem.team.list.team.member", player, Placeholder.parsed("teamMember", joinedString)));
+                loreList.add(t.t("BuilderSystem.team.list.team.member", player, Placeholder.parsed("teammember", joinedString)));
             }
             if (owner.equals(player.getName())) {
                 // ChatColor.GRAY + "Name: " + ChatColor.WHITE + name
-                ItemStack project = new ItemBuilder(Material.MAP).setDisplayName(t.t("BuilderSystem.team.list.team.name", player, Placeholder.parsed("Name", name))).setLoreComponents(loreList).build();
+                ItemStack project = new ItemBuilder(Material.MAP).setDisplayName(t.t("BuilderSystem.team.list.team.name", player, Placeholder.parsed("name", name))).setLoreComponents(loreList).build();
 
                 GuiItem guiItem = new GuiItem(project, event -> {
                     event.setCancelled(true);
@@ -270,7 +270,7 @@ public class TeamGui implements Listener {
                 });
                 guiItems.add(guiItem);
             } else {
-                ItemStack project = new ItemBuilder(Material.PAPER).setDisplayName(t.t("BuilderSystem.team.list.team.name", player, Placeholder.parsed("Name", name))).setLoreComponents(loreList).build();
+                ItemStack project = new ItemBuilder(Material.PAPER).setDisplayName(t.t("BuilderSystem.team.list.team.name", player, Placeholder.parsed("name", name))).setLoreComponents(loreList).build();
 
                 GuiItem guiItem = new GuiItem(project, event -> {
                     event.setCancelled(true);
@@ -385,7 +385,7 @@ public class TeamGui implements Listener {
         loreList1.add(t.t("BuilderSystem.team.team.player.list.owner.lore2", player));
         String ownerName = Bukkit.getOfflinePlayer(UUID.fromString(owner)).getName();
         // ownerName
-        ItemStack TaskItem1 = new ItemBuilder(Material.PLAYER_HEAD).setHead(ownerName).setDisplayName(t.t("BuilderSystem.team.team.player.list.owner.name", player, Placeholder.parsed("OwnerName", ownerName))).setLoreComponents(loreList1).addID(teamID).build();
+        ItemStack TaskItem1 = new ItemBuilder(Material.PLAYER_HEAD).setHead(ownerName).setDisplayName(t.t("BuilderSystem.team.team.player.list.owner.name", player, Placeholder.parsed("ownername", ownerName))).setLoreComponents(loreList1).addID(teamID).build();
         GuiItem guiItem1 = new GuiItem(TaskItem1, event -> {
             // The owner cannot be managed
             player.sendMessage("");
@@ -409,7 +409,7 @@ public class TeamGui implements Listener {
             ArrayList<Component> loreList = new ArrayList<>();
             loreList.add(t.t("BuilderSystem.team.team.player.list.player.lore1", player));
             loreList.add(t.t("BuilderSystem.team.team.player.list.player.lore2", player));
-            ItemStack TaskItem = new ItemBuilder(Material.PLAYER_HEAD).setHead(stringList.get(i)).setDisplayName(t.t("BuilderSystem.team.team.player.list.owner.name", player, Placeholder.parsed("PlayerName", stringList.get(i)))).setLoreComponents(loreList).addID(teamID).build();
+            ItemStack TaskItem = new ItemBuilder(Material.PLAYER_HEAD).setHead(stringList.get(i)).setDisplayName(t.t("BuilderSystem.team.team.player.list.owner.name", player, Placeholder.parsed("playerpame", stringList.get(i)))).setLoreComponents(loreList).addID(teamID).build();
             @NotNull OfflinePlayer managetPlayer = Bukkit.getOfflinePlayer(stringList.get(i));
             GuiItem guiItem = new GuiItem(TaskItem, event -> {
                 if (player.hasPermission("gigaclub_team.edit_user")) {
@@ -429,7 +429,7 @@ public class TeamGui implements Listener {
         Translation t = Main.getTranslation();
         Data data = Main.getData();
         BuilderSystem builderSystem = Main.getBuilderSystem();
-        ChestGui playermanager = new ChestGui(3, data.setGuiName("BuilderSystem.team.player.manager.gui", player, Placeholder.parsed("managetPlayer", managetPlayer.getName())));
+        ChestGui playermanager = new ChestGui(3, data.setGuiName("BuilderSystem.team.player.manager.gui", player, Placeholder.parsed("managetplayer", managetPlayer.getName())));
         StaticPane pane = new StaticPane(9, 3);
         pane.fillWith(outlineintem);
 
@@ -442,18 +442,18 @@ public class TeamGui implements Listener {
         });
         pane.addItem(addPermsGroup, 2, 1);
 
-        GuiItem kickUser = new GuiItem(new ItemBuilder(Material.PLAYER_HEAD).setHeadDatabase(9348).setDisplayName(t.t("BuilderSystem.team.player.manager.kick.player", player, Placeholder.parsed("kicktPlayer", managetPlayer.getName()))).build(), event -> {
-            DispenserGui confirm = new DispenserGui(data.setGuiName("BuilderSystem.team.player.manager.kick.player.confirm.gui", player, Placeholder.parsed("kicktPlayer", managetPlayer.getName())));
+        GuiItem kickUser = new GuiItem(new ItemBuilder(Material.PLAYER_HEAD).setHeadDatabase(9348).setDisplayName(t.t("BuilderSystem.team.player.manager.kick.player", player, Placeholder.parsed("kicktplayer", managetPlayer.getName()))).build(), event -> {
+            DispenserGui confirm = new DispenserGui(data.setGuiName("BuilderSystem.team.player.manager.kick.player.confirm.gui", player, Placeholder.parsed("kicktplayer", managetPlayer.getName())));
             StaticPane cpane = new StaticPane(3, 3);
             cpane.fillWith(outlineintem);
-            GuiItem check = new GuiItem(new ItemBuilder(Material.PLAYER_HEAD).setHeadDatabase(21774).setDisplayName(t.t("BuilderSystem.team.player.manager.kick.player.confirm", player, Placeholder.parsed("kicktPlayer", managetPlayer.getName()))).build(), event1 -> {
+            GuiItem check = new GuiItem(new ItemBuilder(Material.PLAYER_HEAD).setHeadDatabase(21774).setDisplayName(t.t("BuilderSystem.team.player.manager.kick.player.confirm", player, Placeholder.parsed("kicktplayer", managetPlayer.getName()))).build(), event1 -> {
                 builderSystem.kickMember(String.valueOf(player.getUniqueId()), TeamID, String.valueOf(managetPlayer.getUniqueId()));
                 confirm.getInventory().close();
-                player.sendMessage(t.t("BuilderSystem.team.player.manager.kick.player.got.kickt", player, Placeholder.parsed("kicktPlayer", managetPlayer.getName())));
+                player.sendMessage(t.t("BuilderSystem.team.player.manager.kick.player.got.kickt", player, Placeholder.parsed("kicktplayer", managetPlayer.getName())));
                 event1.setCancelled(true);
             });
             cpane.addItem(check, Slot.fromIndex(5));
-            GuiItem stop = new GuiItem(new ItemBuilder(Material.PLAYER_HEAD).setHeadDatabase(9382).setDisplayName(t.t("BuilderSystem.team.player.manager.kick.player.confirm.dont.kick", player, Placeholder.parsed("kicktPlayer", managetPlayer.getName()))).build(), event1 -> {
+            GuiItem stop = new GuiItem(new ItemBuilder(Material.PLAYER_HEAD).setHeadDatabase(9382).setDisplayName(t.t("BuilderSystem.team.player.manager.kick.player.confirm.dont.kick", player, Placeholder.parsed("kicktplayer", managetPlayer.getName()))).build(), event1 -> {
                 TeamPlayer(player, TeamID);
                 event1.setCancelled(true);
             });
@@ -536,7 +536,7 @@ public class TeamGui implements Listener {
                         if (data.checkIfPlayerExists(User[1])) {
                             builderSystem.inviteMember(String.valueOf(player.getUniqueId()), teamID, String.valueOf(Bukkit.getOfflinePlayer(invitePlayer.getRenameText()).getUniqueId()));
 
-                            player.sendMessage(t.t("BuilderSystem.team.player.list.invite.player.invite.sent", player, Placeholder.parsed("invitetPlayer", User[1])));
+                            player.sendMessage(t.t("BuilderSystem.team.player.list.invite.player.invite.sent", player, Placeholder.parsed("invitetplayer", User[1])));
                             TeamPlayer(player, teamID);
                             event1.setCancelled(true);
                         } else {
@@ -544,7 +544,7 @@ public class TeamGui implements Listener {
                             data.createPlayer(User[1], String.valueOf(UUID.fromString(User[0])));
                             builderSystem.inviteMember(String.valueOf(player.getUniqueId()), teamID, String.valueOf(UUID.fromString(User[0])));
 
-                            player.sendMessage(t.t("BuilderSystem.team.player.list.invite.player.invite.if.first.join", player, Placeholder.parsed("invitetPlayer", User[1])));
+                            player.sendMessage(t.t("BuilderSystem.team.player.list.invite.player.invite.if.first.join", player, Placeholder.parsed("invitetplayer", User[1])));
                             TeamPlayer(player, teamID);
                             event1.setCancelled(true);
                         }
@@ -659,7 +659,7 @@ public class TeamGui implements Listener {
             loreList.add(t.t("BuilderSystem.team.invits.item.lore1", player));
             loreList.add(t.t("BuilderSystem.team.invits.item.lore2", player));
             // ChatColor.GRAY + "Invite From " + ChatColor.WHITE + builderSystem.getTeam(sender).get("name").getAsString()
-            ItemStack invit = new ItemBuilder(Material.WHITE_WOOL).setDisplayName(t.t("BuilderSystem.team.invits.item.invite.from", player, Placeholder.parsed("inviteFrom", builderSystem.getTeam(sender).get("name").getAsString()))).setLoreComponents(loreList).build();
+            ItemStack invit = new ItemBuilder(Material.WHITE_WOOL).setDisplayName(t.t("BuilderSystem.team.invits.item.invite.from", player, Placeholder.parsed("invitefrom", builderSystem.getTeam(sender).get("name").getAsString()))).setLoreComponents(loreList).build();
             GuiItem guiItem = new GuiItem(invit, event -> {
                 //gui zum acceptation
                 player.sendMessage("request menu ");
@@ -706,7 +706,7 @@ public class TeamGui implements Listener {
             if (taskPages.getPage() > 0) {
                 taskPages.setPage(taskPages.getPage() - 1);
                 // "Task List Page " + (taskPages.getPage() + 1)
-                teamInits.setTitle(data.setGuiName("BuilderSystem.team.invits.list.page", player, Placeholder.parsed("curentPage", String.valueOf(taskPages.getPage() + 1))));
+                teamInits.setTitle(data.setGuiName("BuilderSystem.team.invits.list.page", player, Placeholder.parsed("curentpage", String.valueOf(taskPages.getPage() + 1))));
                 teamInits.update();
             } else event.setCancelled(true);
         }), 1, 0);
@@ -714,7 +714,7 @@ public class TeamGui implements Listener {
         navigation.addItem(new GuiItem(new ItemBuilder(Material.PLAYER_HEAD).setHeadDatabase(8782).setDisplayName(t.t("BuilderSystem.page.list.next", player)).build(), event -> {
             if (taskPages.getPage() < taskPages.getPages() - 1) {
                 taskPages.setPage(taskPages.getPage() + 1);
-                teamInits.setTitle(data.setGuiName("BuilderSystem.team.invits.list.page", player, Placeholder.parsed("curentPage", String.valueOf(taskPages.getPage() + 1))));
+                teamInits.setTitle(data.setGuiName("BuilderSystem.team.invits.list.page", player, Placeholder.parsed("curentpage", String.valueOf(taskPages.getPage() + 1))));
                 teamInits.update();
             } else event.setCancelled(true);
         }), 7, 0);
