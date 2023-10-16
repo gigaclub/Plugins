@@ -4,5 +4,5 @@ plugins {
 
 dependencies {
     api project(":TeamAPI")
-    api("org.json:json:20230618")  // TODO: replace all org.json with com.google.gson
+    api("org.json:json:20231013")  // TODO: replace all org.json with com.google.gson
 }
